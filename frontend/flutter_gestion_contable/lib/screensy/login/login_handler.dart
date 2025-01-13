@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'login_form.dart';
 
 // LoginScreen es un StatefulWidget para manejar el estado del formulario de login.
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginHandler extends StatefulWidget {
+  const LoginHandler({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _LoginHandlerState createState() => _LoginHandlerState();
 }
 
 // _LoginScreenState maneja el estado del formulario de login.
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginHandlerState extends State<LoginHandler> {
   final _formKey = GlobalKey<FormState>();
   // Clave global para identificar y manejar el estado del formulario.
 

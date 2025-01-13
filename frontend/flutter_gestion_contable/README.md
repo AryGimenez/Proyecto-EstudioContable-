@@ -8,7 +8,7 @@ Vamos a usar una estructura de proyecto bien organizada y separada. La idea es t
 
 ## Estructura de proyecto 
 
-lib/
+``lib/
 ├── core/                          
 │   ├── theme/
 │   │   ├── app_colors.dart        
@@ -20,7 +20,7 @@ lib/
 │   │   ├── login_form.dart    
 │   │   ├── login_screen.dart      
 │   └   └── login_styles.dart
-└── main.dart
+└── main.dart``
 
 
 

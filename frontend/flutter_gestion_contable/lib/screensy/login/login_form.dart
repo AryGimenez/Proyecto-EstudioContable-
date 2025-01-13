@@ -1,28 +1,27 @@
 // lib/screens/login/login_form.dart
 
 import 'package:flutter/material.dart';
-// Importa la librería de Material Design de Flutter, utilizada para crear interfaces de usuario.
+import 'package:flutter_gestion_contable/core/theme/app_text_styles.dart'; // Importa la librería de Material Design de Flutter, utilizada para crear interfaces de usuario.
+import 'package:flutter_gestion_contable/core/theme/app_colors.dart';
+import 'package:flutter_gestion_contable/core/theme/app_styles.dart';
+import 'login_styles.dart';
 
 class LoginForm extends StatelessWidget {
   // Define un widget sin estado que representa un formulario de inicio de sesión.
 
-  final GlobalKey<FormState> formKey;
-  // Clave global utilizada para identificar y manejar el estado del formulario (como la validación).
+  final GlobalKey<FormState>
+      formKey; // Clave global utilizada para identificar y manejar el estado del formulario (como la validación).
+  final TextEditingController
+      userController; // Controlador para gestionar el texto ingresado en el campo de usuario.
+  final TextEditingController
+      passwordController; // Controlador para gestionar el texto ingresado en el campo de contraseña.
+  final bool
+      isPasswordVisible; // Bandera que indica si la contraseña debe mostrarse o permanecer oculta.
+  final VoidCallback
+      onPasswordVisibilityToggle; // Función que se llama cuando el usuario alterna la visibilidad de la contraseña.
 
-  final TextEditingController userController;
-  // Controlador para gestionar el texto ingresado en el campo de usuario.
-
-  final TextEditingController passwordController;
-  // Controlador para gestionar el texto ingresado en el campo de contraseña.
-
-  final bool isPasswordVisible;
-  // Bandera que indica si la contraseña debe mostrarse o permanecer oculta.
-
-  final VoidCallback onPasswordVisibilityToggle;
-  // Función que se llama cuando el usuario alterna la visibilidad de la contraseña.
-
-  final VoidCallback onSubmit;
-  // Función que se ejecuta al enviar el formulario (por ejemplo, al presionar un botón de inicio de sesión).
+  final VoidCallback
+      onSubmit; // Función que se ejecuta al enviar el formulario (por ejemplo, al presionar un botón de inicio de sesión).
 
   const LoginForm({
     super.key, // Clave opcional que identifica este widget en la jerarquía.
@@ -37,28 +36,58 @@ class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Construye el widget principal que representa el formulario.
-    return Form(
-      key: formKey,
-      // Asocia la clave del formulario para manejar su estado (por ejemplo, validaciones).
 
-      child: Column(
-        // Organiza los widgets del formulario en una columna vertical.
-        children: [
-          _buildUserField(),
-          // Agrega el campo de texto para ingresar el usuario.
+    return Center(
+      // Centra el contenido en el ejes horizontal y vertical
+      child: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+              maxWidth:
+                  formMaxWidth), // ancho maximo de el cuadro donde se encuetra logo texo etc login_styles.dart,
+          child: Padding(
+              padding:
+                  formPadding, // Espaciado horizontal para el contenido este valor esta en lodign_styles
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment
+                      .center, // Centra los elementos verticalmente
 
-          const SizedBox(height: 16),
-          // Añade un espacio vertical de 16 píxeles entre el campo de usuario y el campo de contraseña.
+                  children: [
+                    Image.asset(
+                      // Imagen del logo o cabecera
+                      'lib/assets/logo.png', // Asegúrate de tener esta imagen en la carpeta assets
+                      height:
+                          logoHeight, // Altura de la imagen login_styles.dart
+                    ),
+                    verticalSpaceMedium, // Espaciado entre la imagen y el formulario app_styles.dart
 
-          _buildPasswordField(),
-          // Agrega el campo de texto para ingresar la contraseña.
-
-          const SizedBox(height: 24),
-          // Añade un espacio vertical de 24 píxeles entre el campo de contraseña y el botón.
-
-          _buildLoginButton(),
-          // Agrega el botón para iniciar sesión.
-        ],
+                    Form(
+                      // Formulario de usuario y contraseña
+                      key:
+                          formKey, // Asocia la clave del formulario para manejar su estado (por ejemplo, validaciones)
+                      child: Column(
+                        children: [
+                          _buildUserField(), // Campo de texto para el usuario
+                          verticalSpaceSmall, // Espaciado entre campos de texto app_styles.dart
+                          _buildPasswordField(), // Campo de texto para la contraseña
+                          verticalSpaceMedium, // Espaciado antes del botón de inicio de sesión app_styles.dart
+                          _buildLoginButton(), // Botón de inicio de sesión
+                        ],
+                      ),
+                    ),
+                    verticalSpaceMedium, // Espaciado entre el formulario y la opción "Perdí la contraseña" app_styles.dart
+                    TextButton(
+                      onPressed: () {
+                        // Agrega la funcionalidad deseada para esta opción
+                      },
+                      child: Text(
+                        'Perdí la contraseña',
+                        style: AppTextStyles.bodyText1.copyWith(
+                            color: AppColors
+                                .primary), // Estilo del texto con color primario
+                      ),
+                    ),
+                  ])),
+        ),
       ),
     );
   }
@@ -69,9 +98,19 @@ class LoginForm extends StatelessWidget {
       controller: userController,
       // Vincula el campo de texto con el controlador para gestionar su contenido.
 
-      decoration: const InputDecoration(
-        labelText: 'Usuario',
-        // Etiqueta que indica al usuario qué debe ingresar en el campo (nombre de usuario).
+      decoration: InputDecoration(
+        labelText:
+            'Usudario', // Etiqueta que indica al usuario qué debe ingresar en el campo (nombre de usuario).
+        labelStyle: AppTextStyles.bodyText1,
+        // No creo que vaya -------
+        // border: OutlineInputBorder(
+        //   borderRadius: BorderRadius.circular(20),
+        //   borderSide: BorderSide(color: AppColors.primary),
+        // ),
+        // focusedBorder: OutlineInputBorder(
+        //   borderRadius: BorderRadius.circular(20),
+        //   borderSide: const BorderSide(color: AppColors.primary, width: 2),
+        // ),
 
         prefixIcon: Icon(Icons.person),
         // Icono de persona que aparece al inicio del campo de texto como referencia visual.

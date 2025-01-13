@@ -3,15 +3,18 @@
 /// Clase que define la paleta de colores centralizada para toda la aplicación.
 /// Todos los colores son constantes y estáticos para acceso global.
 /// Los colores se definen usando valores hexadecimales con el formato 0xFF seguido del código de color.
+library;
+
 import 'package:flutter/material.dart';
 
 class AppColors {
   /// Colores primarios de la aplicación
   /// Se usan principalmente para elementos destacados, botones y barras
   /// primary: Azul principal usado en elementos interactivos y de énfasis
-  static const Color primary = Color(0xFF2196F3); // Material Blue 500
+  static const Color primary = Color(0xFF4a4393);
+
   /// secondary: Variante más oscura del color primario
-  static const Color secondary = Color(0xFF1976D2); // Material Blue 700
+  static const Color secondary = Color(0xFF00a2d3);
 
   /// Colores de fondo para diferentes capas y superficies
   /// background: Color de fondo principal, blanco puro para máximo contraste

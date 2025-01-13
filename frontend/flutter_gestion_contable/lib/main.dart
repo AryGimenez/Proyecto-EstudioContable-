@@ -1,7 +1,7 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
-import 'screensy/login/login_screen.dart';
+import 'screensy/login/login_handler.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Estudio Contable',
       theme: AppTheme.lightTheme,
-      home: const LoginScreen(),
+      home: const LoginHandler(),
     );
   }
 }

@@ -3,6 +3,8 @@
 /// Clase que define los estilos de texto estandarizados para toda la aplicación.
 /// Proporciona un conjunto coherente de estilos tipográficos reutilizables.
 /// Todos los estilos son constantes y estáticos para garantizar consistencia.
+library;
+
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
 

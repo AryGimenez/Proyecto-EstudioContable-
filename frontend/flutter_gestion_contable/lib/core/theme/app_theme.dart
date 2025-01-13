@@ -5,6 +5,7 @@ import 'app_colors.dart'; // Importa el archivo que contiene los colores definid
 
 class AppTheme {
   // Método getter para obtener el tema claro de la aplicación (lightTheme)
+
   static ThemeData get lightTheme {
     return ThemeData(
       // Define el color principal para la aplicación, que se usará en elementos como el AppBar, botones, etc.
@@ -56,6 +57,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
 
           // Define el color del borde con una opacidad del 50% sobre el color primario
+          // ignore: deprecated_member_use
           borderSide: BorderSide(color: AppColors.primary.withOpacity(0.5)),
         ),
 
