@@ -23,15 +23,19 @@ class LoginForm extends StatelessWidget {
   final VoidCallback
       onSubmit; // Función que se ejecuta al enviar el formulario (por ejemplo, al presionar un botón de inicio de sesión).
 
-  const LoginForm({
-    super.key, // Clave opcional que identifica este widget en la jerarquía.
-    required this.formKey, // Requiere la clave del formulario.
-    required this.userController, // Requiere el controlador del usuario.
-    required this.passwordController, // Requiere el controlador de la contraseña.
-    required this.isPasswordVisible, // Requiere la bandera de visibilidad de la contraseña.
-    required this.onPasswordVisibilityToggle, // Requiere la función para alternar la visibilidad.
-    required this.onSubmit, // Requiere la función para manejar el envío del formulario.
-  });
+  final VoidCallback
+      onResetPassword; // Funcion que se llama cuando el usuario presiona restableser contrasenia
+
+  const LoginForm(
+      {super.key, // Clave opcional que identifica este widget en la jerarquía.
+      required this.formKey, // Requiere la clave del formulario.
+      required this.userController, // Requiere el controlador del usuario.
+      required this.passwordController, // Requiere el controlador de la contraseña.
+      required this.isPasswordVisible, // Requiere la bandera de visibilidad de la contraseña.
+      required this.onPasswordVisibilityToggle, // Requiere la función para alternar la visibilidad.
+      required this.onSubmit, // Requiere la función para manejar el envío del formulario.
+      required this.onResetPassword // Requiere la funcion para lanzar el formulario restableser password
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -75,19 +79,21 @@ class LoginForm extends StatelessWidget {
                       ),
                     ),
                     verticalSpaceMedium, // Espaciado entre el formulario y la opción "Perdí la contraseña" app_styles.dart
-                    TextButton(
-                      onPressed: () {
-                        // Agrega la funcionalidad deseada para esta opción
-                      },
-                      child: Text(
-                        'Perdí la contraseña',
-                        style: AppTextStyles.bodyText1.copyWith(
-                            color: AppColors
-                                .primary), // Estilo del texto con color primario
-                      ),
-                    ),
+                    _buildTextButonRestPassword()
                   ])),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTextButonRestPassword() {
+    //Motodo Custruche el boton Restableser contrasenia
+    return TextButton(
+      onPressed: onResetPassword,
+      child: Text(
+        'Perdí la contraseña',
+        style: AppTextStyles.bodyText1.copyWith(
+            color: AppColors.primary), // Estilo del texto con color primario
       ),
     );
   }
@@ -102,15 +108,6 @@ class LoginForm extends StatelessWidget {
         labelText:
             'Usudario', // Etiqueta que indica al usuario qué debe ingresar en el campo (nombre de usuario).
         labelStyle: AppTextStyles.bodyText1,
-        // No creo que vaya -------
-        // border: OutlineInputBorder(
-        //   borderRadius: BorderRadius.circular(20),
-        //   borderSide: BorderSide(color: AppColors.primary),
-        // ),
-        // focusedBorder: OutlineInputBorder(
-        //   borderRadius: BorderRadius.circular(20),
-        //   borderSide: const BorderSide(color: AppColors.primary, width: 2),
-        // ),
 
         prefixIcon: Icon(Icons.person),
         // Icono de persona que aparece al inicio del campo de texto como referencia visual.
