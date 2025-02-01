@@ -286,3 +286,50 @@ class _PasswordResetHandlerState extends State<PasswordResetHandler> {
     );
   }
 }
+
+
+---------------
+
+class _PasswordResetHandlerState extends State<PasswordResetHandler> {
+  final _formKey = GlobalKey<FormState>(); // Llave global para manejar el estado del formulario
+  final _emailController = TextEditingController(); // Controlador para el campo de correo electrónico
+
+  bool _isVerificationCodeSent = false; // Indica si el código de verificación ha sido enviado
+
+  void _sendCode() {
+    // Valida el campo de correo electrónico llamando al método de validación del formulario
+    if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _isVerificationCodeSent = true; // Actualiza el estado para indicar que el código ha sido enviado
+      });
+      // Aquí envías el correo de verificación
+    }
+  }
+
+  // Método de validación del campo de correo electrónico
+  String? _validateEmail(String? email) {
+    if (email == null || email.isEmpty) {
+      return 'Por favor ingrese su correo electrónico';
+    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
+      return 'Por favor ingrese un correo electrónico válido';
+    }
+    return null; // Si la validación es exitosa, retorna null
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Restablecer Contraseña')), // Título de la aplicación
+      body: Padding(
+        padding: const EdgeInsets.all(16.0), // Padding alrededor del cuerpo del formulario
+        child: PasswordResetForm(
+          formKey: _formKey, // Pasa la llave del formulario
+          emailController: _emailController, // Pasa el controlador del campo de correo electrónico
+          isVerificationCodeSent: _isVerificationCodeSent, // Pasa el estado del código de verificación
+          onSendCode: _sendCode, // Pasa el callback para enviar el código de verificación
+          onValidateEmail: _validateEmail, // Pasa el método de validación del campo de correo electrónico
+        ),
+      ),
+    );
+  }
+}

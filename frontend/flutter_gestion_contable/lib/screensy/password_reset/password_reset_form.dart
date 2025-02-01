@@ -34,19 +34,21 @@ class PasswordResetForm extends StatelessWidget {
       onVerifyCode; // Callback para verificar el código de verificación.
   final VoidCallback onSubmit; // Callback para restablecer la contraseña.
 
-  PasswordResetForm({
-    super.key,
-    required this.formKey,
-    required this.emailController,
-    required this.verificationCodeController,
-    required this.passwordController,
-    required this.confirmPasswordController,
-    required this.isVerificationCodeSent,
-    required this.isCodeVerified,
-    required this.onSendCode,
-    required this.onVerifyCode,
-    required this.onSubmit,
-  });
+  final String? Function(String?) onValidateEmail;
+
+  PasswordResetForm(
+      {super.key,
+      required this.formKey,
+      required this.emailController,
+      required this.verificationCodeController,
+      required this.passwordController,
+      required this.confirmPasswordController,
+      required this.isVerificationCodeSent,
+      required this.isCodeVerified,
+      required this.onSendCode,
+      required this.onVerifyCode,
+      required this.onSubmit,
+      required this.onValidateEmail});
 
   @override
   Widget build(BuildContext context) {
@@ -108,15 +110,18 @@ class PasswordResetForm extends StatelessWidget {
     // Método privado que construye el campo de texto para el correo electrónico.
 
     return TextFormField(
-      controller:
-          emailController, // Vincula el campo de texto con el controlador para gestionar su contenido.
-      decoration: InputDecoration(
-        labelText:
-            'Correo Electrónico', // Etiqueta que indica al usuario qué debe ingresar en el campo.
-        prefixIcon: Icon(Icons
-            .email), // Icono de correo que aparece al inicio del campo de texto como referencia visual.
-      ),
-      validator: (value) {
+        controller:
+            emailController, // Vincula el campo de texto con el controlador para gestionar su contenido.
+        decoration: InputDecoration(
+          labelText:
+              'Correo Electrónico', // Etiqueta que indica al usuario qué debe ingresar en el campo.
+          prefixIcon: Icon(Icons
+              .email), // Icono de correo que aparece al inicio del campo de texto como referencia visual.
+        ),
+        validator: onValidateEmail
+
+        // (value)
+        // {
         // Validador que verifica si el campo de correo contiene texto válido.
 
         // if (value == null || value.isEmpty) {
@@ -127,9 +132,10 @@ class PasswordResetForm extends StatelessWidget {
         //   return 'Por favor ingrese un correo electrónico válido';
         // }
 
-        return null; // Si el valor es válido, no retorna ningún error.
-      },
-    );
+        //   return null; // Si el valor es válido, no retorna ningún error.
+        // },
+
+        );
 
     // return buildEmailField;
   }
@@ -192,6 +198,7 @@ class PasswordResetForm extends StatelessWidget {
             .lock), // Icono de candado que aparece al inicio del campo como referencia visual.
       ),
       obscureText: true, // Oculta el texto del campo para mayor seguridad.
+
       validator: (value) {
         // Validador que verifica si el campo de nueva contraseña contiene texto válido.
         if (value == null || value.isEmpty) {
@@ -200,6 +207,7 @@ class PasswordResetForm extends StatelessWidget {
         }
         return null; // Si el valor es válido, no retorna ningún error.
       },
+
       enabled:
           isCodeVerified, // Deshabilita el campo si el código no se ha verificado.
     );
@@ -228,6 +236,7 @@ class PasswordResetForm extends StatelessWidget {
         }
         return null; // Si el valor es válido, no retorna ningún error.
       },
+
       enabled: isCodeVerified, // Deshabildf
     );
   }
