@@ -58,7 +58,7 @@ class LoginForm extends StatelessWidget {
                   children: [
                     Image.asset(
                       // Imagen del logo o cabecera
-                      'lib/assets/logo.png', // Asegúrate de tener esta imagen en la carpeta assets
+                      'lib/assets/Logo Barone.png', // Asegúrate de tener esta imagen en la carpeta assets
                       height:
                           logoHeight, // Altura de la imagen login_styles.dart
                     ),
@@ -79,7 +79,9 @@ class LoginForm extends StatelessWidget {
                       ),
                     ),
                     verticalSpaceMedium, // Espaciado entre el formulario y la opción "Perdí la contraseña" app_styles.dart
-                    _buildTextButonRestPassword()
+                    _buildTextButonRestPassword(), // Botón de resetear contraseña
+                    verticalSpaceMedium, // Espaciado antes del botón de configuración app_styles.dart
+                    _buildConfigurationButton(), // Botón de configuración
                   ])),
         ),
       ),
@@ -106,7 +108,7 @@ class LoginForm extends StatelessWidget {
 
       decoration: InputDecoration(
         labelText:
-            'Usudario', // Etiqueta que indica al usuario qué debe ingresar en el campo (nombre de usuario).
+            'Usuario', // Etiqueta que indica al usuario qué debe ingresar en el campo (nombre de usuario).
         labelStyle: AppTextStyles.bodyText1,
 
         prefixIcon: Icon(Icons.person),
@@ -172,6 +174,48 @@ class LoginForm extends StatelessWidget {
 
       child: const Text('Iniciar sesión'),
       // Texto que aparece dentro del botón.
+    );
+  }
+
+  Widget _buildConfigurationButton() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0), // Bordes redondeados
+        color: AppColors.primary, // Aquí le asignas el color primario de fondo
+      ),
+      child: ExpansionTile(
+        title: const Text(
+          'Configuración',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white, // Texto en blanco
+          ),
+        ),
+        leading: Icon(
+          Icons.settings,
+          color: Colors.white, // Ícono de configuración en blanco
+        ),
+        trailing: Icon(
+          Icons.keyboard_arrow_down,
+          color: Colors.white, // Flecha en blanco
+        ),
+        children: [
+          ListTile(
+            title: const Text('Opción 1',
+                style: TextStyle(color: Colors.white)), // Opción en blanco
+            onTap: () {
+              // Acción al tocar esta opción
+            },
+          ),
+          ListTile(
+            title: const Text('Opción 2',
+                style: TextStyle(color: Colors.white)), // Opción en blanco
+            onTap: () {
+              // Acción al tocar esta opción
+            },
+          ),
+        ],
+      ),
     );
   }
 }
