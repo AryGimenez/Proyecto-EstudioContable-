@@ -19,10 +19,8 @@ class _ClientsScreenState extends State<ClientsScreen> {
           // Barra superior que contiene el título y los iconos de notificación y menú
           Container(
             height: 60, // Altura de la barra superior
-            color: AppColors
-                .primary, // Color de fondo de la barra superior (debe estar definido en AppColors)
-            padding: const EdgeInsets.symmetric(
-                horizontal: 20), // Espaciado horizontal
+            color: AppColors.primary, // Color de fondo de la barra superior
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment
                   .spaceBetween, // Distribuye los elementos de manera espaciosa
@@ -37,13 +35,26 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 // Contenedor que contiene los iconos de notificación y menú
                 Row(
                   children: [
-                    // Icono de notificación
-                    IconButton(
-                      icon:
-                          const Icon(Icons.notifications, color: Colors.white),
-                      onPressed: () {}, // Acción del botón de notificación
+                    // Botón de notificación reemplazado por ElevatedButton.icon
+                    ElevatedButton.icon(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Color(0xFF792D1F), // Color personalizado #792D1F
+                        padding: EdgeInsets.zero, // Elimina el padding extra
+                        minimumSize: const Size(120,
+                            40), // Ancho mayor que alto para fondo rectangular
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(8), // Bordes redondeados
+                        ),
+                      ),
+                      icon: const Icon(Icons.notifications,
+                          color: Colors.white), // Icono del botón
+                      label: const SizedBox.shrink(), // Oculta el texto
                     ),
-                    // Icono de menú
+                    const SizedBox(width: 10), // Espacio entre los botones
+                    // Icono de menú (se mantiene igual)
                     IconButton(
                       icon: const Icon(Icons.menu, color: Colors.white),
                       onPressed: () {}, // Acción del botón de menú
@@ -73,21 +84,14 @@ class _ClientsScreenState extends State<ClientsScreen> {
                             Icon(Icons.person, size: 40, color: Colors.brown),
                       ),
                       const SizedBox(height: 10),
-                      const Text(
-                        'Lorena Gimenez', // Nombre del usuario
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
+                      const Text('Lorena Gimenez',
+                          style: TextStyle(color: Colors.white, fontSize: 18)),
                       const SizedBox(height: 20),
-                      // Botones del menú lateral que permiten la navegación
-                      _buildMenuButton(
-                          'Clientes', Icons.people), // Botón "Clientes"
-                      _buildMenuButton('Agregar Cliente',
-                          Icons.person_add), // Botón "Agregar Cliente"
-                      _buildMenuButton('Pagos', Icons.payment), // Botón "Pagos"
-                      _buildMenuButton('Depósito',
-                          Icons.account_balance), // Botón "Depósito"
-                      const Spacer(), // Espacio vacío para alinear el botón "Salir" en la parte inferior
-                      // Botón "Salir" con color especial
+                      _buildMenuButton('Clientes', Icons.people),
+                      _buildMenuButton('Agregar Cliente', Icons.person_add),
+                      _buildMenuButton('Pagos', Icons.payment),
+                      _buildMenuButton('Depósito', Icons.account_balance),
+                      const Spacer(),
                       _buildMenuButton('Salir', Icons.exit_to_app,
                           isExit: true),
                     ],
@@ -97,62 +101,66 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 // Sección principal con la tabla de clientes
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(
-                        20), // Espaciado alrededor de la sección
+                    padding: const EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Barra de búsqueda que permite filtrar los resultados
+                        // Barra de búsqueda
                         Container(
                           height: 30,
-                          margin: const EdgeInsets.only(
-                              bottom:
-                                  5), // Reducido el espacio extra debajo de la barra de búsqueda
+                          margin: const EdgeInsets.only(bottom: 5),
                           child: Row(
                             children: [
-                              const Text(
-                                'Buscar:',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight:
-                                        FontWeight.bold), // Etiqueta "Buscar"
-                              ),
+                              const Text('Buscar:',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold)),
+                              const SizedBox(width: 10),
                               const SizedBox(
-                                  width:
-                                      10), // Espaciado entre la etiqueta y el campo de texto
-                              Expanded(
+                                width: 400,
                                 child: TextField(
-                                  style: const TextStyle(
-                                      fontSize:
-                                          12), // Estilo del texto en el campo
-                                  decoration: const InputDecoration(
-                                    border:
-                                        OutlineInputBorder(), // Borde del campo de texto
+                                  style: TextStyle(fontSize: 12),
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 5, horizontal: 10),
                                   ),
                                 ),
                               ),
-                              const SizedBox(
-                                  width:
-                                      10), // Espaciado entre el campo de texto y el icono de búsqueda
-                              // Botón de búsqueda
+                              const SizedBox(width: 10),
                               Container(
                                 decoration: BoxDecoration(
-                                  color: AppColors
-                                      .primary, // Color de fondo del botón
+                                  color:
+                                      AppColors.primary, // Fondo del IconButton
                                   borderRadius: BorderRadius.circular(
-                                      5), // Bordes redondeados
+                                      10), // Bordes redondeados
                                 ),
                                 child: IconButton(
-                                  icon: const Icon(Icons.search, size: 18),
-                                  onPressed:
-                                      () {}, // Acción del botón de búsqueda
-                                  color: Colors.white,
-                                  padding:
-                                      EdgeInsets.zero, // Sin padding adicional
+                                  icon: const Icon(Icons.search,
+                                      color: Colors
+                                          .white), // Icono dentro del botón
+                                  onPressed: () {},
+                                  padding: EdgeInsets
+                                      .zero, // Para eliminar el padding
                                 ),
                               ),
+                              SizedBox(width: 10),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color:
+                                      AppColors.primary, // Fondo del IconButton
+                                  borderRadius: BorderRadius.circular(
+                                      10), // Bordes redondeados
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.search,
+                                      color: Colors
+                                          .white), // Icono dentro del botón
+                                  onPressed: () {},
+                                  padding: EdgeInsets
+                                      .zero, // Para eliminar el padding
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -161,11 +169,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
                         Expanded(
                           child: SingleChildScrollView(
                             child: DataTable(
-                              columnSpacing: 12, // Espaciado entre las columnas
-                              dataRowMinHeight:
-                                  40, // Altura mínima de las filas
-                              dataRowMaxHeight:
-                                  45, // Altura máxima de las filas
+                              columnSpacing: 12,
+                              dataRowMinHeight: 40,
+                              dataRowMaxHeight: 45,
                               columns: const [
                                 DataColumn(label: Text('Sel.')),
                                 DataColumn(label: Text('Nombre')),
@@ -190,8 +196,8 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                             value: selectedRows[index] ?? false,
                                             onChanged: (bool? value) {
                                               setState(() {
-                                                selectedRows[index] = value ??
-                                                    false; // Actualizar estado de selección
+                                                selectedRows[index] =
+                                                    value ?? false;
                                               });
                                             },
                                           ),
@@ -212,42 +218,33 @@ class _ClientsScreenState extends State<ClientsScreen> {
                           ),
                         ),
 
-                        const SizedBox(
-                            height:
-                                40), // Espacio adicional antes de los botones
+                        const SizedBox(height: 40),
 
                         // Botones "Eliminar" y "Modificar"
                         Row(
-                          mainAxisAlignment: MainAxisAlignment
-                              .spaceBetween, // Distribución entre los botones
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            // Botón "Eliminar" con un ancho fijo
                             SizedBox(
                               width: 150,
                               child: ElevatedButton.icon(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors
-                                      .primary, // Color de fondo del botón
+                                  backgroundColor: AppColors.primary,
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 12),
                                 ),
                                 icon: const Icon(Icons.delete,
-                                    color: Colors.white), // Icono del botón
+                                    color: Colors.white),
                                 label: const Text('Eliminar',
-                                    style: TextStyle(
-                                        color: Colors
-                                            .white)), // Etiqueta del botón
+                                    style: TextStyle(color: Colors.white)),
                               ),
                             ),
-                            // Botón "Modificar" con un ancho fijo y alineado a la derecha
                             SizedBox(
                               width: 150,
                               child: ElevatedButton.icon(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors
-                                      .primary, // Color de fondo del botón
+                                  backgroundColor: AppColors.primary,
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 12),
                                 ),
@@ -276,29 +273,21 @@ class _ClientsScreenState extends State<ClientsScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Container(
-        width: 200, // Ancho fijo para los botones del menú
+        width: 200,
         child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
-            backgroundColor: isExit
-                ? Color(0xFF792D1F)
-                : Colors.amber[200], // Color diferente para el botón "Salir"
+            backgroundColor:
+                isExit ? const Color(0xFF792D1F) : Colors.amber[200],
             foregroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10)), // Bordes redondeados
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
           onPressed: () {},
-          icon: Icon(icon,
-              color: isExit
-                  ? Colors.white
-                  : AppColors.primary), // Color del icono según si es "Salir"
-          label: Text(
-            title,
-            style: TextStyle(
-                color: isExit
-                    ? Colors.white
-                    : AppColors.primary), // Color del texto
-          ),
+          icon: Icon(icon, color: isExit ? Colors.white : AppColors.primary),
+          label: Text(title,
+              style:
+                  TextStyle(color: isExit ? Colors.white : AppColors.primary)),
         ),
       ),
     );
