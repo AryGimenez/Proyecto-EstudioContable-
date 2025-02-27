@@ -57,12 +57,14 @@ class _LoginHandlerState extends State<LoginHandler> {
     );
   }
 
-    void _mainScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MainHandler()),
-    );
-  }
+ void _mainScreen() {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const MainHandler(),
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {

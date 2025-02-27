@@ -1,105 +1,145 @@
 import 'package:flutter/material.dart';
-import 'main_styles.dart'; // Importa los estilos personalizados
-import 'main_content.dart'; // Importa el contenido principal
+import 'main_styles.dart';
+import '../clients/clients_screen.dart';
 
-class MainHandler extends StatelessWidget {
-  const MainHandler({super.key}); // Constructor de la clase
+class MainHandler extends StatefulWidget {
+  const MainHandler({Key? key}) : super(key: key);
+
+  @override
+  _MainHandlerState createState() => _MainHandlerState();
+}
+
+class _MainHandlerState extends State<MainHandler> {
+  // Variable para almacenar el widget que se mostrará en el área principal
+  Widget _currentChild = Center(child: Text('Bienvenido a la aplicación')); // Widget por defecto
+
+  // Método para cambiar el contenido dinámicamente
+  void _changeContent(Widget newContent) {
+    setState(() {
+      _currentChild = newContent;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold( // Scaffold es el esqueleto de la pantalla
-      appBar: AppBar( // Barra superior de la aplicación
-        title: Text('Pantalla Principal'), // Título de la barra
-      ),
-      body: Center( // Cuerpo de la pantalla centrado
-        child: ClientsScreen(), // Aquí se muestra la pantalla de clientes
+    return Scaffold(
+      body: Column(
+        children: [
+          // Barra superior
+          Container(
+            height: 60,
+            color: AppColors.primary,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Título', // Se cambiará según la pantalla
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+                Row(
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF792D1F),
+                        padding: EdgeInsets.zero,
+                        minimumSize: const Size(120, 40),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      icon: const Icon(Icons.notifications, color: Colors.white),
+                      label: const SizedBox.shrink(),
+                    ),
+                    const SizedBox(width: 10),
+                    IconButton(
+                      icon: const Icon(Icons.menu, color: Colors.white),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          // Contenedor principal con barra lateral y contenido dinámico
+          Expanded(
+            child: Row(
+              children: [
+                // Barra lateral
+                Container(
+                  width: 250,
+                  color: AppColors.primary,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      const CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Colors.white,
+                        child: Icon(Icons.person, size: 40, color: Colors.brown),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text('Lorena Giménez',
+                          style: TextStyle(color: Colors.white, fontSize: 18)),
+                      const SizedBox(height: 20),
+                      _buildMenuButton('Clientes', Icons.people, onPressed: () {
+                        _changeContent(ClientsScreen()); // Cambiar al widget de Clientes
+                      }),
+                      _buildMenuButton('Agregar Cliente', Icons.person_add, onPressed: () {
+                        _changeContent(Center(child: Text('Agregar Cliente')));
+                      }),
+                      _buildMenuButton('Pagos', Icons.payment, onPressed: () {
+                        _changeContent(Center(child: Text('Pagos')));
+                      }),
+                      _buildMenuButton('Depósito', Icons.account_balance, onPressed: () {
+                        _changeContent(Center(child: Text('Depósito')));
+                      }),
+                      const Spacer(),
+                      _buildMenuButton('Salir', Icons.exit_to_app, isExit: true, onPressed: () {
+                        // Acción de salir
+                      }),
+                    ],
+                  ),
+                ),
+
+                // Contenido principal (cambia según la pantalla)
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    child: _currentChild,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
-}
 
-// Clase Client que define la estructura de cada cliente
-class Client {
-  final String name;
-  final String email;
-  final String birthDate;
-  final String whatsapp;
-  final String monthlyAmount;
-  final String contact;
-  final String address;
-
-  Client(this.name, this.email, this.birthDate, this.whatsapp, this.monthlyAmount, this.contact, this.address);
-}
-
-// Lista de clientes con datos de ejemplo
-List<Client> clients = [
-  Client("Ary Gimenez", "juan.perez@ex...", "01/01/2010", "+598 98 12...", "\$3,500", "+598 98 12...", "Calle 18 de Julio"),
-  Client("Sofía Ramírez", "maria.gonzalez@...", "15/03/2008", "+598 98 9...", "\$2,800", "+598 98 9...", "Avenida Cardis"),
-  Client("Mateo Gómez", "carlos.lopez@ex...", "12/07/2009", "+598 98 5...", "\$5,100", "+598 98 5...", "Calle Artigas"),
-];
-
-// Función para construir el menú lateral (Drawer)
-Widget buildDrawer() {
-  return Drawer(
-    child: ListView( // Lista de elementos en el Drawer
-      children: [
-        UserAccountsDrawerHeader( // Cabecera del Drawer con info del usuario
-          accountName: Text("Lorena Gimenez"), // Nombre de la cuenta
-          accountEmail: Text("lorena@example.com"), // Email de la cuenta
-          currentAccountPicture: CircleAvatar(backgroundImage: AssetImage('assets/profile.jpg')), // Imagen de perfil
-          decoration: BoxDecoration(color: AppColors.primary), // Fondo de la cabecera
+  // Botón de la barra lateral
+  Widget _buildMenuButton(String title, IconData icon, {bool isExit = false, required VoidCallback onPressed}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+      child: SizedBox(
+        width: double.infinity, // Se ajusta al ancho del contenedor
+        child: ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isExit ? const Color(0xFF792D1F) : Colors.amber[200],
+            foregroundColor: Colors.black,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+          onPressed: onPressed,
+          icon: Icon(icon, color: isExit ? Colors.white : AppColors.primary),
+          label: Text(title,
+              style: TextStyle(color: isExit ? Colors.white : AppColors.primary)),
         ),
-        // Elementos del menú lateral
-        ListTile(leading: Icon(Icons.person), title: Text("Clientes"), onTap: () {}),
-        ListTile(leading: Icon(Icons.payment), title: Text("Pagos"), onTap: () {}),
-        ListTile(leading: Icon(Icons.attach_money), title: Text("Depósito"), onTap: () {}),
-        ListTile(leading: Icon(Icons.exit_to_app), title: Text("Salir"), onTap: () {}),
-      ],
-    ),
-  );
-}
-
-// Función para construir la barra de búsqueda
-Widget buildSearchBar() {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 8.0), // Añade margen horizontal
-    child: TextField( // Campo de texto para la búsqueda
-      decoration: InputDecoration( // Estilo del campo de texto
-        labelText: 'Buscar', // Texto que aparece dentro del campo
-        prefixIcon: Icon(Icons.search), // Icono de búsqueda al inicio
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)), // Borde redondeado
       ),
-    ),
-  );
-}
-
-// Función para construir la tabla de clientes
-Widget buildClientTable() {
-  return SingleChildScrollView( // Permite hacer scroll horizontal
-    scrollDirection: Axis.horizontal, // Definir dirección del scroll como horizontal
-    child: DataTable( // Construye la tabla de datos
-      columnSpacing: 15, // Espaciado entre las columnas
-      headingRowColor: WidgetStateColor.resolveWith((states) => AppColors.primary), // Color del encabezado de la tabla
-      columns: [ // Definir las columnas de la tabla
-        DataColumn(label: Text("Nombre", style: TextStyle(color: Colors.white))), // Columna para el nombre
-        DataColumn(label: Text("Email", style: TextStyle(color: Colors.white))), // Columna para el email
-        DataColumn(label: Text("Nacimiento", style: TextStyle(color: Colors.white))), // Columna para la fecha de nacimiento
-        DataColumn(label: Text("WhatsApp", style: TextStyle(color: Colors.white))), // Columna para WhatsApp
-        DataColumn(label: Text("Monto", style: TextStyle(color: Colors.white))), // Columna para monto mensual
-        DataColumn(label: Text("Contacto", style: TextStyle(color: Colors.white))), // Columna para contacto
-        DataColumn(label: Text("Dirección", style: TextStyle(color: Colors.white))), // Columna para dirección
-      ],
-      rows: clients.map((client) { // Mapea la lista de clientes para construir las filas
-        return DataRow(cells: [ // Cada fila de la tabla
-          DataCell(Text(client.name)), // Celda con el nombre
-          DataCell(Text(client.email)), // Celda con el email
-          DataCell(Text(client.birthDate)), // Celda con la fecha de nacimiento
-          DataCell(Text(client.whatsapp)), // Celda con WhatsApp
-          DataCell(Text(client.monthlyAmount)), // Celda con el monto mensual
-          DataCell(Text(client.contact)), // Celda con el contacto
-          DataCell(Text(client.address)), // Celda con la dirección
-        ]);
-      }).toList(), // Convierte la lista de clientes en filas de la tabla
-    ),
-  );
+    );
+  }
 }
