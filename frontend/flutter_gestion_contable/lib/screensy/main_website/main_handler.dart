@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'main_styles.dart';
 import '../clients/clients_screen.dart';
+import '../add_clients/add_clients.dart';
 
 class MainHandler extends StatefulWidget {
   const MainHandler({Key? key}) : super(key: key);
@@ -90,7 +91,7 @@ class _MainHandlerState extends State<MainHandler> {
                         _changeContent(ClientsScreen()); // Cambiar al widget de Clientes
                       }),
                       _buildMenuButton('Agregar Cliente', Icons.person_add, onPressed: () {
-                        _changeContent(Center(child: Text('Agregar Cliente')));
+                        _changeContent(AgregarClientesContent());
                       }),
                       _buildMenuButton('Pagos', Icons.payment, onPressed: () {
                         _changeContent(Center(child: Text('Pagos')));
