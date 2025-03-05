@@ -1,26 +1,29 @@
 import 'package:flutter/material.dart';
-import 'main_styles.dart';
+import 'main_styles.dart';  // Importa los estilos personalizados
 
 class MainScreen extends StatelessWidget {
-  final Widget child;
+  final Widget child; // El widget que se pasará para el contenido principal
+  final String title; // El título que se pasará a la barra superior
 
-  const MainScreen({required this.child, Key? key}) : super(key: key);
+  // Constructor que recibe el widget y el título como parámetros
+  const MainScreen({required this.child, required this.title, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          // Barra superior
+          // Barra superior que contiene el título y los botones de notificación y menú
           Container(
             height: 60,
-            color: AppColors.primary,
+            color: AppColors.primary,  // Color de la barra superior
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Título', // Se cambiará según la pantalla
+                // Título dinámico que se pasará al widget
+                Text(
+                  title, // Muestra el título actualizado
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -28,10 +31,11 @@ class MainScreen extends StatelessWidget {
                 ),
                 Row(
                   children: [
+                    // Botón de notificaciones
                     ElevatedButton.icon(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF792D1F),
+                        backgroundColor: const Color(0xFF792D1F),  // Color del botón
                         padding: EdgeInsets.zero,
                         minimumSize: const Size(120, 40),
                         shape: RoundedRectangleBorder(
@@ -39,9 +43,10 @@ class MainScreen extends StatelessWidget {
                         ),
                       ),
                       icon: const Icon(Icons.notifications, color: Colors.white),
-                      label: const SizedBox.shrink(),
+                      label: const SizedBox.shrink(),  // El label está vacío ya que solo tiene el ícono
                     ),
                     const SizedBox(width: 10),
+                    // Botón de menú
                     IconButton(
                       icon: const Icon(Icons.menu, color: Colors.white),
                       onPressed: () {},
@@ -56,10 +61,10 @@ class MainScreen extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                // Barra lateral
+                // Barra lateral con menú de navegación
                 Container(
-                  width: 250,
-                  color: AppColors.primary,
+                  width: 250,  // Ancho de la barra lateral
+                  color: AppColors.primary,  // Color de la barra lateral
                   child: Column(
                     children: [
                       const SizedBox(height: 20),
@@ -72,18 +77,20 @@ class MainScreen extends StatelessWidget {
                       const Text('Lorena Giménez',
                           style: TextStyle(color: Colors.white, fontSize: 18)),
                       const SizedBox(height: 20),
+                      // Botones de menú que redirigen a diferentes secciones
                       _buildMenuButton('Clientes', Icons.people),
                       _buildMenuButton('Agregar Cliente', Icons.person_add),
                       _buildMenuButton('Pagos', Icons.payment),
                       _buildMenuButton('Depósito', Icons.account_balance),
                       const Spacer(),
+                      // Botón de salir
                       _buildMenuButton('Salir', Icons.exit_to_app, isExit: true),
                     ],
                   ),
                 ),
 
-                // Contenido principal (cambia según la pantalla)
-                Expanded(child: child),
+                // Contenido principal que cambia dependiendo de la pantalla seleccionada
+                Expanded(child: child),  // Aquí se muestra el widget actual que se pasa al constructor
               ],
             ),
           ),
@@ -92,22 +99,22 @@ class MainScreen extends StatelessWidget {
     );
   }
 
-  // Botón de la barra lateral
+  // Botón de la barra lateral que se usa para cambiar de pantalla
   Widget _buildMenuButton(String title, IconData icon, {bool isExit = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8),  // Separación entre los botones
       child: SizedBox(
-        width: 200,
+        width: 200,  // Ancho de los botones
         child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
-            backgroundColor: isExit ? const Color(0xFF792D1F) : Colors.amber[200],
+            backgroundColor: isExit ? const Color(0xFF792D1F) : Colors.amber[200],  // Cambia el color si es el botón de salir
             foregroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),  // Bordes redondeados
           ),
-          onPressed: () {},
-          icon: Icon(icon, color: isExit ? Colors.white : AppColors.primary),
-          label: Text(title,
+          onPressed: () {},  // Aquí se puede colocar la acción que se quiere ejecutar al presionar el botón
+          icon: Icon(icon, color: isExit ? Colors.white : AppColors.primary),  // Cambia el color del ícono según si es un botón de salir
+          label: Text(title,  // El texto del botón
               style: TextStyle(color: isExit ? Colors.white : AppColors.primary)),
         ),
       ),

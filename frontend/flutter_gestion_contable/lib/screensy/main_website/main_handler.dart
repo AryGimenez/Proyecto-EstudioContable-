@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'main_styles.dart';
-import '../clients/clients_screen.dart';
-import '../add_clients/add_clients.dart';
+import 'main_styles.dart';  // Importa los estilos personalizados
+import '../clients/clients_screen.dart';  // Pantalla de clientes
+import '../add_clients/add_clients.dart';  // Pantalla de agregar cliente
+import '../payments/payments_screen.dart';  // Pantalla de pagos
 
 class MainHandler extends StatefulWidget {
   const MainHandler({Key? key}) : super(key: key);
@@ -14,10 +15,14 @@ class _MainHandlerState extends State<MainHandler> {
   // Variable para almacenar el widget que se mostrará en el área principal
   Widget _currentChild = Center(child: Text('Bienvenido a la aplicación')); // Widget por defecto
 
-  // Método para cambiar el contenido dinámicamente
-  void _changeContent(Widget newContent) {
+  // Variable para almacenar el título de la pantalla actual
+  String _currentTitle = 'Bienvenido';
+
+  // Método para cambiar el contenido dinámicamente y actualizar el título
+  void _changeContent(Widget newContent, String title) {
     setState(() {
-      _currentChild = newContent;
+      _currentChild = newContent;  // Cambia el contenido
+      _currentTitle = title;  // Cambia el título
     });
   }
 
@@ -26,7 +31,7 @@ class _MainHandlerState extends State<MainHandler> {
     return Scaffold(
       body: Column(
         children: [
-          // Barra superior
+          // Barra superior que contiene el título y botones de notificación y menú
           Container(
             height: 60,
             color: AppColors.primary,
@@ -34,8 +39,9 @@ class _MainHandlerState extends State<MainHandler> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Título', // Se cambiará según la pantalla
+                // Título dinámico que cambia según la pantalla seleccionada
+                Text(
+                  _currentTitle,  // Muestra el título actualizado
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -43,6 +49,7 @@ class _MainHandlerState extends State<MainHandler> {
                 ),
                 Row(
                   children: [
+                    // Botón de notificaciones
                     ElevatedButton.icon(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
@@ -57,6 +64,7 @@ class _MainHandlerState extends State<MainHandler> {
                       label: const SizedBox.shrink(),
                     ),
                     const SizedBox(width: 10),
+                    // Botón de menú
                     IconButton(
                       icon: const Icon(Icons.menu, color: Colors.white),
                       onPressed: () {},
@@ -71,7 +79,7 @@ class _MainHandlerState extends State<MainHandler> {
           Expanded(
             child: Row(
               children: [
-                // Barra lateral
+                // Barra lateral con menú de navegación
                 Container(
                   width: 250,
                   color: AppColors.primary,
@@ -87,19 +95,21 @@ class _MainHandlerState extends State<MainHandler> {
                       const Text('Lorena Giménez',
                           style: TextStyle(color: Colors.white, fontSize: 18)),
                       const SizedBox(height: 20),
+                      // Botones de menú que cambian el contenido y el título
                       _buildMenuButton('Clientes', Icons.people, onPressed: () {
-                        _changeContent(ClientsScreen()); // Cambiar al widget de Clientes
+                        _changeContent(ClientsScreen(), 'Clientes'); // Cambiar al widget de Clientes y actualizar título
                       }),
                       _buildMenuButton('Agregar Cliente', Icons.person_add, onPressed: () {
-                        _changeContent(AgregarClientesContent());
+                        _changeContent(AgregarClientesContent(), 'Agregar Cliente'); // Cambiar al widget de Agregar Cliente
                       }),
                       _buildMenuButton('Pagos', Icons.payment, onPressed: () {
-                        _changeContent(Center(child: Text('Pagos')));
+                        _changeContent(PaymentsScreen(), 'Pagos'); // Cambiar al widget de Pagos y actualizar título
                       }),
                       _buildMenuButton('Depósito', Icons.account_balance, onPressed: () {
-                        _changeContent(Center(child: Text('Depósito')));
+                        _changeContent(Center(child: Text('Depósito')), 'Depósito'); // Cambiar al widget de Depósito
                       }),
                       const Spacer(),
+                      // Botón de salir
                       _buildMenuButton('Salir', Icons.exit_to_app, isExit: true, onPressed: () {
                         // Acción de salir
                       }),
@@ -107,11 +117,11 @@ class _MainHandlerState extends State<MainHandler> {
                   ),
                 ),
 
-                // Contenido principal (cambia según la pantalla)
+                // Contenido principal que cambia dependiendo de la pantalla seleccionada
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.all(16),
-                    child: _currentChild,
+                    child: _currentChild,  // Aquí se muestra el widget actual
                   ),
                 ),
               ],
@@ -122,7 +132,7 @@ class _MainHandlerState extends State<MainHandler> {
     );
   }
 
-  // Botón de la barra lateral
+  // Botón de la barra lateral que se usa para cambiar de pantalla
   Widget _buildMenuButton(String title, IconData icon, {bool isExit = false, required VoidCallback onPressed}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
@@ -130,14 +140,14 @@ class _MainHandlerState extends State<MainHandler> {
         width: double.infinity, // Se ajusta al ancho del contenedor
         child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
-            backgroundColor: isExit ? const Color(0xFF792D1F) : Colors.amber[200],
+            backgroundColor: isExit ? const Color(0xFF792D1F) : Colors.amber[200],  // Cambia el color si es el botón de salir
             foregroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
-          onPressed: onPressed,
+          onPressed: onPressed,  // Acción que se ejecuta al presionar el botón
           icon: Icon(icon, color: isExit ? Colors.white : AppColors.primary),
-          label: Text(title,
+          label: Text(title,  // Texto del botón
               style: TextStyle(color: isExit ? Colors.white : AppColors.primary)),
         ),
       ),
