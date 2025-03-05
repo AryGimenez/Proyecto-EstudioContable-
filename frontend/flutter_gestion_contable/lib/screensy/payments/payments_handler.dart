@@ -1,35 +1,46 @@
-// payments_handler.dart
-
 import 'package:flutter/material.dart';
 
-// Esta clase maneja la lógica detrás de la pantalla de pagos
 class PaymentsHandler {
-  // Métodos de control y estado de los checkboxes y fecha
-
-  // Controla si se seleccionaron los clientes
   bool isClientsChecked = false;
-  
-  // Controla si se seleccionó el nombre completo
   bool isFullNameChecked = false;
-  
-  // Controla si se seleccionó la fecha
   bool isDateChecked = false;
-  
-  // La fecha seleccionada
   DateTime? selectedDate;
+
+  // Lista para manejar la selección de las filas
+  List<bool> selectedRows = [false, false, false]; // Estado de los checkboxes para 3 filas
+
+  // Checkbox global para seleccionar todos los registros
+  bool isSelectAll = false;
 
   // Función para mostrar el selector de fecha
   Future<void> selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),  // Fecha inicial: hoy
-      firstDate: DateTime(2000),    // Fecha más antigua: 2000
-      lastDate: DateTime(2101),     // Fecha más reciente: 2101
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
     );
-    
-    // Si se selecciona una fecha diferente, la actualizamos
+
     if (picked != null && picked != selectedDate) {
       selectedDate = picked;
     }
+  }
+
+  // Cambiar el estado del checkbox de una fila
+  void toggleSelection(int index, bool value) {
+    selectedRows[index] = value;
+    // Si alguna fila es desmarcada, el "Seleccionar Todos" debe desmarcarse
+    if (selectedRows.contains(false)) {
+      isSelectAll = false;
+    } else {
+      isSelectAll = true;
+    }
+  }
+
+  // Cambiar el estado del checkbox global
+  void toggleSelectAll(bool value) {
+    isSelectAll = value;
+    // Actualiza todos los checkboxes de las filas al mismo estado del checkbox global
+    selectedRows = List.filled(selectedRows.length, value);
   }
 }
