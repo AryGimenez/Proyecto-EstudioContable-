@@ -10,25 +10,28 @@ class PaymentsScreen extends StatefulWidget {
 }
 
 class _PaymentsScreenState extends State<PaymentsScreen> {
+  // Creamos una instancia de PaymentsHandler para gestionar el estado
   final PaymentsHandler _handler = PaymentsHandler();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0), // Padding para todo el contenido
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Título de la sección de filtro
             Center(
               child: Text(
-                'Filtrar por',
+                'Filtrar por', // Título del filtro
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
             SizedBox(height: 20),
             Row(
               children: [
+                // Filtro de clientes y nombre completo
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,36 +39,37 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                       Row(
                         children: [
                           Checkbox(
-                            value: _handler.isClientsChecked,
+                            value: _handler.isClientsChecked, // Control de estado de 'Clientes'
                             onChanged: (bool? value) {
                               setState(() {
-                                _handler.isClientsChecked = value ?? false;
+                                _handler.isClientsChecked = value ?? false; // Actualizamos el estado
                               });
                             },
                           ),
-                          Icon(Icons.person),
+                          Icon(Icons.person), // Icono de persona
                           SizedBox(width: 5),
-                          Text('Clientes'),
-                          Spacer(),
+                          Text('Clientes'), // Texto del filtro
+                          Spacer(), // Espaciador para que el siguiente checkbox se acomode a la derecha
                           Checkbox(
-                            value: _handler.isFullNameChecked,
+                            value: _handler.isFullNameChecked, // Control de estado de 'Nombre Completo'
                             onChanged: (bool? value) {
                               setState(() {
-                                _handler.isFullNameChecked = value ?? false;
+                                _handler.isFullNameChecked = value ?? false; // Actualizamos el estado
                               });
                             },
                           ),
-                          Text('Nombre completo'),
+                          Text('Nombre completo'), // Texto del filtro
                         ],
                       ),
                       SizedBox(height: 10),
+                      // Filtro de fecha
                       Row(
                         children: [
                           Checkbox(
-                            value: _handler.isDateChecked,
+                            value: _handler.isDateChecked, // Control de estado de 'Fecha'
                             onChanged: (bool? value) {
                               setState(() {
-                                _handler.isDateChecked = value ?? false;
+                                _handler.isDateChecked = value ?? false; // Actualizamos el estado
                               });
                             },
                           ),
@@ -79,9 +83,10 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                               ),
                             ),
                           SizedBox(width: 5),
+                          // Botón para seleccionar fecha
                           IconButton(
                             icon: Icon(Icons.calendar_today),
-                            onPressed: () => _handler.selectDate(context),
+                            onPressed: () => _handler.selectDate(context), // Llamamos a la función selectDate
                           ),
                         ],
                       ),
@@ -89,13 +94,14 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                   ),
                 ),
                 SizedBox(width: 10),
+                // Botón de búsqueda
                 SizedBox(
                   width: 40,
                   height: 80,
                   child: ElevatedButton(
                     onPressed: () {},
                     style: ButtonStyle(
-                      padding: WidgetStateProperty.all(EdgeInsets.zero),
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
                     ),
                     child: Icon(
                       Icons.search,
@@ -107,74 +113,166 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
               ],
             ),
             SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(5),
-              color: AppColors.primary,
-              child: Text(
-                'Impuestos',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-            ),
+            // Línea de impuestos
+            _buildImpuestosLine(),
             SizedBox(height: 20),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8.0),
-                  topRight: Radius.circular(8.0),
-                ),
-                child: DataTable(
-                  headingRowColor: MaterialStateProperty.all(AppColors.primary),
-                  columns: [
-                    DataColumn(
-                      label: Row(
-                        children: [
-                          Checkbox(
-                            value: _handler.isSelectAll,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                _handler.toggleSelectAll(value ?? false);
-                              });
-                            },
-                          ),
-                          Text('Seleccionar todo'),
-                        ],
-                      ),
-                    ),
-                    DataColumn(label: Text('Nombre')),
-                    DataColumn(label: Text('Cliente')),
-                    DataColumn(label: Text('Vencimiento')),
-                    DataColumn(label: Text('Monto')),
-                    DataColumn(label: Text('Honorario')),
-                  ],
-                  rows: List.generate(3, (index) {
-                    return DataRow(
-                      cells: [
-                        DataCell(
-                          Checkbox(
-                            value: _handler.selectedRows[index],
-                            onChanged: (bool? value) {
-                              setState(() {
-                                _handler.toggleSelection(index, value ?? false);
-                              });
-                            },
-                          ),
-                        ),
-                        DataCell(Text('Nombre ${index + 1}')),
-                        DataCell(Text('Cliente ${index + 1}')),
-                        DataCell(Text('01/01/2025')),
-                        DataCell(Text('\$500')),
-                        DataCell(Text('\$300')),
-                      ],
-                    );
-                  }),
-                ),
-              ),
-            ),
+            // Tabla de datos
+            _buildDataTable(),
+            SizedBox(height: 20),
+            // Fila con botones y expansión
+            _buildActionsRow(),
+            SizedBox(height: 20),
+            // Fila de pagos
+            _buildPagosLine(),
           ],
         ),
+      ),
+    );
+  }
+
+  // Método para construir la línea de impuestos
+  Widget _buildImpuestosLine() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(5),
+      color: AppColors.primary, // Usamos el color primario definido en AppColors
+      child: Text(
+        'Impuestos',
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+        textAlign: TextAlign.center, // Centramos el texto
+      ),
+    );
+  }
+
+  // Método para construir la tabla
+  Widget _buildDataTable() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal, // Permite hacer scroll horizontal si es necesario
+      child: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(8.0),
+          topRight: Radius.circular(8.0),
+        ),
+        child: DataTable(
+          dataRowHeight: 24.0, // Ajustamos la altura de las filas
+          headingRowHeight: 40.0, // Altura del encabezado
+          headingRowColor: MaterialStateProperty.all(AppColors.primary), // Usamos el color primario para el encabezado
+          columns: [
+            DataColumn(
+              label: Row(
+                children: [
+                  Checkbox(
+                    value: _handler.isSelectAll, // Control de estado de "Seleccionar todos"
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _handler.toggleSelectAll(value ?? false); // Actualizamos el estado global
+                      });
+                    },
+                  ),
+                  Text('Seleccionar todo'), // Texto para el checkbox de "Seleccionar todos"
+                ],
+              ),
+            ),
+            DataColumn(label: Text('Nombre')),
+            DataColumn(label: Text('Cliente')),
+            DataColumn(label: Text('Vencimiento')),
+            DataColumn(label: Text('Monto')),
+            DataColumn(label: Text('Honorario')),
+          ],
+          rows: List.generate(3, (index) {
+            return DataRow(
+              cells: [
+                DataCell(
+                  Checkbox(
+                    value: _handler.selectedRows[index], // Estado del checkbox en la fila
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _handler.toggleSelection(index, value ?? false); // Actualizamos la selección de la fila
+                      });
+                    },
+                  ),
+                ),
+                DataCell(Text('Nombre ${index + 1}')),
+                DataCell(Text('Cliente ${index + 1}')),
+                DataCell(Text('01/01/2025')),
+                DataCell(Text('\$500')),
+                DataCell(Text('\$300')),
+              ],
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
+  // Método para construir la fila de acciones (botón de agregar y expansión)
+  Widget _buildActionsRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween, // Acomoda los elementos en los extremos
+      children: [
+        ElevatedButton(
+          onPressed: () {},
+          child: Text('Agregar'),
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(30, 30), // Tamaño mínimo del botón
+          ),
+        ),
+        SizedBox(width: 10),
+        Container(
+          width: 300,  // Ancho de la expansión
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.0), // Bordes redondeados
+            color: AppColors.primary, // Usamos el color primario
+          ),
+          child: ExpansionTile(
+            title: Text(
+              'Armar cheque', // Título de la expansión
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            leading: Icon(
+              Icons.edit,
+              color: Colors.white,
+            ),
+            trailing: Icon(
+              Icons.keyboard_arrow_down,
+              color: Colors.white,
+            ),
+            children: [
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'Contenido del cheque aquí...',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: 10),
+        Row(
+          children: [
+            Icon(Icons.attach_money, color: Colors.green), // Icono de dinero
+            SizedBox(width: 5),
+            Text('30,000', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), // Monto
+          ],
+        ),
+      ],
+    );
+  }
+
+  // Método para construir la fila de pagos
+  Widget _buildPagosLine() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(5),
+      color: AppColors.primary, // Usamos el color primario
+      child: Text(
+        'Pagos',
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+        textAlign: TextAlign.center, // Centramos el texto
       ),
     );
   }
