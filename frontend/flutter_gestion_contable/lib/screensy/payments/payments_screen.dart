@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gestion_contable/core/theme/app_colors.dart';
-import 'payments_handler.dart';  // Importamos la clase PaymentsHandler
+import 'payments_handler.dart'; // Importamos la clase PaymentsHandler
 
 class PaymentsScreen extends StatefulWidget {
   const PaymentsScreen({super.key});
@@ -17,7 +17,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0), // Padding para todo el contenido
+        padding: const EdgeInsets.all(0.0), // Padding para todo el contenido
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -28,7 +28,6 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(height: 20),
             Row(
               children: [
                 // Filtro de clientes y nombre completo
@@ -86,7 +85,8 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                           // Botón para seleccionar fecha
                           IconButton(
                             icon: Icon(Icons.calendar_today),
-                            onPressed: () => _handler.selectDate(context), // Llamamos a la función selectDate
+                            onPressed: () => _handler.selectDate(
+                                context), // Llamamos a la función selectDate
                           ),
                         ],
                       ),
@@ -112,18 +112,21 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             // Línea de impuestos
             _buildImpuestosLine(),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             // Tabla de datos
             _buildDataTable(),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             // Fila con botones y expansión
             _buildActionsRow(),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             // Fila de pagos
             _buildPagosLine(),
+            SizedBox(height: 10),
+            // Segunda tabla con nuevas columnas
+            _buildPaymentsTable(),
           ],
         ),
       ),
@@ -135,10 +138,12 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(5),
-      color: AppColors.primary, // Usamos el color primario definido en AppColors
+      color:
+          AppColors.primary, // Usamos el color primario definido en AppColors
       child: Text(
         'Impuestos',
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+        style: TextStyle(
+            fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
         textAlign: TextAlign.center, // Centramos el texto
       ),
     );
@@ -147,7 +152,8 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   // Método para construir la tabla
   Widget _buildDataTable() {
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal, // Permite hacer scroll horizontal si es necesario
+      scrollDirection:
+          Axis.horizontal, // Permite hacer scroll horizontal si es necesario
       child: ClipRRect(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(8.0),
@@ -155,21 +161,25 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
         ),
         child: DataTable(
           dataRowHeight: 24.0, // Ajustamos la altura de las filas
-          headingRowHeight: 40.0, // Altura del encabezado
-          headingRowColor: MaterialStateProperty.all(AppColors.primary), // Usamos el color primario para el encabezado
+          headingRowHeight: 24.0, // Altura del encabezado
+          headingRowColor: MaterialStateProperty.all(
+              AppColors.primary), // Usamos el color primario para el encabezado
           columns: [
             DataColumn(
               label: Row(
                 children: [
                   Checkbox(
-                    value: _handler.isSelectAll, // Control de estado de "Seleccionar todos"
+                    value: _handler
+                        .isSelectAll, // Control de estado de "Seleccionar todos"
                     onChanged: (bool? value) {
                       setState(() {
-                        _handler.toggleSelectAll(value ?? false); // Actualizamos el estado global
+                        _handler.toggleSelectAll(
+                            value ?? false); // Actualizamos el estado global
                       });
                     },
                   ),
-                  Text('Seleccionar todo'), // Texto para el checkbox de "Seleccionar todos"
+                  Text(
+                      'Seleccionar todo'), // Texto para el checkbox de "Seleccionar todos"
                 ],
               ),
             ),
@@ -184,10 +194,14 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
               cells: [
                 DataCell(
                   Checkbox(
-                    value: _handler.selectedRows[index], // Estado del checkbox en la fila
+                    value: _handler
+                        .selectedRows[index], // Estado del checkbox en la fila
                     onChanged: (bool? value) {
                       setState(() {
-                        _handler.toggleSelection(index, value ?? false); // Actualizamos la selección de la fila
+                        _handler.toggleSelection(
+                            index,
+                            value ??
+                                false); // Actualizamos la selección de la fila
                       });
                     },
                   ),
@@ -208,7 +222,8 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   // Método para construir la fila de acciones (botón de agregar y expansión)
   Widget _buildActionsRow() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween, // Acomoda los elementos en los extremos
+      mainAxisAlignment: MainAxisAlignment
+          .spaceBetween, // Acomoda los elementos en los extremos
       children: [
         ElevatedButton(
           onPressed: () {},
@@ -218,37 +233,37 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
           ),
         ),
         SizedBox(width: 10),
+        // Reemplazamos ExpansionTile por ElevatedButton
         Container(
-          width: 300,  // Ancho de la expansión
+          width: 550, // Ancho del contenedor con 300 de ancho
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12.0), // Bordes redondeados
             color: AppColors.primary, // Usamos el color primario
           ),
-          child: ExpansionTile(
-            title: Text(
-              'Armar cheque', // Título de la expansión
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+          child: ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size(550, 35),
+              backgroundColor: AppColors.primary,
+              padding: EdgeInsets.symmetric(vertical: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
-            leading: Icon(
-              Icons.edit,
-              color: Colors.white,
-            ),
-            trailing: Icon(
-              Icons.keyboard_arrow_down,
-              color: Colors.white,
-            ),
-            children: [
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  'Contenido del cheque aquí...',
-                  style: TextStyle(color: Colors.white),
+            child: Row(
+              mainAxisAlignment:
+                  MainAxisAlignment.center, // Centra el contenido
+              children: [
+                Text(
+                  'Armar cheque', // Texto del botón
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 ),
-              ),
-            ],
+                SizedBox(width: 5), // Espaciado entre el icono y el texto
+                Icon(Icons.keyboard_arrow_down,
+                    color: Colors.white), // Icono de flecha
+              ],
+            ),
           ),
         ),
         SizedBox(width: 10),
@@ -256,7 +271,9 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
           children: [
             Icon(Icons.attach_money, color: Colors.green), // Icono de dinero
             SizedBox(width: 5),
-            Text('30,000', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), // Monto
+            Text('30,000',
+                style: TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.bold)), // Monto
           ],
         ),
       ],
@@ -271,8 +288,47 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
       color: AppColors.primary, // Usamos el color primario
       child: Text(
         'Pagos',
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+        style: TextStyle(
+            fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
         textAlign: TextAlign.center, // Centramos el texto
+      ),
+    );
+  }
+
+  // Método para construir la segunda tabla con las nuevas columnas
+  Widget _buildPaymentsTable() {
+    return SingleChildScrollView(
+      scrollDirection:
+          Axis.horizontal, // Permite hacer scroll horizontal si es necesario
+      child: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(8.0),
+          topRight: Radius.circular(8.0),
+        ),
+        child: DataTable(
+          dataRowHeight: 24.0, // Ajustamos la altura de las filas
+          headingRowHeight: 24.0, // Altura del encabezado
+          headingRowColor: MaterialStateProperty.all(
+              AppColors.primary), // Usamos el color primario para el encabezado
+          columns: [
+            DataColumn(label: Text('Nombre')),
+            DataColumn(label: Text('Pago')),
+            DataColumn(label: Text('Monto')),
+            DataColumn(label: Text('Fecha')),
+            DataColumn(label: Text('Comentario')),
+          ],
+          rows: List.generate(3, (index) {
+            return DataRow(
+              cells: [
+                DataCell(Text('Pago ${index + 1}')),
+                DataCell(Text('Pago ${index + 1}')),
+                DataCell(Text('\$300')),
+                DataCell(Text('01/01/2025')),
+                DataCell(Text('Comentario ${index + 1}')),
+              ],
+            );
+          }),
+        ),
       ),
     );
   }
