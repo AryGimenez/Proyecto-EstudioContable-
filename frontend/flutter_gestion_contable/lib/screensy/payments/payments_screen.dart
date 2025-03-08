@@ -38,10 +38,12 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                       Row(
                         children: [
                           Checkbox(
-                            value: _handler.isClientsChecked, // Control de estado de 'Clientes'
+                            value: _handler
+                                .isClientsChecked, // Control de estado de 'Clientes'
                             onChanged: (bool? value) {
                               setState(() {
-                                _handler.isClientsChecked = value ?? false; // Actualizamos el estado
+                                _handler.isClientsChecked =
+                                    value ?? false; // Actualizamos el estado
                               });
                             },
                           ),
@@ -50,10 +52,12 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                           Text('Clientes'), // Texto del filtro
                           Spacer(), // Espaciador para que el siguiente checkbox se acomode a la derecha
                           Checkbox(
-                            value: _handler.isFullNameChecked, // Control de estado de 'Nombre Completo'
+                            value: _handler
+                                .isFullNameChecked, // Control de estado de 'Nombre Completo'
                             onChanged: (bool? value) {
                               setState(() {
-                                _handler.isFullNameChecked = value ?? false; // Actualizamos el estado
+                                _handler.isFullNameChecked =
+                                    value ?? false; // Actualizamos el estado
                               });
                             },
                           ),
@@ -65,10 +69,12 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                       Row(
                         children: [
                           Checkbox(
-                            value: _handler.isDateChecked, // Control de estado de 'Fecha'
+                            value: _handler
+                                .isDateChecked, // Control de estado de 'Fecha'
                             onChanged: (bool? value) {
                               setState(() {
-                                _handler.isDateChecked = value ?? false; // Actualizamos el estado
+                                _handler.isDateChecked =
+                                    value ?? false; // Actualizamos el estado
                               });
                             },
                           ),
@@ -78,7 +84,8 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                               padding: const EdgeInsets.only(left: 8.0),
                               child: Text(
                                 "${_handler.selectedDate!.day}/${_handler.selectedDate!.month}/${_handler.selectedDate!.year}",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
                               ),
                             ),
                           SizedBox(width: 5),
@@ -112,21 +119,27 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             // Línea de impuestos
             _buildImpuestosLine(),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             // Tabla de datos
             _buildDataTable(),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             // Fila con botones y expansión
             _buildActionsRow(),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             // Fila de pagos
             _buildPagosLine(),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             // Segunda tabla con nuevas columnas
             _buildPaymentsTable(),
+            SizedBox(height: 5),
+            _buildActionSmallButtons(),
+            SizedBox(height: 5),
+            _buildHorizontalLine(),
+            SizedBox(height: 5),
+            _buildActionButtons(),
           ],
         ),
       ),
@@ -150,74 +163,85 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   }
 
   // Método para construir la tabla
-  Widget _buildDataTable() {
-    return SingleChildScrollView(
-      scrollDirection:
-          Axis.horizontal, // Permite hacer scroll horizontal si es necesario
-      child: ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(8.0),
-          topRight: Radius.circular(8.0),
-        ),
-        child: DataTable(
-          dataRowHeight: 24.0, // Ajustamos la altura de las filas
-          headingRowHeight: 24.0, // Altura del encabezado
-          headingRowColor: MaterialStateProperty.all(
-              AppColors.primary), // Usamos el color primario para el encabezado
-          columns: [
-            DataColumn(
-              label: Row(
-                children: [
-                  Checkbox(
-                    value: _handler
-                        .isSelectAll, // Control de estado de "Seleccionar todos"
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _handler.toggleSelectAll(
-                            value ?? false); // Actualizamos el estado global
-                      });
-                    },
-                  ),
-                  Text(
-                      'Seleccionar todo'), // Texto para el checkbox de "Seleccionar todos"
+  // Método para construir la tabla
+// Método para construir la tabla
+// Método para construir la tabla
+// Método para construir la tabla
+Widget _buildDataTable() {
+  return Expanded(
+    child: SingleChildScrollView(
+      child: SizedBox(
+        width: double.infinity, // Ancho completo de la pantalla
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical, // Permite desplazamiento vertical
+          child: DataTable(
+            columnSpacing: 20.0,
+            dataRowHeight: 24.0,
+            headingRowHeight: 24.0,
+            headingRowColor: MaterialStateProperty.all(AppColors.primary),
+            columns: [
+              DataColumn(label: Text('Nombre')),
+              DataColumn(label: Text('Cliente')),
+              DataColumn(label: Text('Vencimiento')),
+              DataColumn(label: Text('Monto')),
+              DataColumn(label: Text('Honorario')),
+            ],
+            rows: List.generate(10, (index) {
+              return DataRow(
+                cells: [
+                  DataCell(Text('Nombre ${index + 1}')),
+                  DataCell(Text('Cliente ${index + 1}')),
+                  DataCell(Text('01/01/2025')),
+                  DataCell(Text('\$500')),
+                  DataCell(Text('\$300')),
                 ],
-              ),
-            ),
-            DataColumn(label: Text('Nombre')),
-            DataColumn(label: Text('Cliente')),
-            DataColumn(label: Text('Vencimiento')),
-            DataColumn(label: Text('Monto')),
-            DataColumn(label: Text('Honorario')),
-          ],
-          rows: List.generate(3, (index) {
-            return DataRow(
-              cells: [
-                DataCell(
-                  Checkbox(
-                    value: _handler
-                        .selectedRows[index], // Estado del checkbox en la fila
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _handler.toggleSelection(
-                            index,
-                            value ??
-                                false); // Actualizamos la selección de la fila
-                      });
-                    },
-                  ),
-                ),
-                DataCell(Text('Nombre ${index + 1}')),
-                DataCell(Text('Cliente ${index + 1}')),
-                DataCell(Text('01/01/2025')),
-                DataCell(Text('\$500')),
-                DataCell(Text('\$300')),
-              ],
-            );
-          }),
+              );
+            }),
+          ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
+Widget _buildPaymentsTable() {
+  return Expanded(
+    child: SingleChildScrollView(
+      child: SizedBox(
+        width: double.infinity, // Ancho completo de la pantalla
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical, // Desplazamiento vertical
+          child: DataTable(
+            columnSpacing: 20.0,
+            dataRowHeight: 24.0,
+            headingRowHeight: 24.0,
+            headingRowColor: MaterialStateProperty.all(AppColors.primary),
+            columns: [
+              DataColumn(label: Text('Nombre')),
+              DataColumn(label: Text('Pago')),
+              DataColumn(label: Text('Monto')),
+              DataColumn(label: Text('Fecha')),
+              DataColumn(label: Text('Comentario')),
+            ],
+            rows: List.generate(10, (index) {
+              return DataRow(
+                cells: [
+                  DataCell(Text('Pago ${index + 1}')),
+                  DataCell(Text('Pago ${index + 1}')),
+                  DataCell(Text('\$300')),
+                  DataCell(Text('01/01/2025')),
+                  DataCell(Text('Comentario ${index + 1}')),
+                ],
+              );
+            }),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+
 
   // Método para construir la fila de acciones (botón de agregar y expansión)
   Widget _buildActionsRow() {
@@ -295,41 +319,98 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
     );
   }
 
-  // Método para construir la segunda tabla con las nuevas columnas
-  Widget _buildPaymentsTable() {
-    return SingleChildScrollView(
-      scrollDirection:
-          Axis.horizontal, // Permite hacer scroll horizontal si es necesario
-      child: ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(8.0),
-          topRight: Radius.circular(8.0),
+  Widget _buildActionSmallButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        SizedBox(
+          width: 80, // Ancho reducido
+          height: 30, // Alto reducido
+          child: ElevatedButton(
+            onPressed: () {
+              // Acción para eliminar
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              padding: EdgeInsets.zero, // Elimina el padding extra
+            ),
+            child: Text(
+              'Eliminar',
+              style: TextStyle(fontSize: 12), // Texto más pequeño
+            ),
+          ),
         ),
-        child: DataTable(
-          dataRowHeight: 24.0, // Ajustamos la altura de las filas
-          headingRowHeight: 24.0, // Altura del encabezado
-          headingRowColor: MaterialStateProperty.all(
-              AppColors.primary), // Usamos el color primario para el encabezado
-          columns: [
-            DataColumn(label: Text('Nombre')),
-            DataColumn(label: Text('Pago')),
-            DataColumn(label: Text('Monto')),
-            DataColumn(label: Text('Fecha')),
-            DataColumn(label: Text('Comentario')),
-          ],
-          rows: List.generate(3, (index) {
-            return DataRow(
-              cells: [
-                DataCell(Text('Pago ${index + 1}')),
-                DataCell(Text('Pago ${index + 1}')),
-                DataCell(Text('\$300')),
-                DataCell(Text('01/01/2025')),
-                DataCell(Text('Comentario ${index + 1}')),
-              ],
-            );
-          }),
+        SizedBox(
+          width: 80, // Ancho reducido
+          height: 30, // Alto reducido
+          child: ElevatedButton(
+            onPressed: () {
+              // Acción para modificar
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              padding: EdgeInsets.zero, // Elimina el padding extra
+            ),
+            child: Text(
+              'Modificar',
+              style: TextStyle(fontSize: 12), // Texto más pequeño
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
+
+  Widget _buildActionButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SizedBox(
+          width: 100, // Ancho reducido
+          height: 35, // Alto reducido
+          child: ElevatedButton(
+            onPressed: () {
+              // Acción para eliminar
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              padding: EdgeInsets.zero, // Elimina el padding extra
+            ),
+            child: Text(
+              'Cancelar',
+              style: TextStyle(fontSize: 12), // Texto más pequeño
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 100, // Ancho reducido
+          height: 35, // Alto reducido
+          child: ElevatedButton(
+            onPressed: () {
+              // Acción para modificar
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              padding: EdgeInsets.zero, // Elimina el padding extra
+            ),
+            child: Text(
+              'Agregar',
+              style: TextStyle(fontSize: 12), // Texto más pequeño
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHorizontalLine() {
+    return Divider(
+      color: AppColors.primary, // Color de la línea
+      thickness: 1, // Grosor de la línea
+      height: 20, // Espaciado vertical
+    );
+  }
+
+  // Método para construir la segunda tabla con las nuevas 
+  
 }
