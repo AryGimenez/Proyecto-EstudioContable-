@@ -3,9 +3,10 @@ import 'main_styles.dart';  // Importa los estilos personalizados
 import '../clients/clients_screen.dart';  // Pantalla de clientes
 import '../add_clients/add_clients.dart';  // Pantalla de agregar cliente
 import '../payments/payments_screen.dart';  // Pantalla de pagos
+import '../deposits/deposits_screen.dart';
 
 class MainHandler extends StatefulWidget {
-  const MainHandler({Key? key}) : super(key: key);
+  const MainHandler({super.key});
 
   @override
   _MainHandlerState createState() => _MainHandlerState();
@@ -106,7 +107,7 @@ class _MainHandlerState extends State<MainHandler> {
                         _changeContent(PaymentsScreen(), 'Pagos'); // Cambiar al widget de Pagos y actualizar título
                       }),
                       _buildMenuButton('Depósito', Icons.account_balance, onPressed: () {
-                        _changeContent(Center(child: Text('Depósito')), 'Depósito'); // Cambiar al widget de Depósito
+                        _changeContent(DepositsScreen(), 'Depósito'); // Cambiar al widget de Depósito
                       }),
                       const Spacer(),
                       // Botón de salir
