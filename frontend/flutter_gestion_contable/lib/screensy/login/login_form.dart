@@ -181,45 +181,76 @@ class LoginForm extends StatelessWidget {
     );
   }
 
-  Widget _buildConfigurationButton() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.0), // Bordes redondeados
-        color: AppColors.primary, // Aquí le asignas el color primario de fondo
+Widget _buildConfigurationButton() {
+  return Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(12.0), // Bordes redondeados
+      color: AppColors.primary, // Color primario de fondo
+    ),
+    child: ExpansionTile(
+      title: const Text(
+        'Configuración',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.white, // Texto en blanco
+        ),
       ),
-      child: ExpansionTile(
-        title: const Text(
-          'Configuración',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white, // Texto en blanco
-          ),
-        ),
-        leading: Icon(
-          Icons.settings,
-          color: Colors.white, // Ícono de configuración en blanco
-        ),
-        trailing: Icon(
-          Icons.keyboard_arrow_down,
-          color: Colors.white, // Flecha en blanco
-        ),
-        children: [
-          ListTile(
-            title: const Text('Opción 1',
-                style: TextStyle(color: Colors.white)), // Opción en blanco
-            onTap: () {
-              // Acción al tocar esta opción
-            },
-          ),
-          ListTile(
-            title: const Text('Opción 2',
-                style: TextStyle(color: Colors.white)), // Opción en blanco
-            onTap: () {
-              // Acción al tocar esta opción
-            },
-          ),
-        ],
+      leading: const Icon(
+        Icons.settings,
+        color: Colors.white, // Ícono de configuración en blanco
       ),
-    );
-  }
+      trailing: const Icon(
+        Icons.keyboard_arrow_down,
+        color: Colors.white, // Flecha en blanco
+      ),
+      children: [
+        ListTile(
+          
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          leading: const Icon(Icons.wifi, color: Colors.white), // Ícono de red
+          title: const Text(
+            'Dirección IP',
+            style: TextStyle(color: Colors.white), // Texto en negro
+          ),
+          onTap: () {
+            // Acción al tocar Dirección IP
+          },
+        ),
+        const SizedBox(height: 5), // Espacio entre opciones
+        ListTile(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          leading: const Icon(Icons.router, color: Colors.white), // Ícono de red
+          title: const Text(
+            'Puerto',
+            style: TextStyle(color: Colors.white), // Texto en negro
+          ),
+          onTap: () {
+            // Acción al tocar Puerto
+          },
+        ),
+        const SizedBox(height: 10), // Espacio antes del botón
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor:  Color(0xFFf8f19f), // Fondo amarillo
+              foregroundColor: AppColors.primary, 
+            ),
+            onPressed: () {
+              // Acción al tocar Conectar
+            },
+            child: const Text('Conectar'),
+          ),
+        ),
+        const SizedBox(height: 10), // Espacio después del botón
+      ],
+    ),
+  );
+}
+
+
 }

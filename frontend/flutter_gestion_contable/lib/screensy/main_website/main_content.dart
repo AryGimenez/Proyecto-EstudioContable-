@@ -6,7 +6,7 @@ class MainScreen extends StatelessWidget {
   final String title; // El título que se pasará a la barra superior
 
   // Constructor que recibe el widget y el título como parámetros
-  const MainScreen({required this.child, required this.title, Key? key}) : super(key: key);
+  const MainScreen({required this.child, required this.title, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +107,7 @@ class MainScreen extends StatelessWidget {
         width: 200,  // Ancho de los botones
         child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
-            backgroundColor: isExit ? const Color(0xFF792D1F) : Colors.amber[200],  // Cambia el color si es el botón de salir
+            backgroundColor: isExit ? const Color(0xFF792D1F) : Color(0xFFf8f19f),  // Cambia el color si es el botón de salir
             foregroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),  // Bordes redondeados
