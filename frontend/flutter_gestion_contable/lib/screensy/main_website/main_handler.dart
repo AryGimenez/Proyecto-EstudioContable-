@@ -19,12 +19,28 @@ class _MainHandlerState extends State<MainHandler> {
   // Variable para almacenar el título de la pantalla actual
   String _currentTitle = 'Bienvenido';
 
+  // Mapa para almacenar el estado de cada botón (si está seleccionado o no)
+  Map<String, bool> _selectedMenuItem = {
+    'Clientes': false,
+    'Agregar Cliente': false,
+    'Pagos': false,
+    'Depósito': false,
+    'Salir': false,
+  };
+
   // Método para cambiar el contenido dinámicamente y actualizar el título
-  void _changeContent(Widget newContent, String title) {
+  void _changeContent(Widget newContent, String title, String menuItem) {
     setState(() {
       _currentChild = newContent;  // Cambia el contenido
       _currentTitle = title;  // Cambia el título
+      _updateButtonSelection(menuItem);  // Actualiza el estado del botón seleccionado
     });
+  }
+
+  // Método para actualizar el estado de los botones (marcar uno como seleccionado)
+  void _updateButtonSelection(String selectedItem) {
+    _selectedMenuItem.updateAll((key, value) => false); // Desmarcar todos los botones
+    _selectedMenuItem[selectedItem] = true; // Marcar el botón seleccionado
   }
 
   @override
@@ -98,16 +114,16 @@ class _MainHandlerState extends State<MainHandler> {
                       const SizedBox(height: 20),
                       // Botones de menú que cambian el contenido y el título
                       _buildMenuButton('Clientes', Icons.people, onPressed: () {
-                        _changeContent(ClientsScreen(), 'Clientes'); // Cambiar al widget de Clientes y actualizar título
+                        _changeContent(ClientsScreen(), 'Clientes', 'Clientes');
                       }),
                       _buildMenuButton('Agregar Cliente', Icons.person_add, onPressed: () {
-                        _changeContent(AgregarClientesContent(), 'Agregar Cliente'); // Cambiar al widget de Agregar Cliente
+                        _changeContent(AgregarClientesContent(), 'Agregar Cliente', 'Agregar Cliente');
                       }),
                       _buildMenuButton('Pagos', Icons.payment, onPressed: () {
-                        _changeContent(PaymentsScreen(), 'Pagos'); // Cambiar al widget de Pagos y actualizar título
+                        _changeContent(PaymentsScreen(), 'Pagos', 'Pagos');
                       }),
                       _buildMenuButton('Depósito', Icons.account_balance, onPressed: () {
-                        _changeContent(DepositsScreen(), 'Depósito'); // Cambiar al widget de Depósito
+                        _changeContent(DepositsScreen(), 'Depósito', 'Depósito');
                       }),
                       const Spacer(),
                       // Botón de salir
@@ -141,7 +157,9 @@ class _MainHandlerState extends State<MainHandler> {
         width: double.infinity, // Se ajusta al ancho del contenedor
         child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
-            backgroundColor: isExit ? const Color(0xFF792D1F) : Colors.amber[200],  // Cambia el color si es el botón de salir
+            backgroundColor: _selectedMenuItem[title] == true
+                ? Colors.white  // Color del botón seleccionado
+                : (isExit ? const Color(0xFF792D1F) : Colors.amber[200]),  // Cambia el color si es el botón de salir
             foregroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
