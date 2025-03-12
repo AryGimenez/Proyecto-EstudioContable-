@@ -6,7 +6,6 @@ Widget buildInputRow(List<String> labels) {
   return Row(
     children: labels.map((label) {
       return Expanded(
-        // 'Expanded' hace que cada input ocupe el mismo espacio disponible en la fila.
         child: SizedBox(
           height: 40, // Define la altura del input
           child: TextField(
@@ -22,41 +21,41 @@ Widget buildInputRow(List<String> labels) {
 
 // Función para construir la tabla de impuestos
 Widget buildTaxTable() {
-  return Container(
-    width: double.infinity, // Asegura que el contenedor ocupe todo el ancho disponible.
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.grey), // Establece el borde alrededor de la tabla.
-      borderRadius: BorderRadius.circular(8), // Aplica un radio de esquina redondeado al borde.
-    ),
-    child: DataTable(
-      columnSpacing: 12, // Establece el espacio entre las columnas de la tabla.
-      headingRowHeight: 45, // Altura de la fila de encabezado.
-      dataRowMinHeight: 30, // Altura de las filas de datos (celdas de la tabla).
-      headingRowColor: WidgetStateProperty.all(AppColors.primary), // Establece el color de fondo para la fila del encabezado.
-      
-      // Define las columnas de la tabla
-      columns: [
-        _buildHeaderColumn("Nombre"), // Llama a la función que construye una columna de encabezado
-        _buildHeaderColumn("Frecuencia"),
-        _buildHeaderColumn("Días"),
-        _buildHeaderColumn("Vencimiento"),
-        _buildHeaderColumn("Monto"),
-        _buildHeaderColumn("Honorario"),
-      ],
-      
-      // Define las filas de la tabla, generando 5 filas como ejemplo
-      rows: List.generate(
-        5, // Genera 5 filas de ejemplo
-        (index) => DataRow(cells: [
-          DataCell(Text("Impuesto $index", style: TextStyle(fontSize: 14))), // Celda con texto para "Impuesto X"
-          DataCell(Text("Mensual", style: TextStyle(fontSize: 14))), // Celda con texto para la frecuencia
-          DataCell(Text("${index * 5}", style: TextStyle(fontSize: 14))), // Celda con el valor de días, multiplicando por el índice
-          DataCell(Text("01/0${index + 1}/2025", style: TextStyle(fontSize: 14))), // Celda con la fecha de vencimiento
-          DataCell(Text("\$UYU ${(index + 1) * 1000}", style: TextStyle(fontSize: 14))), // Celda con monto
-          DataCell(Text("\$UYU ${(index + 1) * 500}", style: TextStyle(fontSize: 14))), // Celda con honorarios
-        ]),
+  return Column(
+    children: [
+      Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: DataTable(
+          columnSpacing: 12,
+          headingRowHeight: 45,
+          dataRowMinHeight: 30,
+          headingRowColor: MaterialStateProperty.all(AppColors.primary),
+          columns: [
+            _buildHeaderColumn("Nombre"),
+            _buildHeaderColumn("Frecuencia"),
+            _buildHeaderColumn("Días"),
+            _buildHeaderColumn("Vencimiento"),
+            _buildHeaderColumn("Monto"),
+            _buildHeaderColumn("Honorario"),
+          ],
+          rows: List.generate(
+            5,
+            (index) => DataRow(cells: [
+              DataCell(Text("Impuesto $index", style: TextStyle(fontSize: 14))),
+              DataCell(Text("Mensual", style: TextStyle(fontSize: 14))),
+              DataCell(Text("${index * 5}", style: TextStyle(fontSize: 14))),
+              DataCell(Text("01/0${index + 1}/2025", style: TextStyle(fontSize: 14))),
+              DataCell(Text("\$UYU ${(index + 1) * 1000}", style: TextStyle(fontSize: 14))),
+              DataCell(Text("\$UYU ${(index + 1) * 500}", style: TextStyle(fontSize: 14))),
+            ]),
+          ),
+        ),
       ),
-    ),
+    ],
   );
 }
 
@@ -64,23 +63,23 @@ Widget buildTaxTable() {
 DataColumn _buildHeaderColumn(String title) {
   return DataColumn(
     label: Container(
-      alignment: Alignment.center, // Centra el contenido dentro de la celda de encabezado
+      alignment: Alignment.center,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center, // Centra los elementos en la fila
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            title, // Título de la columna
+            title,
             style: TextStyle(
-              color: Colors.white, // Color del texto
-              fontWeight: FontWeight.bold, // Establece el peso del texto como negrita
-              fontSize: 14, // Tamaño de la fuente
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
             ),
           ),
-          SizedBox(width: 5), // Espacio entre el texto y el ícono
+          SizedBox(width: 5),
           Icon(
-            Icons.arrow_drop_down, // Icono de flecha hacia abajo
-            size: 16, // Tamaño del ícono
-            color: Colors.white, // Color del ícono
+            Icons.arrow_drop_down,
+            size: 16,
+            color: Colors.white,
           ),
         ],
       ),
