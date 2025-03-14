@@ -11,6 +11,8 @@ class ClientsScreen extends StatefulWidget {
 
 class _ClientsScreenState extends State<ClientsScreen> {
   final ClientsHandler _handler = ClientsHandler();
+  String selectedFilter = 'Nombre'; // Filtro por defecto
+  TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,13 @@ class _ClientsScreenState extends State<ClientsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SearchBar(),
+            SearchBar(
+              controller: _searchController,
+              selectedFilter: selectedFilter,
+              onSearch: _onSearch,
+              onFilterChange: _onFilterChange,
+            ),
+            const SizedBox(height: 10),
             Expanded(
               child: ClientsTable(
                 handler: _handler,
@@ -43,61 +51,96 @@ class _ClientsScreenState extends State<ClientsScreen> {
       ),
     );
   }
+
+  void _onSearch() {
+    setState(() {
+      _handler.filterClients(_searchController.text, selectedFilter);
+    });
+  }
+
+  void _onFilterChange(String? value) {
+    setState(() {
+      selectedFilter = value ?? 'Nombre';
+    });
+  }
 }
 
 class SearchBar extends StatelessWidget {
+  final TextEditingController controller;
+  final String selectedFilter;
+  final VoidCallback onSearch;
+  final Function(String?) onFilterChange;
+
+  const SearchBar({
+    required this.controller,
+    required this.selectedFilter,
+    required this.onSearch,
+    required this.onFilterChange,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         // Campo de búsqueda
         Expanded(
           child: TextField(
+            controller: controller,
             decoration: InputDecoration(
-              labelText: 'Buscar Cliente',
-              prefixIcon: Icon(Icons.search),
+              labelText: 'Buscar por $selectedFilter',
+              prefixIcon: const Icon(Icons.search),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
           ),
         ),
-        // Botones a la derecha
-        Row(
-          children: [
-            // Primer botón
-            SizedBox(
-              width: 40, // Tamaño cuadrado para el botón
-              height: 40,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  backgroundColor: AppColors.primary,
-                ),
-                child: Icon(Icons.filter_list, color: Colors.white),
+        const SizedBox(width: 5),
+        // Botón de búsqueda
+        SizedBox(
+          width: 40,
+          height: 40,
+          child: ElevatedButton(
+            onPressed: onSearch,
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              backgroundColor: AppColors.primary,
+              padding: EdgeInsets.zero,
+            ),
+            child: const Center(
+              child: Icon(Icons.search, color: Colors.white),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        // Botón de filtro
+        SizedBox(
+          width: 40,
+          height: 40,
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: PopupMenuButton<String>(
+              onSelected: onFilterChange,
+              itemBuilder: (BuildContext context) {
+                return ['Nombre', 'Email', 'Nacimiento', 'WhatsApp', 'Montos del Mes', 'Contacto', 'Dirección'].map((String option) {
+                  return PopupMenuItem<String>(
+                    value: option,
+                    child: Text(option),
+                  );
+                }).toList();
+              },
+              icon: const Icon(Icons.filter_alt_outlined, color: Colors.white),
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
-            const SizedBox(width: 10), // Espacio entre los botones
-            // Segundo botón
-            SizedBox(
-              width: 40, // Tamaño cuadrado para el botón
-              height: 40,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  backgroundColor: AppColors.primary,
-                ),
-                child: Icon(Icons.clear, color: Colors.white),
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );
@@ -117,69 +160,82 @@ class ClientsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: SizedBox(
-          width: double.infinity,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: DataTable(
-              columnSpacing: 20.0,
-              dataRowHeight: 40.0,
-              headingRowHeight: 40.0,
-              headingRowColor: MaterialStateProperty.all(AppColors.primary),
-              columns: [
-                DataColumn(
-                  label: Checkbox(
-                    value: handler.isAllSelected,
-                    onChanged: (bool? value) {
-                      onSelectAll(value ?? false);
-                    },
-                  ),
-                ),
-                const DataColumn(label: Text('Nombre')),
-                const DataColumn(label: Text('Email')),
-                const DataColumn(label: Text('Nacimiento')),
-                const DataColumn(label: Text('WhatsApp')),
-                const DataColumn(label: Text('Montos del Mes')),
-                const DataColumn(label: Text('Contacto')),
-                const DataColumn(label: Text('Dirección')),
-              ],
-              rows: List.generate(
-                10,
-                (index) => DataRow(
-                  selected: handler.getSelectedRows()[index] ?? false,
-                  cells: [
-                    DataCell(
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: Checkbox(
-                            value: handler.getSelectedRows()[index] ?? false,
-                            onChanged: (bool? value) {
-                              onRowSelected(index, value ?? false);
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                    DataCell(Text('Cliente $index')),
-                    DataCell(Text('cliente$index@email.com')),
-                    DataCell(Text('01/01/2000')),
-                    DataCell(Text('+598 98 123 456')),
-                    DataCell(Text('\$3,500')),
-                    DataCell(Text('+598 98 123 456')),
-                    DataCell(Text('calle x')),
-                  ],
-                ),
+    return SingleChildScrollView(
+      child: SizedBox(
+        width: double.infinity,
+        child: DataTable(
+          columnSpacing: 20.0,
+          dataRowHeight: 40.0,
+          headingRowHeight: 40.0,
+          headingRowColor: MaterialStateProperty.all(AppColors.primary),
+          columns: [
+            DataColumn(
+              label: Checkbox(
+                value: handler.isAllSelected,
+                onChanged: (bool? value) {
+                  onSelectAll(value ?? false);
+                },
               ),
             ),
-          ),
+            const DataColumn(label: Text('Nombre')),
+            const DataColumn(label: Text('Email')),
+            const DataColumn(label: Text('Nacimiento')),
+            const DataColumn(label: Text('WhatsApp')),
+            const DataColumn(label: Text('Montos del Mes')),
+            const DataColumn(label: Text('Contacto')),
+            const DataColumn(label: Text('Dirección')),
+          ],
+          rows: handler.filteredClients.isNotEmpty
+              ? List.generate(
+                  handler.filteredClients.length,
+                  (index) {
+                    final client = handler.filteredClients[index];
+
+                    return DataRow(
+                      selected: handler.getSelectedRows()[index] ?? false,
+                      cells: [
+                        DataCell(
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                              child: Checkbox(
+                                value: handler.getSelectedRows()[index] ?? false,
+                                onChanged: (bool? value) {
+                                  onRowSelected(index, value ?? false);
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        DataCell(Text(client['Nombre'] ?? '')),
+                        DataCell(Text(client['Email'] ?? '')),
+                        DataCell(Text(client['Nacimiento'] ?? '')),
+                        DataCell(Text(client['WhatsApp'] ?? '')),
+                        DataCell(Text(client['Montos del Mes'] ?? '')),
+                        DataCell(Text(client['Contacto'] ?? '')),
+                        DataCell(Text(client['Dirección'] ?? '')),
+                      ],
+                    );
+                  },
+                )
+              : [
+                  const DataRow(cells: [
+                    DataCell(Text('No se encontraron clientes', style: TextStyle(fontStyle: FontStyle.italic))),
+                    DataCell(Text('')),
+                    DataCell(Text('')),
+                    DataCell(Text('')),
+                    DataCell(Text('')),
+                    DataCell(Text('')),
+                    DataCell(Text('')),
+                    DataCell(Text('')),
+                  ])
+                ],
         ),
       ),
     );
   }
 }
+
 
 class ActionButtons extends StatelessWidget {
   @override
@@ -196,7 +252,8 @@ class ActionButtons extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 12),
             ),
             icon: const Icon(Icons.delete, color: Colors.white),
-            label: const Text('Eliminar', style: TextStyle(color: Colors.white)),
+            label:
+                const Text('Eliminar', style: TextStyle(color: Colors.white)),
           ),
         ),
         SizedBox(
@@ -208,7 +265,8 @@ class ActionButtons extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 12),
             ),
             icon: const Icon(Icons.edit, color: Colors.white),
-            label: const Text('Modificar', style: TextStyle(color: Colors.white)),
+            label:
+                const Text('Modificar', style: TextStyle(color: Colors.white)),
           ),
         ),
       ],
