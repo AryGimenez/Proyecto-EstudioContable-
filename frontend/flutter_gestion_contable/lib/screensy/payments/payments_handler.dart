@@ -8,10 +8,11 @@ class PaymentsHandler {
   DateTime? selectedDate; // Fecha seleccionada
 
   // Lista para manejar la selección de las filas en la tabla
-  List<bool> selectedRows = [false, false, false]; // Estado de los checkboxes para 3 filas
-
+  List<bool> selectedRows = [false, false, false, false, false, false, false, false, false, false]; // Estado de los checkboxes para las filas, la longitud de esta lista puede variar
+  List<bool> selectedRows2 = [false, false, false, false, false, false, false, false, false, false]; // Estado de los checkboxes para las filas, la longitud de esta lista puede variar
   // Checkbox global para seleccionar todos los registros
   bool isSelectAll = false;
+  bool isSelectAll2 = false;
 
   // Función para mostrar el selector de fecha
   Future<void> selectDate(BuildContext context) async {
@@ -38,11 +39,27 @@ class PaymentsHandler {
     }
   }
 
+    void toggleSelection2(int index, bool value) {
+    selectedRows2[index] = value; // Actualizamos la selección de la fila
+    // Si alguna fila es desmarcada, el "Seleccionar Todos" debe desmarcarse
+    if (selectedRows2.contains(false)) {
+      isSelectAll2 = false;
+    } else {
+      isSelectAll2 = true;
+    }
+  }
+
   // Cambiar el estado del checkbox global
   void toggleSelectAll(bool value) {
     isSelectAll = value; // Actualizamos el checkbox global
     // Actualiza todos los checkboxes de las filas al mismo estado del checkbox global
     selectedRows = List.filled(selectedRows.length, value);
+  }
+
+  void toggleSelectAll2(bool value) {
+    isSelectAll2 = value; // Actualizamos el checkbox global
+    // Actualiza todos los checkboxes de las filas al mismo estado del checkbox global
+    selectedRows2 = List.filled(selectedRows2.length, value);
   }
 
   // Funciones de los filtros

@@ -180,6 +180,16 @@ Widget _buildDataTable() {
             headingRowHeight: 24.0,
             headingRowColor: MaterialStateProperty.all(AppColors.primary),
             columns: [
+              DataColumn(
+                label: Checkbox(
+                  value: _handler.isSelectAll, // Estado global de selección
+                  onChanged: (bool? value) {
+                    setState(() {
+                      _handler.toggleSelectAll(value ?? false); // Actualiza todos los checkboxes
+                    });
+                  },
+                ),
+              ),
               DataColumn(label: Text('Nombre')),
               DataColumn(label: Text('Cliente')),
               DataColumn(label: Text('Vencimiento')),
@@ -189,6 +199,14 @@ Widget _buildDataTable() {
             rows: List.generate(10, (index) {
               return DataRow(
                 cells: [
+                  DataCell(Checkbox(
+                    value: _handler.selectedRows[index], // Estado de cada fila
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _handler.toggleSelection(index, value ?? false); // Cambia el estado de la fila
+                      });
+                    },
+                  )),
                   DataCell(Text('Nombre ${index + 1}')),
                   DataCell(Text('Cliente ${index + 1}')),
                   DataCell(Text('01/01/2025')),
@@ -204,6 +222,7 @@ Widget _buildDataTable() {
   );
 }
 
+
 Widget _buildPaymentsTable() {
   return Expanded(
     child: SingleChildScrollView(
@@ -217,6 +236,16 @@ Widget _buildPaymentsTable() {
             headingRowHeight: 24.0,
             headingRowColor: MaterialStateProperty.all(AppColors.primary),
             columns: [
+              DataColumn(
+                label: Checkbox(
+                  value: _handler.isSelectAll2, // Estado global de selección
+                  onChanged: (bool? value) {
+                    setState(() {
+                      _handler.toggleSelectAll2(value ?? false); // Cambia el estado de todos los checkboxes
+                    });
+                  },
+                ),
+              ),
               DataColumn(label: Text('Nombre')),
               DataColumn(label: Text('Pago')),
               DataColumn(label: Text('Monto')),
@@ -226,6 +255,14 @@ Widget _buildPaymentsTable() {
             rows: List.generate(10, (index) {
               return DataRow(
                 cells: [
+                  DataCell(Checkbox(
+                    value: _handler.selectedRows2[index], // Estado de cada fila
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _handler.toggleSelection2(index, value ?? false); // Actualiza el estado de la fila
+                      });
+                    },
+                  )),
                   DataCell(Text('Pago ${index + 1}')),
                   DataCell(Text('Pago ${index + 1}')),
                   DataCell(Text('\$300')),
