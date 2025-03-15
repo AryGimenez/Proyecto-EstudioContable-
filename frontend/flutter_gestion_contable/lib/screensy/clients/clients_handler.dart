@@ -17,7 +17,7 @@ class ClientsHandler {
   List<Map<String, String>> filteredClients = [];
 
   ClientsHandler() {
-    filteredClients = List.from(_clients);
+    filteredClients = List.from(_clients); // Copiar la lista original
   }
 
   Map<int, bool> getSelectedRows() => _selectedRows;
@@ -31,18 +31,42 @@ class ClientsHandler {
 
   void selectAll(bool value) {
     _isAllSelected = value;
-    for (int i = 0; i < _clients.length; i++) {
+    _selectedRows.clear();
+    for (int i = 0; i < filteredClients.length; i++) {
       _selectedRows[i] = value;
     }
   }
 
   void filterClients(String query, String filterBy) {
     if (query.isEmpty) {
-      filteredClients = List.from(_clients);
+      filteredClients = List.from(_clients); // Reset to all clients
     } else {
       filteredClients = _clients
           .where((client) => client[filterBy]!.toLowerCase().contains(query.toLowerCase()))
           .toList();
     }
+  }
+
+  // Actualizamos la eliminación de clientes
+  void deleteSelectedClients(Function() updateUI) {
+    List<int> selectedIndexes = _selectedRows.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+
+    selectedIndexes.sort((a, b) => b.compareTo(a)); // Sort in descending order to avoid index shifting
+    for (int index in selectedIndexes) {
+      if (index < filteredClients.length) {
+        _clients.removeAt(index); // Eliminar del original
+        filteredClients.removeAt(index); // Eliminar de los filtrados
+      }
+    }
+
+    // Clear the selection after deletion
+    _selectedRows.clear();
+    _isAllSelected = false;
+
+    // Llamar a updateUI para actualizar la interfaz
+    updateUI();
   }
 }

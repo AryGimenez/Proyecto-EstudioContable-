@@ -2,7 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gestion_contable/core/theme/app_colors.dart';
 import 'add_clients_handler.dart'; // Asegúrate de importar correctamente
 
-class AgregarClientesContent extends StatelessWidget {
+class AgregarClientesContent extends StatefulWidget {
+  @override
+  _AgregarClientesContentState createState() => _AgregarClientesContentState();
+}
+
+class _AgregarClientesContentState extends State<AgregarClientesContent> {
+  final TextEditingController nombreController = TextEditingController();
+  final TextEditingController frecuenciaController = TextEditingController();
+  final TextEditingController diasController = TextEditingController();
+  final TextEditingController vencimientoController = TextEditingController();
+  final TextEditingController montoController = TextEditingController();
+  final TextEditingController honorarioController = TextEditingController();
+
+  // Lista para almacenar los registros de la tabla
+  List<Map<String, String>> _clientesData = [];
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -35,14 +50,25 @@ class AgregarClientesContent extends StatelessWidget {
           ),
           SizedBox(height: 10),
 
-          // Se expande la tabla sin afectar la estructura
-          Expanded(child: SingleChildScrollView(child: buildTaxTable())),
+          Expanded(
+            child: SingleChildScrollView(
+              child: buildTaxTable(
+                context,
+                vencimientoController: vencimientoController,
+                nombreController: nombreController,
+                frecuenciaController: frecuenciaController,
+                diasController: diasController,
+                montoController: montoController,
+                honorarioController: honorarioController,
+                onAdd: _addCliente, // Llamamos a la función para agregar registros
+                data: _clientesData, // Mostramos los registros actuales
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
 
-          SizedBox(height: 10), // Espacio antes de los botones
-
-          // Fila con los botones superiores (Eliminar - Modificar)
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribución espaciada
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               buildSmallButton("Eliminar", Colors.red),
               buildSmallButton("Modificar", Colors.blue),
@@ -50,28 +76,58 @@ class AgregarClientesContent extends StatelessWidget {
           ),
           SizedBox(height: 8),
 
-          // Fila con los botones inferiores (Cancelar - Agregar)
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribución espaciada
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               buildSmallButton("Cancelar", Colors.grey),
               buildSmallButton("Agregar", Colors.green),
             ],
           ),
-          SizedBox(height: 10), // Espacio final
+          SizedBox(height: 10),
         ],
       ),
     );
   }
 
-  // Función para construir botones pequeños
+  // Función que se llama al presionar el botón "Agregar"
+  void _addCliente() {
+    if (nombreController.text.isNotEmpty &&
+        frecuenciaController.text.isNotEmpty &&
+        diasController.text.isNotEmpty &&
+        vencimientoController.text.isNotEmpty &&
+        montoController.text.isNotEmpty &&
+        honorarioController.text.isNotEmpty) {
+      setState(() {
+        // Agregamos un nuevo cliente a la lista
+        _clientesData.add({
+          'nombre': nombreController.text,
+          'frecuencia': frecuenciaController.text,
+          'dias': diasController.text,
+          'vencimiento': vencimientoController.text,
+          'monto': montoController.text,
+          'honorario': honorarioController.text,
+        });
+      });
+
+      // Limpiamos los controladores
+      nombreController.clear();
+      frecuenciaController.clear();
+      diasController.clear();
+      vencimientoController.clear();
+      montoController.clear();
+      honorarioController.clear();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Por favor complete todos los campos.')));
+    }
+  }
+
   Widget buildSmallButton(String text, Color color) {
     return SizedBox(
-      width: 120,// Tamaño pequeño para los botones
+      width: 120,
       height: 40,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-        onPressed: () {}, // Acción vacía por ahora
+        onPressed: () {},
         child: Text(text, style: TextStyle(color: Colors.white)),
       ),
     );

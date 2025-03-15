@@ -1,28 +1,160 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Para usar el TextInputFormatter
 import 'package:flutter_gestion_contable/core/theme/app_colors.dart';
 
-// Función para construir una fila con tres campos de texto
 Widget buildInputRow(List<String> labels) {
   return Row(
     children: labels.map((label) {
       return Expanded(
         child: SizedBox(
-          height: 40, // Define la altura del input
+          height: 40,
           child: TextField(
             decoration: InputDecoration(
-              labelText: label, // El texto que aparece como label del input
+              labelText: label,
             ),
           ),
         ),
       );
-    }).toList(), // Convierte la lista de 'labels' en una lista de widgets de tipo TextField.
+    }).toList(),
   );
 }
 
-// Función para construir la tabla de impuestos
-Widget buildTaxTable() {
+Widget buildTaxInputsRow(BuildContext context, {
+  required TextEditingController vencimientoController,
+  required TextEditingController nombreController,
+  required TextEditingController frecuenciaController,
+  required TextEditingController diasController,
+  required TextEditingController montoController,
+  required TextEditingController honorarioController,
+  required Function onAdd,
+}) {
+  return Row(
+    children: [
+      Expanded(
+        child: SizedBox(
+          height: 40,
+          child: TextField(
+            controller: nombreController,
+            decoration: InputDecoration(labelText: "Nombre"),
+          ),
+        ),
+      ),
+      SizedBox(width: 8),
+      Expanded(
+        child: SizedBox(
+          height: 40,
+          child: TextField(
+            controller: frecuenciaController,
+            decoration: InputDecoration(labelText: "Frecuencia"),
+          ),
+        ),
+      ),
+      SizedBox(width: 8),
+      Expanded(
+        child: SizedBox(
+          height: 40,
+          child: TextField(
+            controller: diasController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            decoration: InputDecoration(labelText: "Días"),
+          ),
+        ),
+      ),
+      SizedBox(width: 8),
+      Expanded(
+        child: SizedBox(
+          height: 40,
+          child: TextField(
+            controller: vencimientoController,
+            readOnly: true,
+            onTap: () async {
+              DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(1900),
+                lastDate: DateTime(2100),
+              );
+              if (pickedDate != null) {
+                vencimientoController.text = "${pickedDate.toLocal()}".split(' ')[0];
+              }
+            },
+            decoration: InputDecoration(labelText: "Vencimiento"),
+          ),
+        ),
+      ),
+      SizedBox(width: 8),
+      Expanded(
+        child: SizedBox(
+          height: 40,
+          child: TextField(
+            controller: montoController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: "Monto"),
+          ),
+        ),
+      ),
+      SizedBox(width: 8),
+      Expanded(
+        child: SizedBox(
+          height: 40,
+          child: TextField(
+            controller: honorarioController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: "Honorario"),
+          ),
+        ),
+      ),
+      Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: IconButton(
+          onPressed: () {
+            if (nombreController.text.isNotEmpty &&
+                frecuenciaController.text.isNotEmpty &&
+                diasController.text.isNotEmpty &&
+                vencimientoController.text.isNotEmpty &&
+                montoController.text.isNotEmpty &&
+                honorarioController.text.isNotEmpty) {
+              onAdd();
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Por favor complete todos los campos.')));
+            }
+          },
+          icon: Icon(Icons.add, color: Colors.white),
+        ),
+      ),
+    ],
+  );
+}
+
+Widget buildTaxTable(BuildContext context, {
+  required TextEditingController vencimientoController,
+  required TextEditingController nombreController,
+  required TextEditingController frecuenciaController,
+  required TextEditingController diasController,
+  required TextEditingController montoController,
+  required TextEditingController honorarioController,
+  required Function onAdd,
+  required List<Map<String, String>> data,
+}) {
   return Column(
     children: [
+      buildTaxInputsRow(
+        context,
+        vencimientoController: vencimientoController,
+        nombreController: nombreController,
+        frecuenciaController: frecuenciaController,
+        diasController: diasController,
+        montoController: montoController,
+        honorarioController: honorarioController,
+        onAdd: onAdd,
+      ),
+      SizedBox(height: 10),
       Container(
         width: double.infinity,
         decoration: BoxDecoration(
@@ -42,24 +174,22 @@ Widget buildTaxTable() {
             _buildHeaderColumn("Monto"),
             _buildHeaderColumn("Honorario"),
           ],
-          rows: List.generate(
-            5,
-            (index) => DataRow(cells: [
-              DataCell(Text("Impuesto $index", style: TextStyle(fontSize: 14))),
-              DataCell(Text("Mensual", style: TextStyle(fontSize: 14))),
-              DataCell(Text("${index * 5}", style: TextStyle(fontSize: 14))),
-              DataCell(Text("01/0${index + 1}/2025", style: TextStyle(fontSize: 14))),
-              DataCell(Text("\$UYU ${(index + 1) * 1000}", style: TextStyle(fontSize: 14))),
-              DataCell(Text("\$UYU ${(index + 1) * 500}", style: TextStyle(fontSize: 14))),
-            ]),
-          ),
+          rows: data.map((item) {
+            return DataRow(cells: [
+              DataCell(Text(item['nombre']!)),
+              DataCell(Text(item['frecuencia']!)),
+              DataCell(Text(item['dias']!)),
+              DataCell(Text(item['vencimiento']!)),
+              DataCell(Text(item['monto']!)),
+              DataCell(Text(item['honorario']!)),
+            ]);
+          }).toList(),
         ),
       ),
     ],
   );
 }
 
-// Función para construir las celdas del encabezado de la tabla
 DataColumn _buildHeaderColumn(String title) {
   return DataColumn(
     label: Container(

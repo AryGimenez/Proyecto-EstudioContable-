@@ -45,7 +45,16 @@ class _ClientsScreenState extends State<ClientsScreen> {
               ),
             ),
             const SizedBox(height: 40),
-            ActionButtons(),
+            ActionButtons(
+              handler: _handler,
+              onDelete: () {
+                setState(() {
+                  _handler.deleteSelectedClients(() {
+                    setState(() {}); // Actualizamos la interfaz de usuario después de eliminar
+                  });
+                });
+              },
+            ),
           ],
         ),
       ),
@@ -82,7 +91,6 @@ class SearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // Campo de búsqueda
         Expanded(
           child: TextField(
             controller: controller,
@@ -96,7 +104,6 @@ class SearchBar extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 5),
-        // Botón de búsqueda
         SizedBox(
           width: 40,
           height: 40,
@@ -115,7 +122,6 @@ class SearchBar extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 10),
-        // Botón de filtro
         SizedBox(
           width: 40,
           height: 40,
@@ -127,7 +133,8 @@ class SearchBar extends StatelessWidget {
             child: PopupMenuButton<String>(
               onSelected: onFilterChange,
               itemBuilder: (BuildContext context) {
-                return ['Nombre', 'Email', 'Nacimiento', 'WhatsApp', 'Montos del Mes', 'Contacto', 'Dirección'].map((String option) {
+                return ['Nombre', 'Email', 'Nacimiento', 'WhatsApp', 'Montos del Mes', 'Contacto', 'Dirección']
+                    .map((String option) {
                   return PopupMenuItem<String>(
                     value: option,
                     child: Text(option),
@@ -228,7 +235,7 @@ class ClientsTable extends StatelessWidget {
                     DataCell(Text('')),
                     DataCell(Text('')),
                     DataCell(Text('')),
-                  ])
+                  ]), // Mensaje de "No se encontraron clientes"
                 ],
         ),
       ),
@@ -236,8 +243,15 @@ class ClientsTable extends StatelessWidget {
   }
 }
 
-
 class ActionButtons extends StatelessWidget {
+  final ClientsHandler handler;
+  final VoidCallback onDelete;
+
+  const ActionButtons({
+    required this.handler,
+    required this.onDelete,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -246,14 +260,13 @@ class ActionButtons extends StatelessWidget {
         SizedBox(
           width: 150,
           child: ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: onDelete,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               padding: const EdgeInsets.symmetric(vertical: 12),
             ),
             icon: const Icon(Icons.delete, color: Colors.white),
-            label:
-                const Text('Eliminar', style: TextStyle(color: Colors.white)),
+            label: const Text('Eliminar', style: TextStyle(color: Colors.white)),
           ),
         ),
         SizedBox(
@@ -265,8 +278,7 @@ class ActionButtons extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 12),
             ),
             icon: const Icon(Icons.edit, color: Colors.white),
-            label:
-                const Text('Modificar', style: TextStyle(color: Colors.white)),
+            label: const Text('Modificar', style: TextStyle(color: Colors.white)),
           ),
         ),
       ],
