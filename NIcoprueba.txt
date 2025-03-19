@@ -1,1 +1,62 @@
-El nico es el uno 
+
+/* tabla de pagos con id pago como Pk y id impuesto como Fk
+*/
+
+CREATE TABLE `contaduria`.`pagos` (
+    `id_pago` INT NOT NULL AUTO_INCREMENT ,
+    `pago_fecha` VARCHAR(45) NOT NULL ,
+    `pago_monto` VARCHAR(45) NOT NULL , 
+    `pago_cliente` VARCHAR(45) NOT NULL , 
+    `pago_impuesto` VARCHAR(45) NOT NULL , 
+    `id_impuesto` INT NOT NULL ,            --declaracion de Fk
+    
+    PRIMARY KEY (`id_pago`) -- declarar PK
+) ENGINE = InnoDB;
+
+CREATE TABLE `contaduria`.`nombre_impuesto` (
+    `id_nombre_impuesto` INT NOT NULL AUTO_INCREMENT , 
+    `nombre_impuesto` VARCHAR(45) NOT NULL , 
+
+    PRIMARY KEY (`id_nombre_impuesto`) -- declarar PK 
+) ENGINE = InnoDB;
+
+CREATE TABLE `contaduria`.`alerta` (
+    `id_alerta` INT NOT NULL AUTO_INCREMENT , 
+    `ale_dias_antes` INT NULL , 
+    `ale_fecha` DATE NOT NULL , 
+    `ale_mensaje` VARCHAR(45) NOT NULL , 
+    `ale_id_dias_antes` INT NOT NULL ,      --declaracion de Fk
+
+    PRIMARY KEY (`id_alerta`)
+) ENGINE = InnoDB;
+
+
+/*  DUDA CON LAS TABLAS EVENTOS Y VENCIMIENTOS NO TIENEN PK EN EL MER  */
+
+CREATE TABLE `contaduria`.`eventos` (
+    `id_evento` INT NOT NULL AUTO_INCREMENT , 
+    `id_alerta` INT NOT NULL , 
+    
+    PRIMARY KEY (`id_evento`)
+) ENGINE = InnoDB;
+
+CREATE TABLE `contaduria`.`vencimientos` (
+    `id_vencimiento` INT NOT NULL AUTO_INCREMENT , 
+    `id_alerta` INT NOT NULL , 
+    `id_impuesto` INT NOT NULL , 
+    
+    PRIMARY KEY (`id_vencimiento`)
+) ENGINE = InnoDB;
+
+--
+
+--creacion tabla nombre impuesto
+CREATE TABLE `contaduria`.`nombre_impesto` (
+    `id_nom_impuesto` INT NOT NULL AUTO_INCREMENT ,
+    `nombre_impuesto` VARCHAR(45) NOT NULL , 
+ 
+    PRIMARY KEY (`id_nom_impuesto`)
+) ENGINE = InnoDB;
+
+
+/* FALTAN LAS TABLAS: IMPUESTOS, CLIENTE Y USUARIO */
