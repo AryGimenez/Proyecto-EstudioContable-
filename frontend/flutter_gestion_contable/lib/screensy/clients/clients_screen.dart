@@ -191,6 +191,7 @@ class ClientsTable extends StatelessWidget {
             const DataColumn(label: Text('Montos del Mes')),
             const DataColumn(label: Text('Contacto')),
             const DataColumn(label: Text('Dirección')),
+            const DataColumn(label: Text('Editar')),  // Columna para el ícono de editar
           ],
           rows: handler.filteredClients.isNotEmpty
               ? List.generate(
@@ -221,6 +222,15 @@ class ClientsTable extends StatelessWidget {
                         DataCell(Text(client['Montos del Mes'] ?? '')),
                         DataCell(Text(client['Contacto'] ?? '')),
                         DataCell(Text(client['Dirección'] ?? '')),
+                        DataCell(
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              // Agregar lógica para editar el cliente
+                              // Aquí podrías abrir un formulario o un cuadro de diálogo
+                            },
+                          ),
+                        ), // Icono de editar
                       ],
                     );
                   },
@@ -235,6 +245,7 @@ class ClientsTable extends StatelessWidget {
                     DataCell(Text('')),
                     DataCell(Text('')),
                     DataCell(Text('')),
+                    DataCell(Text('')), // Columna vacía para "Acción"
                   ]), // Mensaje de "No se encontraron clientes"
                 ],
         ),
@@ -242,6 +253,7 @@ class ClientsTable extends StatelessWidget {
     );
   }
 }
+
 
 class ActionButtons extends StatelessWidget {
   final ClientsHandler handler;
