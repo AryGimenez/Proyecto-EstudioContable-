@@ -33,19 +33,17 @@ CREATE TABLE `contaduria`.`alerta` (
 
 --creacion de la tabla 'eventos'
 CREATE TABLE `contaduria`.`eventos` (
-    `id_evento` INT NOT NULL AUTO_INCREMENT , 
-    `id_alerta` INT NOT NULL , 
-    
-    PRIMARY KEY (`id_evento`)
+    `id_alerta` INT NOT NULL, 
+
+    PRIMARY KEY (`id_alerta`)
 ) ENGINE = InnoDB;
 
 --creacion de la tabla 'vencimientos'
 CREATE TABLE `contaduria`.`vencimientos` (
-    `id_vencimiento` INT NOT NULL AUTO_INCREMENT , 
-    `id_alerta` INT NOT NULL , 
-    `id_impuesto` INT NOT NULL , 
-    
-    PRIMARY KEY (`id_vencimiento`)
+    `id_alerta` INT NOT NULL, 
+    `id_impuesto` INT NOT NULL, 
+
+    PRIMARY KEY (`id_alerta`)
 ) ENGINE = InnoDB;
 
 --creacion de la tabla 'usuarios'
@@ -92,33 +90,33 @@ CREATE TABLE `contaduria`.`impuestos` (
 ----------------------------    RELACIONES--(FK)    --------------------------------------------
 
 --fk de impuestos en pagos
-ALTER TABLE `pagos` ADD CONSTRAINT `impuestos_impuesto_id_pagos` 
+ALTER TABLE `contaduria`.`pagos` ADD CONSTRAINT `impuestos_impuesto_id_pagos` 
 FOREIGN KEY (`id_impuesto`) REFERENCES `impuestos`(`id_impuesto`) 
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --fk de cliente en impuesto
-ALTER TABLE `impuestos` ADD CONSTRAINT `cliente_id_cliente_impuestos`
+ALTER TABLE `contaduria`.`impuestos` ADD CONSTRAINT `cliente_id_cliente_impuestos`
 FOREIGN KEY (`id_cliente`) REFERENCES `clientes`(`id_cliente`) 
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --fk de nombre_impuesto en impuesto
-ALTER TABLE `impuestos` ADD CONSTRAINT `nombre_imp_id_nombre_impuesto_impuesto` 
+ALTER TABLE `contaduria`.`impuestos` ADD CONSTRAINT `nombre_imp_id_nombre_impuesto_impuesto` 
 FOREIGN KEY (`id_nombre_impuesto`) REFERENCES `nombre_impuesto`(`id_nombre_impuesto`) 
 ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --fk de impuestos en vencimientos
-ALTER TABLE `vencimientos` ADD CONSTRAINT `impuestos_id_impuesto_vencimientos` 
+ALTER TABLE `contaduria`.`vencimientos` ADD CONSTRAINT `fk_vencimientos_impuesto` 
 FOREIGN KEY (`id_impuesto`) REFERENCES `impuestos`(`id_impuesto`) 
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --fk de alerta en vencimientos
-ALTER TABLE `vencimientos` ADD CONSTRAINT `alerta_id__vencimientos` 
+ALTER TABLE `contaduria`.`vencimientos` ADD CONSTRAINT `fk_vencimientos_alerta` 
 FOREIGN KEY (`id_alerta`) REFERENCES `alerta`(`id_alerta`) 
-ON DELETE NO ACTION ON UPDATE NO ACTION;
+ON DELETE CASCADE ON UPDATE CASCADE;
 
 --fk de alerta en eventos
-ALTER TABLE `eventos` ADD CONSTRAINT `alerta_id_alerta_eventos` 
-FOREIGN KEY (`id_alerta`) REFERENCES `alerta`(`id_alerta`)
-ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `contaduria`.`eventos` ADD CONSTRAINT `fk_eventos_alerta` 
+FOREIGN KEY (`id_alerta`) REFERENCES `alerta`(`id_alerta`) 
+ON DELETE CASCADE ON UPDATE CASCADE;
 
 ----------------------------------------------------------------------------------------------
