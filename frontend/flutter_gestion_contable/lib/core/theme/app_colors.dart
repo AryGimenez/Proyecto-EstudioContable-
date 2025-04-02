@@ -11,7 +11,7 @@ class AppColors {
   /// Colores primarios de la aplicación
   /// Se usan principalmente para elementos destacados, botones y barras
   /// primary: Azul principal usado en elementos interactivos y de énfasis
-  static const Color primary = Color(0xFF4a4393);
+  static const Color primary = Color(0xFF986d35);
 
   /// secondary: Variante más oscura del color primario
   static const Color secondary = Color(0xFF00a2d3);
