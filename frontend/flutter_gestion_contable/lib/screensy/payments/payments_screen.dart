@@ -318,46 +318,112 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
           .spaceBetween, // Acomoda los elementos en los extremos
       children: [
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            setState(() {
+              _handler.agregarRegistrosSeleccionados();
+            });
+          },
           child: Text('Agregar'),
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(30, 30), // Tamaño mínimo del botón
+            minimumSize: Size(30, 30),
           ),
         ),
         SizedBox(width: 10),
         // Reemplazamos ExpansionTile por ElevatedButton
         Container(
-          width: 550, // Ancho del contenedor con 300 de ancho
+          width: 550,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.0), // Bordes redondeados
-            color: AppColors.primary, // Usamos el color primario
+            borderRadius: BorderRadius.circular(12.0),
+            color: AppColors.primary,
           ),
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              minimumSize: Size(550, 35),
-              backgroundColor: AppColors.primary,
-              padding: EdgeInsets.symmetric(vertical: 10),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.center, // Centra el contenido
-              children: [
-                Text(
-                  'Armar cheque', // Texto del botón
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+          child: GestureDetector(
+            onTapDown: (TapDownDetails details) {
+              final RenderBox overlay =
+                  Overlay.of(context).context.findRenderObject() as RenderBox;
+
+              showMenu(
+                context: context,
+                position: RelativeRect.fromRect(
+                  details.globalPosition & const Size(40, 40),
+                  Offset.zero & overlay.size,
                 ),
-                SizedBox(width: 5), // Espaciado entre el icono y el texto
-                Icon(Icons.keyboard_arrow_down,
-                    color: Colors.white), // Icono de flecha
-              ],
+                items: [
+                  PopupMenuItem(
+                    enabled: false,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight:
+                            300, // Altura máxima con scroll si hay muchos
+                        minWidth: 500,
+                        maxWidth: 500,
+                      ),
+                      child: Scrollbar(
+                        thumbVisibility: true,
+                        child: ListView.builder(
+                          itemCount: _handler.registrosAgregados.length,
+                          itemBuilder: (context, index) {
+                            final itemIndex =
+                                _handler.registrosAgregados[index];
+                            return ListTile(
+                              title: Text(
+                                'Registro ${itemIndex + 1}', // Aquí se muestra el texto del registro
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white, // Cambia el color aquí
+                                ),
+                              ),
+                              trailing: IconButton(
+                                icon: Icon(Icons.delete,
+                                    color: Colors.white), // Ícono de eliminación
+                                onPressed: () {
+                                  // Aquí eliminamos el registro específico de la lista
+                                  setState(() {
+                                    _handler.eliminarRegistro(itemIndex);
+                                  });
+
+                                  // Después de eliminar, se debe cerrar el menú para refrescar la lista de registros
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+                color: AppColors.primary.withOpacity(0.95),
+                elevation: 4,
+              );
+            },
+            child: Container(
+              width: 550,
+              padding: EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.0),
+                color: AppColors.primary,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Armar cheque (${_handler.registrosAgregados.length})',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  Icon(Icons.keyboard_arrow_down, color: Colors.white),
+                ],
+              ),
             ),
           ),
         ),
+
         SizedBox(width: 10),
         Row(
           children: [

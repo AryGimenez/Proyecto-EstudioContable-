@@ -37,6 +37,7 @@ class PaymentsHandler {
   // Checkbox global para seleccionar todos los registros
   bool isSelectAll = false;
   bool isSelectAll2 = false;
+  List<int> registrosAgregados = []; // IDs o índices de filas agregadas
 
   // Función para mostrar el selector de fecha
   Future<void> selectDateDesde(BuildContext context) async {
@@ -64,6 +65,14 @@ class PaymentsHandler {
       selectedDateHasta = picked; // Actualizamos la fecha seleccionada
     }
   }
+
+  void agregarRegistrosSeleccionados() {
+  for (int i = 0; i < selectedRows.length; i++) {
+    if (selectedRows[i] && !registrosAgregados.contains(i)) {
+      registrosAgregados.add(i);
+    }
+  }
+}
 
   // Cambiar el estado del checkbox de una fila
   void toggleSelection(int index, bool value) {
@@ -116,4 +125,12 @@ class PaymentsHandler {
   void toggleDateFilter(bool value) {
     isDateHastaChecked = value; // Actualizamos el estado del filtro de fecha
   }
+
+   // Nueva función para eliminar los registros seleccionados
+  void eliminarRegistro(int index) {
+  if (registrosAgregados.contains(index)) {
+    registrosAgregados.remove(index);
+  }
+}
+
 }
