@@ -224,6 +224,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                 DataColumn(label: Text('Vencimiento')),
                 DataColumn(label: Text('Monto')),
                 DataColumn(label: Text('Honorario')),
+                DataColumn(label: Text('Monto Pago')),
               ],
               rows: List.generate(10, (index) {
                 return DataRow(
@@ -243,6 +244,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                     DataCell(Text('01/01/2025')),
                     DataCell(Text('\$500')),
                     DataCell(Text('\$300')),
+                    DataCell(Text('\$400')),
                   ],
                 );
               }),
@@ -277,11 +279,13 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                     },
                   ),
                 ),
-                DataColumn(label: Text('Nombre')),
-                DataColumn(label: Text('Pago')),
-                DataColumn(label: Text('Monto')),
-                DataColumn(label: Text('Fecha')),
-                DataColumn(label: Text('Comentario')),
+                DataColumn(label: Text('Cliente')),
+                DataColumn(label: Text('Impuesto')),
+                DataColumn(label: Text('Monto pago')),
+                DataColumn(label: Text('Fecha de pago')),
+                DataColumn(label: Text('Red de cobranza')),
+                DataColumn(label: Text('Concepto')),
+                DataColumn(label: Text('Editar')),
               ],
               rows: List.generate(10, (index) {
                 return DataRow(
@@ -296,11 +300,22 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                         });
                       },
                     )),
-                    DataCell(Text('Pago ${index + 1}')),
-                    DataCell(Text('Pago ${index + 1}')),
+                    DataCell(Text('Cliente ${index + 1}')),
+                    DataCell(Text('Impuesto ${index + 1}')),
                     DataCell(Text('\$300')),
                     DataCell(Text('01/01/2025')),
-                    DataCell(Text('Comentario ${index + 1}')),
+                    DataCell(Text('Intendencia')),
+                    DataCell(Text('Concepto ${index + 1}')),
+                    DataCell(
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        iconSize: 18,
+                        onPressed: () {
+                          // Agregar lógica para editar el cliente
+                          // Aquí podrías abrir un formulario o un cuadro de diálogo
+                        },
+                      ),
+                    ),
                   ],
                 );
               }),
@@ -374,7 +389,8 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                               ),
                               trailing: IconButton(
                                 icon: Icon(Icons.delete,
-                                    color: Colors.white), // Ícono de eliminación
+                                    color:
+                                        Colors.white), // Ícono de eliminación
                                 onPressed: () {
                                   // Aquí eliminamos el registro específico de la lista
                                   setState(() {
@@ -445,7 +461,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
       padding: EdgeInsets.all(5),
       color: AppColors.primary, // Usamos el color primario
       child: Text(
-        'Pagos',
+        'Pagos depositados',
         style: TextStyle(
             fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
         textAlign: TextAlign.center, // Centramos el texto
