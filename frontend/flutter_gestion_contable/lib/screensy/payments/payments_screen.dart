@@ -498,23 +498,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
             ),
           ),
         ),
-        SizedBox(
-          width: 80, // Ancho reducido
-          height: 30, // Alto reducido
-          child: ElevatedButton(
-            onPressed: () {
-              // Acción para modificar
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              padding: EdgeInsets.zero, // Elimina el padding extra
-            ),
-            child: Text(
-              'Modificar',
-              style: TextStyle(fontSize: 12), // Texto más pequeño
-            ),
-          ),
-        ),
+        
       ],
     );
   }
