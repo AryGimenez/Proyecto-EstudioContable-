@@ -4,12 +4,19 @@ class DepositsHandler extends ChangeNotifier {
   // Estado para la casilla de "Clientes"
   bool isClientsChecked = false;
 
+  bool isImpuestoChecked = false;
+
   // Lista para controlar la selección de las filas
   List<bool> selectedRows = List.generate(10, (index) => false);
 
   // Método para alternar el estado de la casilla de "Clientes"
   void toggleClientsChecked(bool value) {
     isClientsChecked = value;
+    notifyListeners(); // Notifica el cambio a la UI
+  }
+
+   void toggleImpuestoChecked(bool value) {
+    isImpuestoChecked = value;
     notifyListeners(); // Notifica el cambio a la UI
   }
 

@@ -10,7 +10,8 @@ class DepositsScreen extends StatefulWidget {
 }
 
 class _DepositsScreenState extends State<DepositsScreen> {
-  final DepositsHandler _handler = DepositsHandler(); // Instancia de DepositsHandler para manejar el estado
+  final DepositsHandler _handler =
+      DepositsHandler(); // Instancia de DepositsHandler para manejar el estado
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +37,26 @@ class _DepositsScreenState extends State<DepositsScreen> {
                         value: _handler.isClientsChecked,
                         onChanged: (bool? value) {
                           setState(() {
-                            _handler.toggleClientsChecked(value ?? false); // Llamamos al método del handler para cambiar el estado de "Clientes"
+                            _handler.toggleClientsChecked(value ??
+                                false); // Llamamos al método del handler para cambiar el estado de "Clientes"
                           });
                         },
                       ),
                       Icon(Icons.person),
                       SizedBox(width: 5),
-                      Text('Clientes'),
+                      Text('Cliente'),
+                      Spacer(),
+                      Checkbox(
+                        value: _handler.isImpuestoChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _handler.toggleImpuestoChecked(value ??
+                                false); // Llamamos al método del handler para cambiar el estado de "Clientes"
+                          });
+                        },
+                      ),
+                      SizedBox(width: 5),
+                      Text('Impuesto'),
                     ],
                   ),
                 ),
@@ -65,9 +79,7 @@ class _DepositsScreenState extends State<DepositsScreen> {
             _buildImpuestosPagarLine(), // Línea para "Impuestos a Pagar"
             SizedBox(height: 10),
             _buildDataTableWithTotal(), // Función para mostrar la tabla con los totales
-            SizedBox(height: 10),
-            _buildMontoDelChequeLine(), // Línea para mostrar el monto del cheque
-            SizedBox(height: 10),
+            Spacer(),
             _buildActionButtonsRow(), // Fila con botones de acción: Eliminar y Modificar
             SizedBox(height: 10),
             _buildHorizontalLine(), // Línea horizontal de separación
@@ -88,33 +100,9 @@ class _DepositsScreenState extends State<DepositsScreen> {
           height: 200,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child: _buildDataTable(), // Llamada a la función que crea la tabla de datos
+            child:
+                _buildDataTable(), // Llamada a la función que crea la tabla de datos
           ),
-        ),
-        SizedBox(height: 10),
-        _buildMoneyRow(), // Fila con los totales de montos
-      ],
-    );
-  }
-
-  // Fila con los totales de montos (Ejemplo de dinero)
-  Widget _buildMoneyRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Row(
-          children: [
-            Icon(Icons.attach_money, color: AppColors.primary),
-            Text('3000',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ],
-        ),
-        Row(
-          children: [
-            Icon(Icons.attach_money, color: AppColors.primary),
-            Text('3000',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ],
         ),
       ],
     );
@@ -132,55 +120,6 @@ class _DepositsScreenState extends State<DepositsScreen> {
             fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
         textAlign: TextAlign.center,
       ),
-    );
-  }
-
-  // Función que construye la línea para "Monto del Cheque"
-  Widget _buildMontoDelChequeLine() {
-    return Stack(
-      children: [
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(5),
-          color: AppColors.primary,
-          child: Text(
-            'Monto del Cheque',
-            style: TextStyle(
-                fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Positioned(
-          right: 350,
-          child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.3),
-                    spreadRadius: 1,
-                    blurRadius: 3,
-                    offset: Offset(0, 1),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.attach_money, color: AppColors.primary),
-                  Text(
-                    '30,000',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
-              )),
-        ),
-      ],
     );
   }
 
@@ -203,9 +142,11 @@ class _DepositsScreenState extends State<DepositsScreen> {
                   onChanged: (bool? value) {
                     setState(() {
                       if (value ?? false) {
-                        _handler.selectAllRows(); // Selecciona todas las filas si se marca la casilla
+                        _handler
+                            .selectAllRows(); // Selecciona todas las filas si se marca la casilla
                       } else {
-                        _handler.deselectAllRows(); // Deselecciona todas las filas si se desmarca la casilla
+                        _handler
+                            .deselectAllRows(); // Deselecciona todas las filas si se desmarca la casilla
                       }
                     });
                   },
@@ -227,7 +168,8 @@ class _DepositsScreenState extends State<DepositsScreen> {
                   value: _handler.selectedRows[index],
                   onChanged: (bool? value) {
                     setState(() {
-                      _handler.toggleRowSelection(index, value); // Llamamos al método para alternar la selección de la fila
+                      _handler.toggleRowSelection(index,
+                          value); // Llamamos al método para alternar la selección de la fila
                     });
                   },
                 ),
@@ -253,7 +195,8 @@ class _DepositsScreenState extends State<DepositsScreen> {
           height: 35,
           child: ElevatedButton(
             onPressed: () {
-              _handler.eliminarSeleccionados(); // Llamamos al método para eliminar los elementos seleccionados
+              _handler
+                  .eliminarSeleccionados(); // Llamamos al método para eliminar los elementos seleccionados
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
@@ -270,7 +213,8 @@ class _DepositsScreenState extends State<DepositsScreen> {
           height: 35,
           child: ElevatedButton(
             onPressed: () {
-              _handler.modificarSeleccionados(); // Llamamos al método para modificar los elementos seleccionados
+              _handler
+                  .modificarSeleccionados(); // Llamamos al método para modificar los elementos seleccionados
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
@@ -304,7 +248,8 @@ class _DepositsScreenState extends State<DepositsScreen> {
           height: 35,
           child: ElevatedButton(
             onPressed: () {
-              _handler.agregarNuevo(); // Llamamos al método para agregar un nuevo depósito
+              _handler
+                  .agregarNuevo(); // Llamamos al método para agregar un nuevo depósito
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
@@ -321,7 +266,8 @@ class _DepositsScreenState extends State<DepositsScreen> {
           height: 35,
           child: ElevatedButton(
             onPressed: () {
-              _handler.cancelarAccion(); // Llamamos al método para cancelar la acción
+              _handler
+                  .cancelarAccion(); // Llamamos al método para cancelar la acción
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
