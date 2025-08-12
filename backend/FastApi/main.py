@@ -3,7 +3,15 @@ from pydantic import BaseModel
 import jwt
 import datetime
 from router import auth, reauth, users
+from fastapi.middleware.cors import CORSMiddleware
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # O especifica ["http://localhost:port"] para mayor seguridad
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app = FastAPI()
 
 app.include_router(users.router)
