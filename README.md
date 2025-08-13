@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Sistema de Gestión de Pagos para Estudio Contable
 
 ## Descripción
