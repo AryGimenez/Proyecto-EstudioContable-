@@ -24,17 +24,21 @@ class LoginForm extends StatelessWidget {
       onSubmit; // Función que se ejecuta al enviar el formulario (por ejemplo, al presionar un botón de inicio de sesión).
 
   final VoidCallback
-      onResetPassword; // Funcion que se llama cuando el usuario presiona restableser contrasenia
+      onResetPassword; // Funcion que se llama cuando el usuario presiona restablecer contraseña
+
+  final VoidCallback
+      onMainScreen; // Funcion que se llama cuando el usuario presiona restablecer contraseña
 
   const LoginForm(
       {super.key, // Clave opcional que identifica este widget en la jerarquía.
       required this.formKey, // Requiere la clave del formulario.
+      required this.onMainScreen, // Requiere la clave del formulario.
       required this.userController, // Requiere el controlador del usuario.
       required this.passwordController, // Requiere el controlador de la contraseña.
       required this.isPasswordVisible, // Requiere la bandera de visibilidad de la contraseña.
       required this.onPasswordVisibilityToggle, // Requiere la función para alternar la visibilidad.
       required this.onSubmit, // Requiere la función para manejar el envío del formulario.
-      required this.onResetPassword // Requiere la funcion para lanzar el formulario restableser password
+      required this.onResetPassword // Requiere la funcion para lanzar el formulario restablecer password
       });
 
   @override
@@ -58,7 +62,7 @@ class LoginForm extends StatelessWidget {
                   children: [
                     Image.asset(
                       // Imagen del logo o cabecera
-                      'lib/assets/logo.png', // Asegúrate de tener esta imagen en la carpeta assets
+                      'lib/assets/Logo Barone.png', // Asegúrate de tener esta imagen en la carpeta assets
                       height:
                           logoHeight, // Altura de la imagen login_styles.dart
                     ),
@@ -79,7 +83,9 @@ class LoginForm extends StatelessWidget {
                       ),
                     ),
                     verticalSpaceMedium, // Espaciado entre el formulario y la opción "Perdí la contraseña" app_styles.dart
-                    _buildTextButonRestPassword()
+                    _buildTextButonRestPassword(), // Botón de resetear contraseña
+                    verticalSpaceMedium, // Espaciado antes del botón de configuración app_styles.dart
+                    _buildConfigurationButton(), // Botón de configuración
                   ])),
         ),
       ),
@@ -106,7 +112,7 @@ class LoginForm extends StatelessWidget {
 
       decoration: InputDecoration(
         labelText:
-            'Usudario', // Etiqueta que indica al usuario qué debe ingresar en el campo (nombre de usuario).
+            'Usuario', // Etiqueta que indica al usuario qué debe ingresar en el campo (nombre de usuario).
         labelStyle: AppTextStyles.bodyText1,
 
         prefixIcon: Icon(Icons.person),
@@ -167,11 +173,84 @@ class LoginForm extends StatelessWidget {
   Widget _buildLoginButton() {
     // Método privado que construye el botón para iniciar sesión.
     return ElevatedButton(
-      onPressed: onSubmit,
+      onPressed: onMainScreen,
       // Llama a la función para manejar el envío del formulario al presionar el botón.
 
       child: const Text('Iniciar sesión'),
       // Texto que aparece dentro del botón.
     );
   }
+
+Widget _buildConfigurationButton() {
+  return Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(12.0), // Bordes redondeados
+      color: AppColors.primary, // Color primario de fondo
+    ),
+    child: ExpansionTile(
+      title: const Text(
+        'Configuración',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.white, // Texto en blanco
+        ),
+      ),
+      leading: const Icon(
+        Icons.settings,
+        color: Colors.white, // Ícono de configuración en blanco
+      ),
+      trailing: const Icon(
+        Icons.keyboard_arrow_down,
+        color: Colors.white, // Flecha en blanco
+      ),
+      children: [
+        ListTile(
+          
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          leading: const Icon(Icons.wifi, color: Colors.white), // Ícono de red
+          title: const Text(
+            'Dirección IP',
+            style: TextStyle(color: Colors.white), // Texto en negro
+          ),
+          onTap: () {
+            // Acción al tocar Dirección IP
+          },
+        ),
+        const SizedBox(height: 5), // Espacio entre opciones
+        ListTile(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          leading: const Icon(Icons.router, color: Colors.white), // Ícono de red
+          title: const Text(
+            'Puerto',
+            style: TextStyle(color: Colors.white), // Texto en negro
+          ),
+          onTap: () {
+            // Acción al tocar Puerto
+          },
+        ),
+        const SizedBox(height: 10), // Espacio antes del botón
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor:  Color(0xFFf8f19f), // Fondo amarillo
+              foregroundColor: AppColors.primary, 
+            ),
+            onPressed: () {
+              // Acción al tocar Conectar
+            },
+            child: const Text('Conectar'),
+          ),
+        ),
+        const SizedBox(height: 10), // Espacio después del botón
+      ],
+    ),
+  );
+}
+
+
 }

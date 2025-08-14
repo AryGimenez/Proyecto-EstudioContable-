@@ -3,6 +3,7 @@
 // Importa la librería de Material Design de Flutter, utilizada para crear interfaces de usuario.
 import 'package:flutter/material.dart';
 import 'package:flutter_gestion_contable/screensy/password_reset/password_reset_handler.dart';
+import 'package:flutter_gestion_contable/screensy/main_website/main_handler.dart';
 import 'login_form.dart';
 
 // LoginScreen es un StatefulWidget para manejar el estado del formulario de login.
@@ -56,6 +57,15 @@ class _LoginHandlerState extends State<LoginHandler> {
     );
   }
 
+ void _mainScreen() {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const MainHandler(),
+    ),
+  );
+}
+
   @override
   Widget build(BuildContext context) {
     // Scaffold proporciona la estructura básica visual para la pantalla.
@@ -71,6 +81,7 @@ class _LoginHandlerState extends State<LoginHandler> {
           isPasswordVisible: _isPasswordVisible,
           onPasswordVisibilityToggle: _togglePasswordVisibility,
           onSubmit: _submitForm,
+          onMainScreen: _mainScreen,
           onResetPassword: _resetPasswordFrom,
         ),
       ),

@@ -9,7 +9,7 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       // Define el color principal para la aplicación, que se usará en elementos como el AppBar, botones, etc.
-      primaryColor: AppColors.primary,
+      primaryColor: const Color.fromARGB(157, 152, 109, 53),
 
       // Establece el color de fondo de la pantalla principal (scaffold) en la aplicación
       scaffoldBackgroundColor: AppColors.background,
@@ -18,7 +18,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           // Establece el color de fondo del ElevatedButton usando el color primario de la app
-          backgroundColor: AppColors.primary,
+          backgroundColor: const Color.fromARGB(255, 152, 109, 53),
 
           // Define el color del texto del botón como blanco
           foregroundColor: Colors.white,
