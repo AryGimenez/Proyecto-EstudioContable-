@@ -12,7 +12,7 @@ class PaymentsScreen extends StatefulWidget {
 class _PaymentsScreenState extends State<PaymentsScreen> {
   // Creamos una instancia de PaymentsHandler para gestionar el estado
   final PaymentsHandler _handler = PaymentsHandler();
-
+  bool mostrarPagos = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,20 +70,20 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                         children: [
                           Checkbox(
                             value: _handler
-                                .isDateChecked, // Control de estado de 'Fecha'
+                                .isDateDesdeChecked, // Control de estado de 'Fecha'
                             onChanged: (bool? value) {
                               setState(() {
-                                _handler.isDateChecked =
+                                _handler.isDateDesdeChecked =
                                     value ?? false; // Actualizamos el estado
                               });
                             },
                           ),
                           Text('Desde:'),
-                          if (_handler.selectedDate != null)
+                          if (_handler.selectedDateDesde != null)
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0),
                               child: Text(
-                                "${_handler.selectedDate!.day}/${_handler.selectedDate!.month}/${_handler.selectedDate!.year}",
+                                "${_handler.selectedDateDesde!.day}/${_handler.selectedDateDesde!.month}/${_handler.selectedDateDesde!.year}",
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.w500),
                               ),
@@ -92,7 +92,35 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                           // Botón para seleccionar fecha
                           IconButton(
                             icon: Icon(Icons.calendar_today),
-                            onPressed: () => _handler.selectDate(
+                            onPressed: () => _handler.selectDateDesde(
+                                context), // Llamamos a la función selectDate
+                          ),
+                          Spacer(),
+                          Checkbox(
+                            value: _handler
+                                .isDateHastaChecked, // Control de estado de 'Fecha'
+                            onChanged: (bool? value) {
+                              setState(() {
+                                _handler.isDateHastaChecked =
+                                    value ?? false; // Actualizamos el estado
+                              });
+                            },
+                          ),
+                          Text('Hasta:'),
+                          if (_handler.selectedDateHasta != null)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Text(
+                                "${_handler.selectedDateHasta!.day}/${_handler.selectedDateHasta!.month}/${_handler.selectedDateHasta!.year}",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          SizedBox(width: 5),
+                          // Botón para seleccionar fecha
+                          IconButton(
+                            icon: Icon(Icons.calendar_today),
+                            onPressed: () => _handler.selectDateHasta(
                                 context), // Llamamos a la función selectDate
                           ),
                         ],
@@ -130,16 +158,18 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
             _buildActionsRow(),
             SizedBox(height: 5),
             // Fila de pagos
-            _buildPagosLine(),
-            SizedBox(height: 5),
-            // Segunda tabla con nuevas columnas
-            _buildPaymentsTable(),
-            SizedBox(height: 5),
-            _buildActionSmallButtons(),
-            SizedBox(height: 5),
-            _buildHorizontalLine(),
-            SizedBox(height: 5),
-            _buildActionButtons(),
+            if (mostrarPagos) ...[
+              _buildPagosLine(),
+              SizedBox(height: 5),
+              // Segunda tabla con nuevas columnas
+              _buildPaymentsTable(),
+              SizedBox(height: 5),
+              _buildActionSmallButtons(),
+              SizedBox(height: 5),
+              _buildHorizontalLine(),
+              SizedBox(height: 5),
+              _buildActionButtons(),
+            ]
           ],
         ),
       ),
@@ -162,123 +192,137 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
     );
   }
 
-  // Método para construir la tabla
-  // Método para construir la tabla
 // Método para construir la tabla
-// Método para construir la tabla
-// Método para construir la tabla
-Widget _buildDataTable() {
-  return Expanded(
-    child: SingleChildScrollView(
-      child: SizedBox(
-        width: double.infinity, // Ancho completo de la pantalla
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical, // Permite desplazamiento vertical
-          child: DataTable(
-            columnSpacing: 20.0,
-            dataRowHeight: 24.0,
-            headingRowHeight: 24.0,
-            headingRowColor: MaterialStateProperty.all(AppColors.primary),
-            columns: [
-              DataColumn(
-                label: Checkbox(
-                  value: _handler.isSelectAll, // Estado global de selección
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _handler.toggleSelectAll(value ?? false); // Actualiza todos los checkboxes
-                    });
-                  },
-                ),
-              ),
-              DataColumn(label: Text('Nombre')),
-              DataColumn(label: Text('Cliente')),
-              DataColumn(label: Text('Vencimiento')),
-              DataColumn(label: Text('Monto')),
-              DataColumn(label: Text('Honorario')),
-            ],
-            rows: List.generate(10, (index) {
-              return DataRow(
-                cells: [
-                  DataCell(Checkbox(
-                    value: _handler.selectedRows[index], // Estado de cada fila
+  Widget _buildDataTable() {
+    return Expanded(
+      child: SingleChildScrollView(
+        child: SizedBox(
+          width: double.infinity, // Ancho completo de la pantalla
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical, // Permite desplazamiento vertical
+            child: DataTable(
+              columnSpacing: 20.0,
+              dataRowHeight: 24.0,
+              headingRowHeight: 24.0,
+              headingRowColor: MaterialStateProperty.all(AppColors.primary),
+              columns: [
+                DataColumn(
+                  label: Checkbox(
+                    value: _handler.isSelectAll, // Estado global de selección
                     onChanged: (bool? value) {
                       setState(() {
-                        _handler.toggleSelection(index, value ?? false); // Cambia el estado de la fila
+                        _handler.toggleSelectAll(
+                            value ?? false); // Actualiza todos los checkboxes
                       });
                     },
-                  )),
-                  DataCell(Text('Nombre ${index + 1}')),
-                  DataCell(Text('Cliente ${index + 1}')),
-                  DataCell(Text('01/01/2025')),
-                  DataCell(Text('\$500')),
-                  DataCell(Text('\$300')),
-                ],
-              );
-            }),
+                  ),
+                ),
+                DataColumn(label: Text('Nombre')),
+                DataColumn(label: Text('Cliente')),
+                DataColumn(label: Text('Vencimiento')),
+                DataColumn(label: Text('Monto')),
+                DataColumn(label: Text('Honorario')),
+                DataColumn(label: Text('Monto Pago')),
+              ],
+              rows: List.generate(10, (index) {
+                return DataRow(
+                  cells: [
+                    DataCell(Checkbox(
+                      value:
+                          _handler.selectedRows[index], // Estado de cada fila
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _handler.toggleSelection(index,
+                              value ?? false); // Cambia el estado de la fila
+                        });
+                      },
+                    )),
+                    DataCell(Text('Nombre ${index + 1}')),
+                    DataCell(Text('Cliente ${index + 1}')),
+                    DataCell(Text('01/01/2025')),
+                    DataCell(Text('\$500')),
+                    DataCell(Text('\$300')),
+                    DataCell(Text('\$400')),
+                  ],
+                );
+              }),
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-
-Widget _buildPaymentsTable() {
-  return Expanded(
-    child: SingleChildScrollView(
-      child: SizedBox(
-        width: double.infinity, // Ancho completo de la pantalla
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical, // Desplazamiento vertical
-          child: DataTable(
-            columnSpacing: 20.0,
-            dataRowHeight: 24.0,
-            headingRowHeight: 24.0,
-            headingRowColor: MaterialStateProperty.all(AppColors.primary),
-            columns: [
-              DataColumn(
-                label: Checkbox(
-                  value: _handler.isSelectAll2, // Estado global de selección
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _handler.toggleSelectAll2(value ?? false); // Cambia el estado de todos los checkboxes
-                    });
-                  },
-                ),
-              ),
-              DataColumn(label: Text('Nombre')),
-              DataColumn(label: Text('Pago')),
-              DataColumn(label: Text('Monto')),
-              DataColumn(label: Text('Fecha')),
-              DataColumn(label: Text('Comentario')),
-            ],
-            rows: List.generate(10, (index) {
-              return DataRow(
-                cells: [
-                  DataCell(Checkbox(
-                    value: _handler.selectedRows2[index], // Estado de cada fila
+  Widget _buildPaymentsTable() {
+    return Expanded(
+      child: SingleChildScrollView(
+        child: SizedBox(
+          width: double.infinity, // Ancho completo de la pantalla
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical, // Desplazamiento vertical
+            child: DataTable(
+              columnSpacing: 20.0,
+              dataRowHeight: 24.0,
+              headingRowHeight: 24.0,
+              headingRowColor: MaterialStateProperty.all(AppColors.primary),
+              columns: [
+                DataColumn(
+                  label: Checkbox(
+                    value: _handler.isSelectAll2, // Estado global de selección
                     onChanged: (bool? value) {
                       setState(() {
-                        _handler.toggleSelection2(index, value ?? false); // Actualiza el estado de la fila
+                        _handler.toggleSelectAll2(value ??
+                            false); // Cambia el estado de todos los checkboxes
                       });
                     },
-                  )),
-                  DataCell(Text('Pago ${index + 1}')),
-                  DataCell(Text('Pago ${index + 1}')),
-                  DataCell(Text('\$300')),
-                  DataCell(Text('01/01/2025')),
-                  DataCell(Text('Comentario ${index + 1}')),
-                ],
-              );
-            }),
+                  ),
+                ),
+                DataColumn(label: Text('Cliente')),
+                DataColumn(label: Text('Impuesto')),
+                DataColumn(label: Text('Monto pago')),
+                DataColumn(label: Text('Fecha de pago')),
+                DataColumn(label: Text('Red de cobranza')),
+                DataColumn(label: Text('Concepto')),
+                DataColumn(label: Text('Editar')),
+              ],
+              rows: List.generate(10, (index) {
+                return DataRow(
+                  cells: [
+                    DataCell(Checkbox(
+                      value:
+                          _handler.selectedRows2[index], // Estado de cada fila
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _handler.toggleSelection2(index,
+                              value ?? false); // Actualiza el estado de la fila
+                        });
+                      },
+                    )),
+                    DataCell(Text('Cliente ${index + 1}')),
+                    DataCell(Text('Impuesto ${index + 1}')),
+                    DataCell(Text('\$300')),
+                    DataCell(Text('01/01/2025')),
+                    DataCell(Text('Intendencia')),
+                    DataCell(Text('Concepto ${index + 1}')),
+                    DataCell(
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        iconSize: 18,
+                        onPressed: () {
+                          // Agregar lógica para editar el cliente
+                          // Aquí podrías abrir un formulario o un cuadro de diálogo
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
-
-
+    );
+  }
 
   // Método para construir la fila de acciones (botón de agregar y expansión)
   Widget _buildActionsRow() {
@@ -287,46 +331,123 @@ Widget _buildPaymentsTable() {
           .spaceBetween, // Acomoda los elementos en los extremos
       children: [
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            setState(() {
+              _handler.agregarRegistrosSeleccionados();
+            });
+          },
           child: Text('Agregar'),
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(30, 30), // Tamaño mínimo del botón
+            minimumSize: Size(30, 30),
           ),
         ),
         SizedBox(width: 10),
         // Reemplazamos ExpansionTile por ElevatedButton
         Container(
-          width: 550, // Ancho del contenedor con 300 de ancho
+          width: 550,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.0), // Bordes redondeados
-            color: AppColors.primary, // Usamos el color primario
+            borderRadius: BorderRadius.circular(12.0),
+            color: AppColors.primary,
           ),
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              minimumSize: Size(550, 35),
-              backgroundColor: AppColors.primary,
-              padding: EdgeInsets.symmetric(vertical: 10),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.center, // Centra el contenido
-              children: [
-                Text(
-                  'Armar cheque', // Texto del botón
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+          child: Row(
+            children: [
+              // Parte clickeable principal (que cambia el estado)
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      mostrarPagos =
+                          true; // Mostramos u ocultamos "Pagos depositados"
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.0),
+                      color: AppColors.primary,
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Armar cheque (${_handler.registrosAgregados.length})',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-                SizedBox(width: 5), // Espaciado entre el icono y el texto
-                Icon(Icons.keyboard_arrow_down,
-                    color: Colors.white), // Icono de flecha
-              ],
-            ),
+              ),
+              // Parte clickeable de la flecha (solo muestra el dropdown)
+              GestureDetector(
+                onTapDown: (TapDownDetails details) {
+                  final RenderBox overlay = Overlay.of(context)
+                      .context
+                      .findRenderObject() as RenderBox;
+
+                  showMenu(
+                    context: context,
+                    position: RelativeRect.fromRect(
+                      details.globalPosition & const Size(40, 40),
+                      Offset.zero & overlay.size,
+                    ),
+                    items: [
+                      PopupMenuItem(
+                        enabled: false,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 300,
+                            minWidth: 500,
+                            maxWidth: 500,
+                          ),
+                          child: Scrollbar(
+                            thumbVisibility: true,
+                            child: ListView.builder(
+                              itemCount: _handler.registrosAgregados.length,
+                              itemBuilder: (context, index) {
+                                final itemIndex =
+                                    _handler.registrosAgregados[index];
+                                return ListTile(
+                                  title: Text(
+                                    'Registro ${itemIndex + 1}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  trailing: IconButton(
+                                    icon:
+                                        Icon(Icons.delete, color: Colors.white),
+                                    onPressed: () {
+                                      setState(() {
+                                        _handler.eliminarRegistro(itemIndex);
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    color: AppColors.primary.withOpacity(0.95),
+                    elevation: 4,
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: Icon(Icons.keyboard_arrow_down, color: Colors.white),
+                ),
+              ),
+            ],
           ),
         ),
+
         SizedBox(width: 10),
         Row(
           children: [
@@ -348,7 +469,7 @@ Widget _buildPaymentsTable() {
       padding: EdgeInsets.all(5),
       color: AppColors.primary, // Usamos el color primario
       child: Text(
-        'Pagos',
+        'Pagos depositados',
         style: TextStyle(
             fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
         textAlign: TextAlign.center, // Centramos el texto
@@ -377,23 +498,7 @@ Widget _buildPaymentsTable() {
             ),
           ),
         ),
-        SizedBox(
-          width: 80, // Ancho reducido
-          height: 30, // Alto reducido
-          child: ElevatedButton(
-            onPressed: () {
-              // Acción para modificar
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              padding: EdgeInsets.zero, // Elimina el padding extra
-            ),
-            child: Text(
-              'Modificar',
-              style: TextStyle(fontSize: 12), // Texto más pequeño
-            ),
-          ),
-        ),
+        
       ],
     );
   }
@@ -448,6 +553,5 @@ Widget _buildPaymentsTable() {
     );
   }
 
-  // Método para construir la segunda tabla con las nuevas 
-  
+  // Método para construir la segunda tabla con las nuevas
 }
