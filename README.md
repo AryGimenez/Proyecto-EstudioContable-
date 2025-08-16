@@ -210,11 +210,6 @@ zsh
 
 
 
-
-
-
-
-
 ### Instalación de Docker y Docker Compose en Ubuntu/WSL
 
 A continuación se detallan los pasos recomendados para instalar Docker y Docker Compose en Ubuntu, tanto para desarrollo como para producción.  
