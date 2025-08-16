@@ -62,13 +62,13 @@ Sistema integral para gestión de pagos de impuestos y servicios en estudios con
 - Flutter SDK (versión estable)
 - MySQL 8.0+
 
-### -->ARY <Mejorar-ChatGPT> --- En caso de usar Windowus instalar WST 
+### -->ARY <Mejorar-ChatGPT> --- En caso de usar Windowus instalar WSL
 
 ## -->ARY <Mejorar-ChatGPT> --- Agrear una seccion para instalar terminal con gatchet que uso yo uso zwt 
 
 
 
-## -- Verson ChatGPT -- Corregir 
+## -- Version ChatGPT -- Corregir 
 
 ### Instalación en Windows
 
@@ -83,7 +83,7 @@ Para una terminal avanzada y personalizada, puedes instalar [zwt](https://github
 ### Proceso de Instalación
 ```bash
 # 1. Clonar repositorio
-git clone https://github.com/tu-usuario/apa-sa-sistema.git
+git clone https://github.com/tu-usuario/apa-sa-sistema.git  #Usar el repositorio correspondiente
 cd apa-sa-sistema
 
 # 2. Iniciar contenedores
