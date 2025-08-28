@@ -77,6 +77,22 @@ wsl --install Ubuntu
 
  **Recomendación:** Por compatibilidad y facilidad de uso, se recomienda trabajar en Ubuntu, que es el entorno principal utilizado en este proyecto.
 
+# Instalacion del Zsh
+
+```bash
+# Instalar Zsh
+sudo apt-get install zsh
+
+# Cambiar el shell por defecto a Zsh
+chsh -s $(which zsh)
+
+# Instalar Oh My Zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+# Reiniciar la terminal
+exec zsh
+```
+
 
 # Personalización del Tema en Zsh
 
@@ -104,6 +120,7 @@ zsh
 # Instalar plug-in para autocompletar en zsh
 
 ```bash
+mkdir ~/.zsh
 mkdir ~/.zsh/zsh-autosuggestions # Crear el directorio
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
 vim ~/.zshrc #modificar directorio de configuracion
