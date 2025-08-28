@@ -120,6 +120,13 @@ class MainScreen extends StatelessWidget {
       ),
     );
   }
+
+
+
+}
+
+
+  
   class NotificationModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -168,4 +175,4 @@ class MainScreen extends StatelessWidget {
     );
   }
 }
-}
+
