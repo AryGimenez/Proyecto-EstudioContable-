@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gestion_contable/screens/password_reset/password_reset_handler.dart';
 import 'package:flutter_gestion_contable/screens/main_website/main_handler.dart';
 import 'login_form.dart';
+import 'dart:convert'; // Importa para decodificación JSON
+import 'package:http/http.dart' as http;
+import 'dart:developer' as developer; // Importa para logging
 
 // LoginScreen es un StatefulWidget para manejar el estado del formulario de login.
 class LoginHandler extends StatefulWidget {
@@ -44,13 +47,42 @@ class _LoginHandlerState extends State<LoginHandler> {
   }
 
   // Método para manejar el envío del formulario (validación).
-  void _submitForm() {
-    if (_formKey.currentState?.validate() ?? false) {
-      // Aquí manejas el envío del formulario.
+  void _submitForm() async {
+  if (_formKey.currentState?.validate() ?? false) {
+    final Uri loginUrl = Uri.parse('http://127.0.0.1:8000/auth/login');
+    final String username = _userController.text;
+    final String password = _passwordController.text;
+
+    try {
+      final response = await http.post(
+        loginUrl,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'username': username,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        developer.log('Login exitoso!');
+        _mainScreen();
+      } else {
+        developer.log('Login fallido: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Usuario o contraseña incorrectos.')),
+        );
+      }
+    } catch (e) {
+      developer.log('Error de conexión: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo conectar al servidor.')),
+      );
     }
   }
-
-  void _resetPasswordFrom() {
+}
+  void _resetPasswordForm() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => PasswordResetHandler()),
@@ -82,7 +114,7 @@ class _LoginHandlerState extends State<LoginHandler> {
           onPasswordVisibilityToggle: _togglePasswordVisibility,
           onSubmit: _submitForm,
           onMainScreen: _mainScreen,
-          onResetPassword: _resetPasswordFrom,
+          onResetPassword: _resetPasswordForm,
         ),
       ),
     );

@@ -51,3 +51,8 @@ def delete_cliente(cliente_id: int, db: Session = Depends(get_db)):
     db.delete(db_cliente)
     db.commit()
     return db_cliente
+
+# Puedes añadir una ruta de bienvenida para probar que todo funciona.
+@router.get("/")
+def read_root():
+    return {"mensaje": "¡Bienvenido a la API de Estudio Contable!"}
