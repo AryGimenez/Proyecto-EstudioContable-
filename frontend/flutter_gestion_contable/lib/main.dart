@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
-import 'screensy/login/login_handler.dart';
+import 'screens/login/login_handler.dart';
 import 'package:http/http.dart' as http; // Import the http package
 import 'dart:convert'; // Import for JSON decoding
 
@@ -34,10 +34,10 @@ class _MyHomePageState extends State<MyHomePage> {
   String _backendResponse = 'Waiting for backend response...';
 
   Future<void> _fetchDataFromBackend() async {
-    final Uri apiUrl = Uri.parse('http://localhost:8000/'); // Replace with your backend URL
+    final Uri apiUrl = Uri.parse('http://localhost:8000/auth/login'); // Replace with your backend URL
 
     try {
-      final response = await http.get(apiUrl);
+      final response = await http.post(apiUrl);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);

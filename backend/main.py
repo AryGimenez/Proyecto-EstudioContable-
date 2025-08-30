@@ -1,63 +1,62 @@
+# Importaciones necesarias
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from backend.router import auth, clientes, impuestos, pagos, depositos, user
 from fastapi.middleware.cors import CORSMiddleware
-from backend.database import Base, engine
-from fastapi import FastAPI, Depends
-from backend.schemas.config import AppConfig
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from backend.database import get_db
+from fastapi import Depends
 
-Base.metadata.create_all(bind=engine)
+# Importa todas las dependencias del backend
+from backend.database import Base, engine, get_db
+from backend.schemas.config import AppConfig
 
+# Importa todos los enrutadores de tu API
+from backend.router import auth, clientes, impuestos, pagos, depositos, user
+
+# Inicializa la aplicación de FastAPI
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="frontend/flutter_gestion_contable/lib/"), name="static") # Ejemplo para un build de React
+# Crea las tablas de la base de datos si no existen
+Base.metadata.create_all(bind=engine)
 
-@app.get("/")
-async def read_root():
-    return Fileresponse("frontend/flutter_gestion_contable/lib/main.react") # Ajusta la ruta a tu index.html
-
-# Configuración de CORS (asegúrate de permitir el método POST para esta ruta)
+# Configuración de CORS
+# Esto permite que tu frontend de Flutter (que se ejecuta en un origen diferente) se comunique con el backend.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Permite cualquier origen (ajústalo en producción)
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Permite todos los métodos (GET, POST, etc.)
+    allow_headers=["*"],  # Permite todos los encabezados
 )
 
+# Incluye todos los enrutadores de tu API
 app.include_router(auth.router)
+app.include_router(clientes.router)
+app.include_router(impuestos.router)
+app.include_router(pagos.router)
+app.include_router(depositos.router)
+app.include_router(user.router)
 
-# app.include_router(users.router)
+# Ruta para la página principal
+# Esto sirve el archivo index.html que se crea cuando compilas la app de Flutter para la web.
+# Es el punto de entrada de tu aplicación.
+@app.get("/")
+async def read_root():
+    # Asegúrate de haber compilado tu app de Flutter para la web con `flutter build web`
+    return FileResponse("frontend/flutter_gestion_contable/build/web/index.html")
 
+# Sirve todos los archivos estáticos de la app de Flutter
+# Esto le dice a FastAPI dónde encontrar los archivos de la app (CSS, JS, imágenes).
+app.mount(
+    "/",
+    StaticFiles(directory="frontend/flutter_gestion_contable/build/web"),
+    name="flutter_app"
+)
+
+# Ruta de ejemplo para la configuración de conexión
 @app.post("/config/connect")
 async def connect_to_app(config: AppConfig, db: Session = Depends(get_db)):
     ip_address = config.ip_address
     port = config.port
     print(f"Intentando conectar a: {ip_address}:{port}")
-
-    # Aquí iría la lógica para intentar conectarse a la aplicación
-    # en la dirección IP y el puerto proporcionados.
-    # Esto podría involucrar:
-    # - Intentar una conexión de red (socket)
-    # - Hacer una petición HTTP a otra API
-    # - Conectarse a una base de datos en esa ubicación
-
-    # Por ahora, solo devolvemos un mensaje indicando que se recibió la configuración
     return {"message": f"Configuración recibida. Intentando conectar a {ip_address}:{port}"}
-Base.metadata.create_all(bind=engine)
-
-app = FastAPI()
-
-# Configuración de CORS para permitir peticiones desde tu frontend Flutter (en desarrollo)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # En producción, limita esto a los dominios de tu app
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.include_router(auth.router)
-# app.include_router(users.router) # Si tienes rutas de usuarios
