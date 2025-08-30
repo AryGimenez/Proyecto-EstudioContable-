@@ -155,3 +155,24 @@ Asegúrate de documentar y testear tus cambios.
 ## Licencia
 
 Este proyecto está bajo
+
+## Uvicorn
+
+tener el entorno venv para que funcione uvicorn correctamente.
+
+--- Comandos ---
+
+python -m venv venv  <---- crear entorno virtual venv
+source venv/bin/activate  # En Linux/Mac
+venv\Scripts\activate  # En Windows
+
+
+una vez abierto el venv por primera vez usar 
+
+pip install uvicorn
+pip install -r requirements.txt
+pip install fastapi <---  instalar fastapi
+
+cuando tengas todo instalado ya podras usar el comando de abajo
+
+uvicorn main:app --reload  <---- comando para abrir el servidor
