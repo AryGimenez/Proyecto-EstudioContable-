@@ -110,7 +110,7 @@ class LoginForm extends StatelessWidget {
       controller: userController,
       // Vincula el campo de texto con el controlador para gestionar su contenido.
 
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         labelText:
             'Usuario', // Etiqueta que indica al usuario qué debe ingresar en el campo (nombre de usuario).
         labelStyle: AppTextStyles.bodyText1,
@@ -121,7 +121,7 @@ class LoginForm extends StatelessWidget {
 
       validator: (value) {
         // Validador que verifica si el campo de usuario contiene texto válido.
-        if (value == null || value.isEmpty) {
+        if (value == null || value.trim().isEmpty) {
           // Si el valor está vacío o es nulo, muestra un mensaje de error.
           return 'Por favor ingrese su usuario';
         }
@@ -160,7 +160,7 @@ class LoginForm extends StatelessWidget {
 
       validator: (value) {
         // Validador que verifica si el campo de contraseña contiene texto válido.
-        if (value == null || value.isEmpty) {
+        if (value == null || value.trim().isEmpty) {
           // Si el valor está vacío o es nulo, muestra un mensaje de error.
           return 'Por favor ingrese su contraseña';
         }

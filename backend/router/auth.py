@@ -1,24 +1,65 @@
+# Importaciones necesarias para tu API
+# APIRouter para crear y organizar tus rutas.
+# HTTPException para manejar errores HTTP (como credenciales incorrectas).
+# Depends para la inyección de dependencias, lo que permite a FastAPI manejar objetos.
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend import database, models, schemas
-from backend.schemas import auth
-from backend.security import verify_password, get_password_hash
+
+# --ChatGPT Esto no tendira que ir o no entiendo dodne va 
+from backend.schemas import auth 
+# Importa tus utilidades de seguridad (donde está create_access_token y verify_password)
+from backend.security import verify_password, get_password_hash, create_access_token
+
 from backend.config import ACCESS_TOKEN_EXPIRE_MINUTES
+
+# Importaciones para manejar tokens de acceso (JWT)
 from datetime import timedelta
+
+# Esta es la parte que causa la confusión.
+# OAuth2PasswordRequestForm es una clase especial de FastAPI para manejar
+# los datos de un formulario de login (usuario y contraseña).
+# Cuando el cliente (tu app de Flutter) envía un formulario, FastAPI lo parsea automáticamente
+# en un objeto `form_data` que contiene `username` y `password`.
 from fastapi.security import OAuth2PasswordRequestForm
+
+# ChatGPT esto capas lo saco -- 
+# Esta importación es para simular un usuario en memoria.
+# No la tienes en tu código original, pero es clave para tu objetivo.
+from pydantic import BaseModel
+
+# Importa tus esquemas de usuario y autenticación
+from ..schemas import user as user_schema
+from ..schemas import auth as auth_schemas # Este es tu schemas/auth.py
+
+
+
 from backend.utils import generate_verification_code, send_verification_email  # Import utils
 from sqlalchemy.sql import func
 
+
+# Rutas de autenticación
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
-@router.post("/login")
+@router.post("/login") # Define un endpoint HTTP POST en la ruta /auth/login
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.username == form_data.username).first()
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Credenciales incorrectas")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = security.create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+    access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+
+
+
+
+
+
+
+
+
 
 @router.post("/password-reset/request")
 async def request_password_reset(request_data: schemas.auth.PasswordResetRequestSchema, db: Session = Depends(database.get_db)):

@@ -34,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _backendResponse = 'Waiting for backend response...';
 
   Future<void> _fetchDataFromBackend() async {
-    final Uri apiUrl = Uri.parse('http://localhost:8000/auth/login'); // Replace with your backend URL
+    final Uri apiUrl = Uri.parse('http://localhost:8000/login'); // Replace with your backend URL
 
     try {
       final response = await http.post(apiUrl);
