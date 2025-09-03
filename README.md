@@ -210,23 +210,6 @@ zsh
 ---
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### Instalación de Docker y Docker Compose en Ubuntu/WSL
 
 A continuación se detallan los pasos recomendados para instalar Docker y Docker Compose en Ubuntu, tanto para desarrollo como para producción.  
@@ -294,6 +277,115 @@ docker-compose --version
 ---
 
 > Estos pasos aseguran una instalación limpia y funcional de Docker y Docker Compose en
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Proceso de crear el entorno de desarrollo con docker.
+
+Nosotros por estándar lo que hacemos es crear un directorio en /home/project
+
+y  vinculamos el directorio del proyecto a /home/project/NombreProyecto para seguir un estandar. 
+
+tambien recomendamos crear un usuario  user-project group-project y darle permiso a el proyecto a fin de mantener la seguridad y un estandar para el entorno de produccion
+
+```bash
+  sudo ln -s /mnt/c/Users/argi_/Documents/GitHub/Proyecto-EstudioContable- /home/project/Proyecto-EstudioContable-
+```
+
+## Proceso para crear el entorno de desarrollo con Docker
+
+Por estándar, recomendamos organizar todos los proyectos en el directorio `/home/project` en el entorno de desarrollo y producción. Esto facilita la administración, el despliegue y el mantenimiento de los proyectos.
+
+Para mantener la seguridad y seguir buenas prácticas, sugerimos crear un usuario y un grupo específicos para cada proyecto. De esta forma, los archivos y procesos del proyecto estarán aislados y protegidos de otros usuarios del sistema.
+
+### Pasos recomendados
+
+1. **Crear el directorio estándar para proyectos, lo hacemos como administrador porque necesitamos permisos elevados en el directorio /home:**
+   ```bash
+   sudo mkdir -p /home/project 
+   ```
+
+2. **Crear un usuario y grupo para el proyecto:**
+   ```bash
+   sudo groupadd group-project
+   sudo useradd -m -g group-project user-project
+   ```
+
+3. **Corroborar que el usuario y grupo se crearon correctamente:**
+```bash
+   id user-project
+
+   # te va a dar un resultado como este
+   uid=1001(user-project) gid=1001(group-project) groups=1001(group-project)
+```
+
+   > Es correcto y recomendable crear un usuario y grupo dedicados para cada proyecto, ya que esto mejora la seguridad y facilita la gestión de permisos en el servidor.
+
+3. **Dar permisos al usuario y grupo sobre el directorio del proyecto:**
+   ```bash
+   sudo chown -R user-project:group-project /home/project/NombreProyecto
+   ```
+
+4. **Vincular el directorio del proyecto (por ejemplo, desde WSL) al estándar suele pedir perisos por lo que debes ejecutarlo como root:**
+   ```bash
+   sudo ln -s /mnt/c/Users/argi_/Documents/GitHub/Proyecto-Estudiocontabler- /home/project/Proyecto-Estudiocontabler-
+   ```
+
+5. **Dar permisos al usuario y grupo sobre el directorio del proyecto:**
+   ```bash
+   sudo chown -R user-project:group-project /home/project/Proyecto-Estudiocontabler-
+   ```
+
+
+
+/mnt/c/Users/argi_/Documents/GitHub/Proyecto-EstudioContable-
+/mnt/c/Users/argi_/Documents/GitHub/Proyecto-Estudiocontabler-
+
+
+
+
+
+---
+
+**Ventajas de esta organización:**
+- Permite estandarizar la estructura en todos los servidores y entornos de desarrollo.
+- Facilita el control de acceso y la administración de permisos.
+- Mejora la seguridad al aislar los archivos y
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

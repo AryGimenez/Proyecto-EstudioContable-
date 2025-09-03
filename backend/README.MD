@@ -164,7 +164,7 @@ tener el entorno venv para que funcione uvicorn correctamente.
 
 python -m venv venv  <---- crear entorno virtual venv
 source venv/bin/activate  # En Linux/Mac
-venv\Scripts\activate  # En Windows
+& venv\Scripts\activate.ps1  # En Windows
 
 
 una vez abierto el venv por primera vez usar 

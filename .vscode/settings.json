@@ -1,3 +1,7 @@
 {
+<<<<<<< HEAD
     "git.ignoreLimitWarning": true
+=======
+    "cmake.sourceDirectory": "C:/Users/argi_/Documents/GitHub/Proyecto-EstudioContable-/frontend/flutter_gestion_contable/linux"
+>>>>>>> a200ed656239a9cf91606b3cbb77ab0fef7327c6
 }
