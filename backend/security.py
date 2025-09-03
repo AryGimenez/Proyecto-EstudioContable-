@@ -1,8 +1,10 @@
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from typing import Union, Any
-from jose import jwt
-from backend.config import SECRET_KEY, ALGORITHM
+from typing import Union, Any, Optional
+from jose import jwt, JWTError
+
+# Aquí la importación, con la variable exacta.
+from backend.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 def create_access_token(
     subject: Union[str, Any], expires_delta: timedelta = None
@@ -10,7 +12,7 @@ def create_access_token(
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)  # Default expiration time
+        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)  # Default expiration time
     to_encode = {"exp": expire, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
