@@ -1,253 +1,128 @@
 // lib/screens/password_reset/password_reset_handler.dart
 
-// esta clase posee la logia de el Witget resetear Pasword
+import 'package:flutter/material.dart';
+// Importa el servicio que se comunica con tu backend (FastAPI).
+import 'package:flutter_gestion_contable/services/api_service.dart';
+// Importa el widget que define la apariencia del formulario.
+import 'package:flutter_gestion_contable/screens/password_reset/password_reset_form.dart'; 
 
-import 'package:flutter/material.dart'; // Importa el paquete de Flutter para usar widgets y funcionalidades de material design
-import 'password_reset_form.dart'; // Importa el formulario de restablecimiento de contraseña
-
-// Declara un StatefulWidget llamado PasswordResetHandler
+// Widget con estado que maneja la lógica y el estado de la pantalla.
 class PasswordResetHandler extends StatefulWidget {
-  const PasswordResetHandler({super.key}); // Constructor del widget
+  const PasswordResetHandler({Key? key}) : super(key: key);
 
   @override
-  _PasswordResetHandlerState createState() =>
-      _PasswordResetHandlerState(); // Crea el estado asociado a este widget
+  State<PasswordResetHandler> createState() => _PasswordResetHandlerState();
 }
 
-// Define la clase de estado para PasswordResetHandler
 class _PasswordResetHandlerState extends State<PasswordResetHandler> {
-  final _formKey = GlobalKey<
-      FormState>(); // Clave global para identificar el formulario y permitir la validación del formulario
-  final _emailController =
-      TextEditingController(); // Controlador para el campo de texto del correo electrónico
-  final _verificationCodeController =
-      TextEditingController(); // Controlador para el campo de texto del código de verificación
-  final _passwordController =
-      TextEditingController(); // Controlador para el campo de texto de la nueva contraseña
-  final _confirmPasswordController =
-      TextEditingController(); // Controlador para el campo de texto de confirmación de la nueva contraseña
+  // Controladores para obtener el texto de los campos del formulario.
+  final _emailController = TextEditingController();
+  final _codeController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  final _confirmNewPasswordController = TextEditingController();
   
-  bool _isPasswordVisible = false;
-  // Bandera que indica si la contraseña debe mostrarse o permanecer oculta.
+  // Instancia del servicio API para hacer las llamadas HTTP.
+  final ApiService _apiService = ApiService();
+  
+  // Variable de estado que controla qué "paso" del formulario se muestra (0 para email, 1 para código).
+  int _currentStep = 0;
 
-  bool _isVerificationCodeSent =
-      false; // Variable [booleana para verificar si el código de verificación ha sido enviado
-  bool _isCodeVerified =
-      false; // Variable booleana para verificar si el código ha sido verificado
-
-  // constante utilizasa para guardar el mensaje cuando el usurio no ingresa correo
-  static const String REQUIRE_EMAI_ERROR_MESSAG =
-      'Por favor ingrese su correo electrónico';
-
-  // constante utilizada para Guardar el mensjae de error al colocar un email sin el formato apropiado.
-  static const String EMAIL_INCORRECT_ERROR_MENSGE =
-      'Por favor ingrese un correo electrónico válido';
-
-  // Mensaje de error que va a mostrar el campo de texto email
-  String? emailErrorMensaje = null;
-
-  static const String CODE_VER_ERROR_MENSAJE =
-      'Por favor ingrese el código de verificación';
-
-  // Mensaje de error que va a mostra cuando el texto de codigo verificacion no es correcto
-  String? codeVerErrorMensaje = null;
-
-  static const String PASSWORD_ERROR_MESSAG =
-      'Por favor ingrese su nueva contraseña';
-
-  /// Mensaje de error que va a mostrar cuando el campo de pasword esta ma l
-  String? passwordErroMensaje = null;
-
-  static const String CONFIR_PASSWORD_ERROR_MENSAG =
-      'Por favor confirme su nueva contraseña';
-
-  static const String CONFIR_PASSWORD_ERROR_MENSAG_2 =
-      'Las contraseñas no coinciden';
-
-  /// Mensaje de error que va a mostra rcuando el campo de confirmar pasword no es correcto
-  String? configPasswordErrorMensaje = null;
-
-  @override
-  void dispose() {
-    _emailController
-        .dispose(); // Libera los recursos utilizados por los controladores cuando el widget es destruido
-    _verificationCodeController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-   // Método para alternar la visibilidad de la contraseña.
-  void _togglePasswordVisibility() {
-    setState(() {
-      _isPasswordVisible = !_isPasswordVisible;
-    });
-  }
-
-  /// Metodo que evalua si el email ingresado cumple los parametro y dispara el erro
-  /// el error en el TextFormatFile email
-  bool _emailValidator() {
-    String email = _emailController.text;
-    bool xRespuesta = false;
-    if (email == null || email.isEmpty) {
-      emailErrorMensaje = REQUIRE_EMAI_ERROR_MESSAG;
-    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
-      emailErrorMensaje = EMAIL_INCORRECT_ERROR_MENSGE;
-    } else {
-      emailErrorMensaje = null;
-      xRespuesta = true;
-    }
-    _formKey.currentState?.validate();
-
-    return xRespuesta; // Si la validación es exitosa, retorna null
-  }
-
-  // Metodo para pasar por al PasswordResetFrom para la validacion de email
-  String? _validateEmail(String? email) {
-    return emailErrorMensaje;
-  }
-
-  /// Metodo disaprado cuando presiono el boton enviar codigo validacion
-  void _sendCode() {
-    if (_emailValidator()) {
-      setState(() {
-        _isVerificationCodeSent =
-            true; // Actualiza el estado para indicar que el código ha sido verificado
-      });
-      // Aquí manejas la lógica de verificación del código
+  // Método para el primer paso: solicitar un código de reseteo.
+  void _requestPasswordReset() async {
+    final email = _emailController.text;
+    if (email.isEmpty || !email.contains('@')) {
+      _showSnackBar('Por favor, ingrese un correo válido.');
+      return;
     }
 
-    // // Metodo que se lanza cuando se presiona el boton enviar codigo
-    // if (_formKey.currentState?.validate() ?? false) {
-    //   setState(() {
-    //     _isVerificationCodeSent =
-    //         true; // Actualiza el estado para indicar que el código ha sido enviado
-    //   });
-    //   // Aquí envías el correo de verificación
-    // }
+    // Llama al método del ApiService para enviar la solicitud al backend.
+    final result = await _apiService.requestPasswordReset(email);
+    
+    // Verifica si el widget sigue montado antes de actualizar el estado.
+    if (mounted) {
+      if (result['success']) {
+        // Si la solicitud es exitosa, cambia al siguiente paso del formulario.
+        setState(() {
+          _currentStep = 1;
+        });
+        _showSnackBar('Código de verificación enviado al correo.');
+      } else {
+        _showSnackBar(result['message'] ?? 'Error al solicitar el código.');
+      }
+    }
   }
 
-  /// Metodo utilizado para validar el codigo de validacion y en caso de erro mandar
-  /// dispara el evento validation en el control
-  bool _codeVerifiedValidator() {
-    String? value = _verificationCodeController.text;
-    bool xRespuesta = false;
+  // Método para el segundo paso: confirmar el reseteo con el código y la nueva contraseña.
+  void _confirmPasswordReset() async {
+    final email = _emailController.text;
+    final code = _codeController.text;
+    final newPassword = _newPasswordController.text;
+    final confirmPassword = _confirmNewPasswordController.text;
 
-    // Validador que verifica si el campo de código contiene texto válido.
-    if (value == null || value.isEmpty) {
-      // Si el valor está vacío o es nulo, muestra un mensaje de error.
-      codeVerErrorMensaje = CODE_VER_ERROR_MENSAJE;
-    } else {
-      xRespuesta = true;
-      codeVerErrorMensaje = null;
+    if (code.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
+      _showSnackBar('Por favor, complete todos los campos.');
+      return;
     }
 
-    _formKey.currentState
-        ?.validate(); // lanza el evento validate en el formulario PaswordResetFrom
-    return xRespuesta; // Si el valor es válido, no retorna ningún error.
-  }
-
-  /// Metodo para pasar por al PasswordResetFrom para la validacion campo codigo
-  /// validacion
-  String? _validateCodeVerified(String? codeVer) {
-    return codeVerErrorMensaje;
-  }
-
-  /// Metoo que se lanza cuando preciona el botton Verificar Codigo
-  void _verifyCode() {
-    if (_codeVerifiedValidator()) {
-      // Falta Codigo Valiacion
-      setState(() {
-        _isCodeVerified =
-            true; // Avilita el ingreso de los campos password y confirmar password
-      });
+    if (newPassword != confirmPassword) {
+      _showSnackBar('Las contraseñas no coinciden.');
+      return;
     }
 
-    // Codigo anterior hay que sacarlo cuando corrobore que esta bien
-    // _isEmailValidator = true;
+    // Llama al método del ApiService para confirmar el reseteo con el backend.
+    final result = await _apiService.confirmPasswordReset(email, code, newPassword);
 
-    // if (_validateEmail(_emailController.text) != null) {
-    //   setState(() {
-    //     _isCodeVerified =
-    //         true; // Actualiza el estado para indicar que el código ha sido verificado
-    //   });
-    //   // Aquí manejas la lógica de verificación del código
-    // } else {
-    //   _formKey.currentState?.validate();
-    //   _isCodeVerified = false;
-    // }
-  }
-
-  bool _passwordValidator() {
-    String? value = _passwordController.text;
-    bool xRespuesta = false;
-
-    if (value == null || value.isEmpty) {
-      // si el valor esta vasio o es nulo, muestar un mensaje de error
-      passwordErroMensaje = PASSWORD_ERROR_MESSAG;
-    } else {
-      passwordErroMensaje = null;
-      xRespuesta = true;
+    if (mounted) {
+      if (result['success']) {
+        // Si la confirmación es exitosa, regresa a la pantalla anterior (login).
+        Navigator.of(context).pop();
+        _showSnackBar('Contraseña actualizada con éxito.');
+      } else {
+        _showSnackBar(result['message'] ?? 'Error al actualizar la contraseña.');
+      }
     }
-    _formKey.currentState
-        ?.validate(); // lanza el evento validar en el formulario ResetPasword
-    return xRespuesta;
   }
 
-  /// Metodo que se lanza cuando valida el campo Password
-  String? _validatePassword(String? mPassword) {
-    return passwordErroMensaje;
-  }
-
-
-
-  bool _passwordConfirmValidator() {
-    String? value = _confirmPasswordController.text;
-    bool xRespuesta = false;
-
-    if (value == null || value.isEmpty) {
-      // si el valor esta vasio o es nulo, muestar un mensaje de error
-      configPasswordErrorMensaje = CONFIR_PASSWORD_ERROR_MENSAG;
-    } else if (value != _passwordController.text) {
-      configPasswordErrorMensaje = CONFIR_PASSWORD_ERROR_MENSAG_2;
-    } else {
-      configPasswordErrorMensaje = null;
-      xRespuesta = true;
-    }
-    _formKey.currentState
-        ?.validate(); // lanza el evento validar en el formulario ResetPasword
-    return xRespuesta;
-  }
-
-  /// Metodo que se lanza cuando se presiona el boton de Resetear Contrasenia
-  void _submitForm() {
-    if (_passwordConfirmValidator()) {}
+  // Método auxiliar para mostrar mensajes en la parte inferior de la pantalla.
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    // Scaffold proporciona la estructura básica de la pantalla.
     return Scaffold(
       appBar: AppBar(
-          title: const Text(
-              'Restablecer Contraseña')), // Define la barra de la aplicación con un título
-      body: Padding(
-        padding: const EdgeInsets.all(
-            16.0), // Agrega un relleno alrededor del contenido principal
-        child: PasswordResetForm(
-            formKey: _formKey,
+        title: const Text('Restablecer Contraseña'),
+      ),
+      // SingleChildScrollView permite que la pantalla sea desplazable si el contenido es muy grande.
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          // Envía todos los controladores y métodos al widget del formulario.
+          child: PasswordResetForm(
+            currentStep: _currentStep,
             emailController: _emailController,
-            verificationCodeController: _verificationCodeController,
-            passwordController: _passwordController,
-            confirmPasswordController: _confirmPasswordController,
-            isVerificationCodeSent: _isVerificationCodeSent,
-            isCodeVerified: _isCodeVerified,
-            isPasswordVisible: _isPasswordVisible,
-            onPasswordVisibilityToggle: _togglePasswordVisibility,
-            onSendCode: _sendCode,
-            onVerifyCode: _verifyCode,
-            onSubmit: _submitForm,
-            onValidateEmail: _validateEmail),
+            codeController: _codeController,
+            newPasswordController: _newPasswordController,
+            confirmNewPasswordController: _confirmNewPasswordController,
+            onRequestReset: _requestPasswordReset,
+            onConfirmReset: _confirmPasswordReset,
+          ),
+        ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // Libera los recursos de los controladores de texto para evitar fugas de memoria.
+    _emailController.dispose();
+    _codeController.dispose();
+    _newPasswordController.dispose();
+    _confirmNewPasswordController.dispose();
+    super.dispose();
   }
 }

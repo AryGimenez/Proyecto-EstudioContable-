@@ -1,8 +1,12 @@
+// lib/screens/main_website/main_handler.dart
+
 import 'package:flutter/material.dart';
-import 'main_styles.dart'; // Importa los estilos personalizados
-import '../clients/clients_screen.dart'; // Pantalla de clientes
-import '../add_clients/add_clients.dart'; // Pantalla de agregar cliente
-import '../payments/payments_screen.dart'; // Pantalla de pagos
+import 'package:flutter_gestion_contable/core/theme/app_colors.dart';
+import 'package:flutter_gestion_contable/services/api_service.dart';
+import 'package:flutter_gestion_contable/screens/login/login_handler.dart';
+import '../clients/clients_screen.dart';
+import '../add_clients/add_clients.dart';
+import '../payments/payments_screen.dart';
 import '../deposits/deposits_screen.dart';
 import 'notification_modal.dart';
 
@@ -14,37 +18,50 @@ class MainHandler extends StatefulWidget {
 }
 
 class _MainHandlerState extends State<MainHandler> {
-  // Variable para almacenar el widget que se mostrará en el área principal
-  Widget _currentChild =
-      Center(child: Text('Bienvenido a la aplicación')); // Widget por defecto
-
-  // Variable para almacenar el título de la pantalla actual
+  // Widget que se mostrará en el área principal de la pantalla. Se inicializa en una pantalla de bienvenida.
+  Widget _currentChild = const Center(child: Text('Bienvenido a la aplicación')); 
+  // Título dinámico que se muestra en la barra superior.
   String _currentTitle = 'Bienvenido';
-
-  // Mapa para almacenar el estado de cada botón (si está seleccionado o no)
+  // Mapa que gestiona el estado de los botones de la barra lateral (seleccionado o no).
   Map<String, bool> _selectedMenuItem = {
     'Clientes': false,
     'Agregar Cliente': false,
     'Pagos': false,
     'Depósito': false,
-    'Salir': false,
+    'Salir': false, 
   };
 
-  // Método para cambiar el contenido dinámicamente y actualizar el título
+  // Instancia de ApiService para realizar la operación de cierre de sesión.
+  final ApiService _apiService = ApiService();
+
+  // Método para cambiar el contenido del área principal y el título de la barra superior.
   void _changeContent(Widget newContent, String title, String menuItem) {
     setState(() {
-      _currentChild = newContent; // Cambia el contenido
-      _currentTitle = title; // Cambia el título
-      _updateButtonSelection(
-          menuItem); // Actualiza el estado del botón seleccionado
+      _currentChild = newContent; 
+      _currentTitle = title;
+      _updateButtonSelection(menuItem);
     });
   }
 
-  // Método para actualizar el estado de los botones (marcar uno como seleccionado)
+  // Método para desmarcar todos los botones y marcar el que fue seleccionado.
   void _updateButtonSelection(String selectedItem) {
-    _selectedMenuItem
-        .updateAll((key, value) => false); // Desmarcar todos los botones
-    _selectedMenuItem[selectedItem] = true; // Marcar el botón seleccionado
+    _selectedMenuItem.updateAll((key, value) => false); 
+    _selectedMenuItem[selectedItem] = true;
+  }
+  
+  // Maneja la lógica de cierre de sesión.
+  void _logout() async {
+    // Llama al método del ApiService para eliminar el token de autenticación.
+    await _apiService.logout();
+    
+    // Navega a la pantalla de login y elimina todas las rutas de la pila de navegación
+    // para que el usuario no pueda regresar a la pantalla principal.
+    if (mounted) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const LoginHandler()),
+        (Route<dynamic> route) => false,
+      );
+    }
   }
 
   @override
@@ -52,7 +69,7 @@ class _MainHandlerState extends State<MainHandler> {
     return Scaffold(
       body: Column(
         children: [
-          // Barra superior que contiene el título y botones de notificación y menú
+          // Barra superior de la interfaz.
           Container(
             height: 60,
             color: AppColors.primary,
@@ -60,23 +77,20 @@ class _MainHandlerState extends State<MainHandler> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Título dinámico que cambia según la pantalla seleccionada
                 Text(
-                  _currentTitle, // Muestra el título actualizado
-                  style: TextStyle(
+                  _currentTitle,
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
                 Row(
                   children: [
-                    // Botón de notificaciones
                     ElevatedButton.icon(
                       onPressed: () {
                         showDialog(
                           context: context,
-                          builder: (context) =>
-                              NotificationModal(), // Llama al modal aquí
+                          builder: (context) => NotificationModal(),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -87,12 +101,10 @@ class _MainHandlerState extends State<MainHandler> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      icon:
-                          const Icon(Icons.notifications, color: Colors.white),
+                      icon: const Icon(Icons.notifications, color: Colors.white),
                       label: const SizedBox.shrink(),
                     ),
                     const SizedBox(width: 10),
-                    // Botón de menú
                     IconButton(
                       icon: const Icon(Icons.menu, color: Colors.white),
                       onPressed: () {},
@@ -102,12 +114,11 @@ class _MainHandlerState extends State<MainHandler> {
               ],
             ),
           ),
-
-          // Contenedor principal con barra lateral y contenido dinámico
+          // Área principal que contiene la barra lateral y el contenido dinámico.
           Expanded(
             child: Row(
               children: [
-                // Barra lateral con menú de navegación
+                // Barra lateral de navegación.
                 Container(
                   width: 250,
                   color: AppColors.primary,
@@ -117,45 +128,38 @@ class _MainHandlerState extends State<MainHandler> {
                       const CircleAvatar(
                         radius: 40,
                         backgroundColor: Colors.white,
-                        child:
-                            Icon(Icons.person, size: 40, color: Colors.brown),
+                        child: Icon(Icons.person, size: 40, color: Colors.brown),
                       ),
                       const SizedBox(height: 10),
                       const Text('Lorena Giménez',
                           style: TextStyle(color: Colors.white, fontSize: 18)),
                       const SizedBox(height: 20),
-                      // Botones de menú que cambian el contenido y el título
                       _buildMenuButton('Clientes', Icons.people, onPressed: () {
                         _changeContent(ClientsScreen(), 'Clientes', 'Clientes');
                       }),
                       _buildMenuButton('Agregar Cliente', Icons.person_add,
                           onPressed: () {
-                        _changeContent(AgregarClientesContent(),
-                            'Agregar Cliente', 'Agregar Cliente');
+                        _changeContent(AgregarClientesContent(), 'Agregar Cliente', 'Agregar Cliente');
                       }),
                       _buildMenuButton('Pagos', Icons.payment, onPressed: () {
                         _changeContent(PaymentsScreen(), 'Pagos', 'Pagos');
                       }),
                       _buildMenuButton('Depósito', Icons.account_balance,
                           onPressed: () {
-                        _changeContent(
-                            DepositsScreen(), 'Depósito', 'Depósito');
+                        _changeContent(DepositsScreen(), 'Depósito', 'Depósito');
                       }),
                       const Spacer(),
-                      // Botón de salir
+                      // El botón "Salir" llama al método _logout() para cerrar la sesión.
                       _buildMenuButton('Salir', Icons.exit_to_app, isExit: true,
-                          onPressed: () {
-                        // Acción de salir
-                      }),
+                          onPressed: _logout),
                     ],
                   ),
                 ),
-
-                // Contenido principal que cambia dependiendo de la pantalla seleccionada
+                // Contenido dinámico que cambia según el botón seleccionado.
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.all(16),
-                    child: _currentChild, // Aquí se muestra el widget actual
+                    child: _currentChild,
                   ),
                 ),
               ],
@@ -166,31 +170,29 @@ class _MainHandlerState extends State<MainHandler> {
     );
   }
 
-  // Botón de la barra lateral que se usa para cambiar de pantalla
+  // Widget para construir los botones del menú de la barra lateral.
   Widget _buildMenuButton(String title, IconData icon,
       {bool isExit = false, required VoidCallback onPressed}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
       child: SizedBox(
-        width: double.infinity, // Se ajusta al ancho del contenedor
+        width: double.infinity,
         child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
             backgroundColor: _selectedMenuItem[title] == true
-                ? Colors.white // Color del botón seleccionado
+                ? Colors.white
                 : (isExit
                     ? const Color(0xFF792D1F)
-                    : Colors
-                        .amber[200]), // Cambia el color si es el botón de salir
+                    : Colors.amber[200]),
             foregroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
-          onPressed: onPressed, // Acción que se ejecuta al presionar el botón
+          onPressed: onPressed,
           icon: Icon(icon, color: isExit ? Colors.white : AppColors.primary),
-          label: Text(title, // Texto del botón
-              style:
-                  TextStyle(color: isExit ? Colors.white : AppColors.primary)),
+          label: Text(title,
+              style: TextStyle(color: isExit ? Colors.white : AppColors.primary)),
         ),
       ),
     );

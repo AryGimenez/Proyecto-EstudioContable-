@@ -3,6 +3,7 @@
 # HTTPException para manejar errores HTTP (como credenciales incorrectas).
 # Depends para la inyección de dependencias, lo que permite a FastAPI manejar objetos.
 
+import uuid
 from sqlalchemy.orm import Session
 from backend import database, models, schemas
 
@@ -32,27 +33,19 @@ from pydantic import BaseModel
 # Importa tus esquemas de usuario y autenticación
 from ..schemas import user as user_schema
 from ..schemas import auth as auth_schemas # Este es tu schemas/auth.py
+from uuid import UUID
+# Asegura importar esquema para la solicitud
+from ..schemas.auth import PasswordResetRequestSchema, PasswordResetConfirm, PasswordResetVerifySchema
+from ..security import get_password_hash
 
 
-
+# Importaciones para manejar la verificación de correo electrónico
 from backend.utils import generate_verification_code, send_verification_email  # Import utils
 from sqlalchemy.sql import func
 
 
-
-
 # Rutas de autenticación
 router = APIRouter(prefix="/auth", tags=["authentication"])
-
-# @router.post("/login") # Define un endpoint HTTP POST en la ruta /auth/login
-# async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
-#     user = db.query(models.User).filter(models.User.username == form_data.username).first()
-#     if not user or not verify_password(form_data.password, user.hashed_password):
-#         raise HTTPException(status_code=400, detail="Credenciales incorrectas")
-#     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-#     access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
-#     return {"access_token": access_token, "token_type": "bearer"}
-
 
 # --- Base de datos de usuarios simulada en memoria ---
 # Usamos un diccionario para simular los datos del usuario.
@@ -60,12 +53,14 @@ fake_users_db = {
     "testuser": {
         "username": "testuser",
         "email": "test@example.com",
-        "hashed_password": "password123"
+        "password": "pass123",
+        "verification_code": None # Campo para guardar el código de verificación
     },
     "admin": {
         "username": "admin",
         "email": "admin@example.com",
-        "hashed_password": "adminpass"
+        "password": "adminpass",
+        "verification_code": None # Campo para guardar el código de verificación
     }
 }
 
@@ -78,79 +73,112 @@ def verify_password_in_memory(plain_password: str, stored_hashed_password: str) 
 @router.post("/token") #Usamos /token para el endpoint de login, como es la convecion OAuth2
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     # 1. Busca si el usuario exite en nuestra "base de datos" temporal
-    user_data = fake_users_db.get(form_data.username)
+    user_data = fake_users_db.get(form_data.username) # Intenta obtener el usuario
 
     if not user_data:
         # Si el usuario no existe, levanta una excepción de HTTP
-        raise HTTPException(
+            raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Credenciales inválidas",
+            detail="Credenciales incorrectas",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
     # 2. Verifica la contraseña usando nuestra función de prueba
-    if not verify_password_in_memory(form_data.password, user_data["hashed_password"]):
+    if not verify_password_in_memory(form_data.password, user_data["password"]):
         # Si la contraseña no coincide, levanta una excepción HTTP
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Credenciales inválidas",
+            detail="Credenciales incorrectas",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    # 3. Si la auutenticación es existosa, crea un token de acceso.
+    
+    # 3. Si la autenticación es existosa, crea un token de acceso.
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user_data["username"]},
-        expires_delta=access_token_expires
+        subject={"sub": user_data["username"]}, expires_delta=access_token_expires # cambie el data por subject, porque en security.py estaba como subject mientras aqui estaba en data, por eso daba error 500
+    #tener en cuenta a la hora de crear el access_token como esta llamado en security.py para no dar error de llamado
     )
 
     # 4. Devuelve el token de acceso al cliente.
     return {"access_token": access_token, "token_type": "bearer"}
 
-
+# Ruta para resetear contraseña
 
 @router.post("/password-reset/request")
-async def request_password_reset(request_data: schemas.auth.PasswordResetRequestSchema, db: Session = Depends(database.get_db)):
-    user = db.query(models.User).filter(models.User.email == request_data.email).first()
-    if user:
-        verification_code = generate_verification_code()
-        # Store the verification code in the database (you might want a separate table for this)
-        reset_request = models.PasswordResetRequest(
-            email=user.email,
-            token=verification_code,  # Using 'token' field for verification code for simplicity
-            user_id=user.id
-        )
-        db.add(reset_request)
-        db.commit()
-        # Send the verification code to the user's email
-        send_verification_email(user.email, verification_code)
-        return {"message": "Se ha enviado un código de verificación a tu correo electrónico."}
-    raise HTTPException(status_code=404, detail="No se encontró usuario con ese correo electrónico.")
+async def request_password_reset(request_data: PasswordResetRequestSchema):
+     # Busca el usuario por correo electrónico
+     user_found = False
+     for username, user_data in fake_users_db.items():
+          if user_data["email"] == request_data.email:
+            # Genera un código de verificación aleatorio (UUID para la prueba)
+            verification_code = str(uuid.uuid4())
+            user_data["verification_code"] = verification_code
+            user_found = True
+            print(f"Código de verificación para {user_data['email']}: {verification_code}")
+            break
+
+     if not user_found:
+         raise HTTPException(
+             status_code=404,
+             detail="Usuario no encontrado"
+         )
+     return {"message": "Código de verificación enviado al correo electrónico (simulado)"}
 
 @router.post("/password-reset/verify-code")
-async def verify_code(verification_data: schemas.auth.VerifyCodeSchema, db: Session = Depends(database.get_db)):
-    reset_request = db.query(models.PasswordResetRequest).filter(
-        models.PasswordResetRequest.token == verification_data.verification_code,
-        models.PasswordResetRequest.email == verification_data.email,
-        models.PasswordResetRequest.created_at > func.now() - timedelta(minutes=15)  # Optional: Code expiration
-    ).first()
-    if reset_request:
-        return {"message": "Código de verificación válido. Puedes restablecer tu contraseña."}
-    raise HTTPException(status_code=400, detail="Código de verificación inválido o expirado.")
+async def verify_password_reset_code(verify_data: PasswordResetVerifySchema):
+    # Busca el usuario por el código de verificación
+    user_data = None
+    for username, data in fake_users_db.items():
+        if data["email"] == verify_data.email:
+            user_data = data
+            print(f"Código de verificación para {data['email']} es válido.")
+            break
+    if not user_data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuario no encontrado"
+        )
+
+    if not user_data["verification_code"] != verify_data.verification_code:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Código de verificación no válido"
+        )
+
+    return {"message": "Código de verificado con éxito"}
 
 @router.post("/password-reset/confirm")
-async def confirm_password_reset(reset_data: schemas.auth.PasswordResetConfirm, db: Session = Depends(database.get_db)):
-    reset_request = db.query(models.PasswordResetRequest).filter(
-        models.PasswordResetRequest.token == reset_data.verification_code,
-        models.PasswordResetRequest.email == reset_data.email
-    ).first()
-    if reset_request:
-        user = db.query(models.User).filter(models.User.email == reset_request.email).first()
-        if user:
-            hashed_password = get_password_hash(reset_data.new_password)
-            user.hashed_password = hashed_password
-            db.delete(reset_request)  # Remove the used reset request
-            db.commit()
-            return {"message": "Contraseña restablecida exitosamente."}
-        raise HTTPException(status_code=404, detail="No se encontró usuario asociado a esta solicitud.")
-    raise HTTPException(status_code=400, detail="Solicitud de restablecimiento de contraseña inválida.")
+async def confirm_password_reset(confirm_data: PasswordResetConfirm):
+    if confirm_data.new_password != confirm_data.confirm_new_password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Las contraseñas no coinciden"
+        )
+
+    user_data = None
+    for username, data in fake_users_db.items():
+        if data["email"] == confirm_data.email:
+            user_data = data
+            break
+
+    if not user_data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuario no encontrado"
+        )
+    
+    if user_data["verification_code"] != confirm_data.verification_code:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Código de verificación inválido"
+        )
+    
+    # Hash de la nueva contraseña y actualización del diccionario
+    user_data["hashed_password"] = get_password_hash(confirm_data.new_password)
+    user_data["verification_code"] = None # Invalida el código de verificación
+    
+    return {"message": "Contraseña actualizada con éxito."}
+
+
+

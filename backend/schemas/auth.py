@@ -9,7 +9,7 @@ class UserLogin(BaseModel):
 class PasswordResetRequestSchema(BaseModel):
     email: EmailStr
 
-class VerifyCodeSchema(BaseModel):
+class PasswordResetVerifySchema(BaseModel):
     email: EmailStr
     verification_code: str
 
