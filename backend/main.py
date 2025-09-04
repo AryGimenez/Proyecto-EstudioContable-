@@ -11,10 +11,14 @@ from backend.database import Base, engine, get_db
 from backend.schemas.config import AppConfig
 
 # Importa todos los enrutadores de tu API
-from backend.router import auth, clientes, impuestos, pagos, depositos, user
+from backend.router import auth, clientes_fake_db, impuestos, pagos, depositos, user
 
 # Inicializa la aplicación de FastAPI
-app = FastAPI()
+app = FastAPI(
+    title="API de Gestión Contable",
+    description="API para gestionar clientes, impuestos, pagos y depósitos.",
+    version="1.0.0"
+)
 
 # Crea las tablas de la base de datos si no existen
 Base.metadata.create_all(bind=engine)
@@ -31,7 +35,7 @@ app.add_middleware(
 
 # Incluye todos los enrutadores de tu API
 app.include_router(auth.router)
-app.include_router(clientes.router)
+app.include_router(clientes_fake_db.router)
 app.include_router(impuestos.router)
 app.include_router(pagos.router)
 app.include_router(depositos.router)

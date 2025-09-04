@@ -10,7 +10,7 @@ from backend import database, models, schemas
 # --ChatGPT Esto no tendira que ir o no entiendo donde va 
 from backend.schemas import auth 
 # Importa tus utilidades de seguridad (donde está create_access_token y verify_password)
-from ..security import create_access_token, verify_password, ACCESS_TOKEN_EXPIRE_MINUTES
+from ..security import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 
 from backend.config import ACCESS_TOKEN_EXPIRE_MINUTES
 
@@ -24,6 +24,7 @@ from datetime import timedelta
 # en un objeto `form_data` que contiene `username` y `password`.
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Optional
 
 # ChatGPT esto capas lo saco -- 
 # Esta importación es para simular un usuario en memoria.
@@ -33,10 +34,11 @@ from pydantic import BaseModel
 # Importa tus esquemas de usuario y autenticación
 from ..schemas import user as user_schema
 from ..schemas import auth as auth_schemas # Este es tu schemas/auth.py
+from ..schemas import token
 from uuid import UUID
 # Asegura importar esquema para la solicitud
 from ..schemas.auth import PasswordResetRequestSchema, PasswordResetConfirm, PasswordResetVerifySchema
-from ..security import get_password_hash
+from ..security import get_password_hash, verify_password
 
 
 # Importaciones para manejar la verificación de correo electrónico
@@ -50,58 +52,57 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 # --- Base de datos de usuarios simulada en memoria ---
 # Usamos un diccionario para simular los datos del usuario.
 fake_users_db = {
-    "testuser": {
-        "username": "testuser",
-        "email": "test@example.com",
-        "password": "pass123",
+    "lorena": {
+        "id": 2,
+        "username": "lorena",
+        "email": "lorena.g@estudio.com",
+        "password": get_password_hash("pass123"),
+        "is_active": True,
         "verification_code": None # Campo para guardar el código de verificación
     },
     "admin": {
+        "id": 1,
         "username": "admin",
-        "email": "admin@example.com",
-        "password": "adminpass",
+        "email": "admin@estudio.com",
+        "password": get_password_hash("adminpass"),
+        "is_active": True,
         "verification_code": None # Campo para guardar el código de verificación
     }
 }
 
+def get_user(db, username: str):
+    """"Obtiene un usuario de la base de datos falsa por nombre de usuario."""
+    if username in fake_users_db:
+        user_dict = fake_users_db[username]
+        return user_schema.UserInDB(**user_dict)
+    return None
 
-# Función para verificar contraseñas sin un hash, solo para esta prueba
-def verify_password_in_memory(plain_password: str, stored_hashed_password: str) -> bool:
-    return plain_password == stored_hashed_password
+def authenticate_user(username: str, password: str):
+    """Verifica si las credenciales de un usuario son correctas."""
+    user = get_user(username)
+    if not user:
+        return False
+    if not verify_password(password, user["hashed_password"]):
+        return False
+    return user
 
-
-@router.post("/token") #Usamos /token para el endpoint de login, como es la convecion OAuth2
+@router.post("/token", response_model=token.Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    # 1. Busca si el usuario exite en nuestra "base de datos" temporal
-    user_data = fake_users_db.get(form_data.username) # Intenta obtener el usuario
+    """
+    Ruta para iniciar sesión y obtener un token de acceso
+    """
+    user_data = authenticate_user(form_data.username, form_data.password)
 
     if not user_data:
-        # Si el usuario no existe, levanta una excepción de HTTP
-            raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Credenciales incorrectas",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    
-    # 2. Verifica la contraseña usando nuestra función de prueba
-    if not verify_password_in_memory(form_data.password, user_data["password"]):
-        # Si la contraseña no coincide, levanta una excepción HTTP
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Credenciales incorrectas",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    
-    # 3. Si la autenticación es existosa, crea un token de acceso.
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        subject={"sub": user_data["username"]}, expires_delta=access_token_expires # cambie el data por subject, porque en security.py estaba como subject mientras aqui estaba en data, por eso daba error 500
-    #tener en cuenta a la hora de crear el access_token como esta llamado en security.py para no dar error de llamado
-    )
+    return {"accest_token": "token-falso-de-prueba", "token_type": "bearer"}
 
-    # 4. Devuelve el token de acceso al cliente.
-    return {"access_token": access_token, "token_type": "bearer"}
+
 
 # Ruta para resetear contraseña
 

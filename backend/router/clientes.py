@@ -12,7 +12,7 @@ router = APIRouter(
     dependencies=[Depends(get_db)]
 )
 
-@router.post("/", response_model=cliente.Cliente)  # Usa cliente.Cliente
+@router.post("/", response_model=cliente.Cliente, status_code=201)  # Usa cliente.Cliente
 def create_cliente(cliente_data: cliente.ClienteCreate, db: Session = Depends(get_db)):
     db_cliente = models.Cliente(**cliente_data.dict())
     db.add(db_cliente)

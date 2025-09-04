@@ -1,4 +1,6 @@
-from passlib.context import CryptContext
+# backend/security.py
+
+from passlib.context import CryptContext #Importacion para la encriptadora de contraseña
 from datetime import datetime, timedelta
 from typing import Union, Any, Optional
 from jose import jwt, JWTError
@@ -18,12 +20,16 @@ def create_access_token(
     return encoded_jwt
 
 
+
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
-
 def get_password_hash(password: str) -> str:
+    """Cifra una contraseña de texto plano."""
     return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verifica si una contraseña de texto plano coincide con una encriptada."""
+    return pwd_context.verify(plain_password, hashed_password)
 
 # ... (Otras funciones relacionadas con la seguridad como la creación de tokens JWT)

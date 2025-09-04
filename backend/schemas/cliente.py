@@ -1,6 +1,6 @@
 # schemas/cliente.py
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, List
 
 class ClienteBase(BaseModel):
     nombre_completo: str
