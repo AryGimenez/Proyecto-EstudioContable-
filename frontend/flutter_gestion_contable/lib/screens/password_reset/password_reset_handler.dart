@@ -26,6 +26,9 @@ class _PasswordResetHandlerState extends State<PasswordResetHandler> {
       TextEditingController(); // Controlador para el campo de texto de la nueva contraseña
   final _confirmPasswordController =
       TextEditingController(); // Controlador para el campo de texto de confirmación de la nueva contraseña
+  
+  bool _isPasswordVisible = false;
+  // Bandera que indica si la contraseña debe mostrarse o permanecer oculta.
 
   bool _isVerificationCodeSent =
       false; // Variable [booleana para verificar si el código de verificación ha sido enviado
@@ -72,6 +75,13 @@ class _PasswordResetHandlerState extends State<PasswordResetHandler> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+   // Método para alternar la visibilidad de la contraseña.
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordVisible = !_isPasswordVisible;
+    });
   }
 
   /// Metodo que evalua si el email ingresado cumple los parametro y dispara el erro
@@ -189,6 +199,8 @@ class _PasswordResetHandlerState extends State<PasswordResetHandler> {
     return passwordErroMensaje;
   }
 
+
+
   bool _passwordConfirmValidator() {
     String? value = _confirmPasswordController.text;
     bool xRespuesta = false;
@@ -229,6 +241,8 @@ class _PasswordResetHandlerState extends State<PasswordResetHandler> {
             confirmPasswordController: _confirmPasswordController,
             isVerificationCodeSent: _isVerificationCodeSent,
             isCodeVerified: _isCodeVerified,
+            isPasswordVisible: _isPasswordVisible,
+            onPasswordVisibilityToggle: _togglePasswordVisibility,
             onSendCode: _sendCode,
             onVerifyCode: _verifyCode,
             onSubmit: _submitForm,

@@ -1,0 +1,12 @@
+# ----- Falta Terminar Ary 
+version: '3.8'
+
+services:
+  web:
+    build: .
+    volumes:
+      - /home/project:/usr/src/app
+    ports:
+      - "8000:3000"
+    working_dir: /usr/src/app
+    user: "user_project"

@@ -19,6 +19,10 @@ class PasswordResetForm extends StatelessWidget {
       passwordController; // Controlador para gestionar el texto ingresado en el campo de nueva contraseña.
   final TextEditingController
       confirmPasswordController; // Controlador para gestionar el texto ingresado en el campo de confirmación de contraseña.
+  final bool
+      isPasswordVisible; // Aquí estamos recibiendo el parámetro para visibilidad
+  final VoidCallback
+      onPasswordVisibilityToggle; // Aquí estamos recibiendo la función que cambia la visibilidad
 
 // Variable que talves use para poder validar el campo desde afuer estoy probando
 //  TextFormField buildEmailField;
@@ -46,6 +50,8 @@ class PasswordResetForm extends StatelessWidget {
       required this.isVerificationCodeSent,
       required this.isCodeVerified,
       required this.onSendCode,
+      required this.isPasswordVisible, // Asegúrate de recibir este parámetro
+      required this.onPasswordVisibilityToggle, // Asegúrate de recibir la función
       required this.onVerifyCode,
       required this.onSubmit,
       required this.onValidateEmail});
@@ -72,7 +78,7 @@ class PasswordResetForm extends StatelessWidget {
               children: [
                 Text(
                   // Título del formulario
-                  'Restableser Contraseña',
+                  'Restablecer Contraseña',
                   style: AppTextStyles.headline1, // Estilo H1
                 ),
                 verticalSpaceLarge, // Espaciado entre el título y el formulario, definido en login_Styles.dart
@@ -116,7 +122,7 @@ class PasswordResetForm extends StatelessWidget {
           labelText:
               'Correo Electrónico', // Etiqueta que indica al usuario qué debe ingresar en el campo.
           prefixIcon: Icon(Icons
-              .email), // Icono de correo que aparece al inicio del campo de texto como referencia visual.
+              .alternate_email), // Icono de correo que aparece al inicio del campo de texto como referencia visual.
         ),
         validator: onValidateEmail
 
@@ -192,11 +198,19 @@ class PasswordResetForm extends StatelessWidget {
       controller:
           passwordController, // Vincula el campo de texto con el controlador para gestionar su contenido.
       decoration: InputDecoration(
-        labelText:
-            'Nueva Contraseña', // Etiqueta que indica al usuario que debe ingresar su nueva contraseña.
-        prefixIcon: Icon(Icons
-            .lock), // Icono de candado que aparece al inicio del campo como referencia visual.
-      ),
+          labelText:
+              'Nueva Contraseña', // Etiqueta que indica al usuario que debe ingresar su nueva contraseña.
+          prefixIcon: Icon(Icons.lock),
+          // Icono de candado que aparece al inicio del campo como referencia visual.
+          suffixIcon: IconButton(
+            // Botón que alterna la visibilidad de la contraseña.
+            icon: Icon(
+              isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+              // Cambia el icono según el estado de visibilidad de la contraseña.
+            ),
+            onPressed: onPasswordVisibilityToggle,
+            // Llama a la función para alternar la visibilidad de la contraseña.
+          )),
       obscureText: true, // Oculta el texto del campo para mayor seguridad.
 
       validator: (value) {
@@ -219,12 +233,21 @@ class PasswordResetForm extends StatelessWidget {
       controller:
           confirmPasswordController, // Vincula el campo de texto con el controlador para gestionar su contenido.
       decoration: InputDecoration(
-        labelText:
-            'Confirmar Nueva Contraseña', // Etiqueta que indica al usuario que debe confirmar su nueva contraseña.
-        prefixIcon: Icon(Icons
-            .lock), // Icono de candado que aparece al inicio del campo como referencia visual.
-      ),
-      obscureText: true, // Oculta el texto del campo para mayor seguridad.
+          labelText:
+              'Confirmar Nueva Contraseña', // Etiqueta que indica al usuario que debe confirmar su nueva contraseña.
+          prefixIcon: Icon(Icons
+              .lock), // Icono de candado que aparece al inicio del campo como referencia visual.
+          suffixIcon: IconButton(
+            // Botón que alterna la visibilidad de la contraseña.
+            icon: Icon(
+              isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+              // Cambia el icono según el estado de visibilidad de la contraseña.
+            ),
+            onPressed: onPasswordVisibilityToggle,
+            // Llama a la función para alternar la visibilidad de la contraseña.
+          )),
+      obscureText:
+          !isPasswordVisible, // Oculta el texto del campo para mayor seguridad.
       validator: (value) {
         // Validador que verifica si el campo de confirmación contiene texto válido.
         if (value == null || value.isEmpty) {
@@ -236,8 +259,8 @@ class PasswordResetForm extends StatelessWidget {
         }
         return null; // Si el valor es válido, no retorna ningún error.
       },
-
-      enabled: isCodeVerified, // Deshabildf
+      enabled:
+          isCodeVerified, // Deshabilita el campo si el código no se ha verificado.
     );
   }
 
@@ -247,7 +270,7 @@ class PasswordResetForm extends StatelessWidget {
       onPressed: isCodeVerified
           ? onSubmit
           : null, // Llama al callback para restablecer la contraseña si el código ha sido verificado.
-      child: Text('Cambiar Contraseña'),
+      child: Text('Restablecer Contraseña'),
     );
   }
 }

@@ -1,0 +1,9 @@
+description: This file stores settings for Dart & Flutter DevTools.
+documentation: https://docs.flutter.dev/tools/devtools/extensions#configure-extension-enablement-states
+extensions:
+  - name: "Flutter Inspector"
+    enabled: true
+  - name: "Dart DevTools"
+    enabled: true
+  - name: "Performance Overlay"
+    enabled: false
