@@ -1,6 +1,7 @@
 # schemas/cliente.py
 from pydantic import BaseModel, EmailStr
 from typing import Optional
+from datetime import date
 
 class ClienteBase(BaseModel):
     nombre_completo: str
@@ -9,6 +10,7 @@ class ClienteBase(BaseModel):
     whatsapp: Optional[str] = None
     saldo: Optional[float] = None
     direccion: Optional[str] = None
+    id: Optional[int] = None
 
 class ClienteCreate(ClienteBase):
     pass

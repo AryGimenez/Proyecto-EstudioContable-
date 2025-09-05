@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
 from backend import database, models, schemas
 from backend.dependencies import get_db
+from backend.servicios.servicio_contable import ServicioContable
+from backend.repositorios.cliente_repositorio import ClienteRepository as cliente_repositorio
 from backend.schemas import cliente  # Importa el módulo cliente.py
 
 router = APIRouter(
@@ -12,13 +14,11 @@ router = APIRouter(
     dependencies=[Depends(get_db)]
 )
 
-@router.post("/", response_model=cliente.Cliente)  # Usa cliente.Cliente
+@router.post("/", response_model=cliente.Cliente, status_code=201)  # Usa cliente.Cliente
 def create_cliente(cliente_data: cliente.ClienteCreate, db: Session = Depends(get_db)):
-    db_cliente = models.Cliente(**cliente_data.dict())
-    db.add(db_cliente)
-    db.commit()
-    db.refresh(db_cliente)
-    return db_cliente
+    # 1. El backend recibe los datos SIN el ID
+    repo = ClienteRepository(db)
+    return repo.create(cliente_data)
 
 @router.get("/", response_model=List[cliente.Cliente])  # Usa cliente.Cliente
 def read_clientes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
@@ -27,7 +27,10 @@ def read_clientes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 
 @router.get("/{cliente_id}", response_model=cliente.Cliente)  # Usa cliente.Cliente
 def read_cliente(cliente_id: int, db: Session = Depends(get_db)):
-    db_cliente = db.query(models.Cliente).filter(models.Cliente.id == cliente_id).first()
+    # Se usa el repositorio en lugar de la consulta directa
+    repo = cliente_repositorio(db)
+    db_cliente = repo.get_by_id(cliente_id)
+
     if db_cliente is None:
         raise HTTPException(status_code=404, detail="Cliente no encontrado")
     return db_cliente

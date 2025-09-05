@@ -176,3 +176,32 @@ pip install fastapi <---  instalar fastapi
 cuando tengas todo instalado ya podras usar el comando de abajo
 
 uvicorn main:app --reload  <---- comando para abrir el servidor
+
+Patrones de Diseño Utilizados
+Para garantizar que el proyecto sea escalable, mantenible y robusto, se han implementado dos patrones de diseño clave: el Patrón Repositorio y el Patrón Façade (Fachada).
+
+Patrón Repositorio 💾
+El Patrón Repositorio actúa como una capa de abstracción entre la lógica de negocio de la aplicación y la capa de acceso a datos (en este caso, la base de datos MySQL).
+
+Propósito: Centralizar todas las operaciones CRUD (Crear, Leer, Actualizar, Eliminar) en un solo lugar. Esto significa que las funciones de la API ya no interactúan directamente con la base de datos (db.query), sino que delegan esa responsabilidad al Repositorio.
+
+Beneficios:
+
+Modularidad: Las rutas de la API se mantienen limpias y se enfocan únicamente en manejar peticiones HTTP.
+
+Mantenibilidad: Si en el futuro se cambia la tecnología de la base de datos (por ejemplo, de MySQL a PostgreSQL), solo se necesita modificar el código dentro del Repositorio, sin tocar las rutas de la API.
+
+Reutilización: La lógica de consulta a la base de datos puede ser reutilizada fácilmente en diferentes partes del proyecto.
+
+Patrón Façade (Fachada) 🏛️
+El Patrón Façade proporciona una interfaz simplificada para un subsistema complejo. Es especialmente útil para agrupar múltiples operaciones relacionadas en una única llamada, ocultando la complejidad subyacente.
+
+Propósito: Simplificar la interacción del cliente con el sistema. En lugar de que el Cliente tenga que realizar varias llamadas a diferentes repositorios (por ejemplo, ClienteRepository, PagoRepository, ImpuestoRepository) para obtener toda su información, el Façade maneja todo ese proceso internamente.
+
+Beneficios:
+
+Simplificación: El cliente de la API (por ejemplo, la aplicación Flutter) solo necesita hacer una única llamada para obtener toda la información relevante de un cliente, como sus datos personales, pagos e impuestos.
+
+Coherencia: Garantiza que las operaciones complejas siempre se realicen de la misma manera.
+
+Bajo Acoplamiento: Aísla el código del cliente de la API de la complejidad del backend, lo que facilita los cambios futuros.
