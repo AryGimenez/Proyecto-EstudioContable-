@@ -9,7 +9,7 @@ class ImpuestoRepository:
         self.db = db
 # Obtiene un impuesto por ID
     def get_by_id(self, impuesto_id: int):
-        return self.db.query(models.Impuesto).filter(models.Impuesto.id == impuesto_id).first()
+        return self.db.query(models.Impuesto).filter(models.Impuesto.Imp_ID == impuesto_id).first()
 # Obtiene todos los impuestos
     def get_all(self, skip: int = 0, limit: int = 100):
         return self.db.query(models.Impuesto).offset(skip).limit(limit).all()

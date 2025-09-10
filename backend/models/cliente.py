@@ -15,7 +15,7 @@ class Cliente(Base):
     Cli_Email: Mapped[str] = mapped_column(String(45))
     Cli_Whatsapp: Mapped[str] = mapped_column(String(45))
     Cli_Contacto: Mapped[str] = mapped_column(String(45)) # El nombre de la columna debe ser Cli_DatoContacto
-    Cli_FechNac: Mapped[Date] = mapped_column(Date) # El nombre de la columna debe ser Cli_FechNas
+    Cli_FechaNac: Mapped[Date] = mapped_column(Date) # El nombre de la columna debe ser Cli_FechNas
     Cli_Saldo: Mapped[float] = mapped_column(Float)
 
 #   Relationship para que funcione solo con buscar el id del cliente

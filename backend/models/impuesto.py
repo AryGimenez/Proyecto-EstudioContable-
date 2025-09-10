@@ -12,6 +12,7 @@ class FrecuenciaImpuesto(enum.Enum):
     trimestral = "trimestral"
     anual = "anual"
 
+
 class Impuesto(Base):
     __tablename__ = "Impuesto"
 
@@ -29,4 +30,5 @@ class Impuesto(Base):
 
     # Relación con el modelo Cliente
     # back_populates crea una conexión bidireccional, permitiendo acceder a los impuestos desde el cliente y viceversa
+
     # cliente: Mapped["Cliente"] = relationship(back_populates="Impuesto")

@@ -28,8 +28,8 @@ app.add_middleware(
 app.include_router(users.router)
 app.include_router(clientes.router)
 app.include_router(impuestos.router)
-app.include_router(pagos.router)
-app.include_router(depositos.router)
+# app.include_router(pagos.router)
+# app.include_router(depositos.router)
 
 # Ruta de bienvenida simplificada
 @app.get("/", response_class=HTMLResponse)
