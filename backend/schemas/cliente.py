@@ -1,23 +1,31 @@
-# schemas/cliente.py
+# backend/schemas/cliente.py
+
 from pydantic import BaseModel, EmailStr
-from typing import Optional, List
+from typing import Optional
+from datetime import date
 
 class ClienteBase(BaseModel):
-    nombre_completo: str
-    email: Optional[EmailStr] = None
-    contacto: Optional[str] = None
-    whatsapp: Optional[str] = None
-    saldo: Optional[float] = None
-    direccion: Optional[str] = None
+    Cli_Nom: Optional[str] = None
+    Cli_Dir: Optional[str] = None
+    Cli_Email: Optional[EmailStr] = None
+    Cli_Whatsapp: Optional[str] = None
+    Cli_Contacto: Optional[str] = None
+    Cli_FechaNac: Optional[date] = None
+    Cli_Saldo: Optional[float] = 0.0
 
 class ClienteCreate(ClienteBase):
     pass
 
 class ClienteUpdate(ClienteBase):
-    pass
-
+    Cli_Nom: Optional[str] = None
+    Cli_Dir: Optional[str] = None
+    Cli_Email: Optional[EmailStr] = None
+    Cli_Whatsapp: Optional[str] = None
+    Cli_DatoContacto: Optional[str] = None
+    Cli_FechNas: Optional[date] = None
+    Cli_Saldo: Optional[float] = None
 class Cliente(ClienteBase):
-    id: int
+    Cli_ID: int
 
     class Config:
         orm_mode = True

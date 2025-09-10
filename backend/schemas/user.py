@@ -23,7 +23,7 @@ class UsuarioUpdate(UsuarioBase):
     usuario_rol: Optional[str] = None
 
 # Esquema para leer/devolver un usuario (incluye el ID, pero no la contraseña)
- 
+
 class Usuario(UsuarioBase):
     usuario_id: int # El ID generado por la base de datos
     is_active: bool = True  # Campo para indicar si el usuario está activo

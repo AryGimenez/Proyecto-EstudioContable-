@@ -47,10 +47,13 @@ def update_user(usuario_id: int, user_data: user.UsuarioUpdate, db: Session = De
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return db_user
 
-@router.delete("/{usuario_id}", response_model=user.Usuario)
+@router.delete("/{usuario_id}", status_code=status.HTTP_200_OK)
 def delete_user(usuario_id: int, db: Session = Depends(get_db)):
     repo = UsuarioRepository(db)
-    db_user = repo.delete(usuario_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
-    return db_user
+    deleted_user = repo.delete(usuario_id)
+    if deleted_user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuario no encontrado"
+        )
+    return {"message": f"Usuario con ID {usuario_id} eliminado correctamente."}
