@@ -4,6 +4,7 @@ from passlib.context import CryptContext #Importacion para la encriptadora de co
 from datetime import datetime, timedelta
 from typing import Union, Any, Optional
 from jose import jwt, JWTError
+from fastapi import HTTPException, status
 
 # Aquí la importación, con la variable exacta.
 from backend.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
@@ -19,6 +20,16 @@ def create_access_token(
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+def verify_access_token(token: str) -> Optional[str]:
+    """Verifica un token JWT y devuelve el 'subject' (nombre de usuario) si es válido."""
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            return None # No hay 'subject' en el token
+        return username
+    except JWTError:
+        return None # El token es inválido
 
 
 

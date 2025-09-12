@@ -1,16 +1,26 @@
-# models/deposito.py
-from sqlalchemy import Column, Integer, Float, ForeignKey, Date, String
-from sqlalchemy.orm import relationship
+# backend/models/deposito.py
+
+from sqlalchemy import Column, Integer, Float, Date, String, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from datetime import date
+# Asume que la base viene de tu configuracion de SQLAlchemy
 from backend.database import Base
-from sqlalchemy.sql import func
+
+
+from backend.models.cliente import Cliente
 
 class Deposito(Base):
-    __tablename__ = "depositos"
+    __tablename__ = "Depositos"
 
-    id = Column(Integer, primary_key=True, index=True)
-    monto = Column(Float)
-    fecha = Column(Date, default=func.now())
-    concepto = Column(String)
-    cliente_id = Column(Integer, ForeignKey("clientes.id"))
+    Dep_ID: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    Dep_Fecha: Mapped[date] = mapped_column(Date, default=date.today)
+    Dep_Monto: Mapped[float] = mapped_column(Float)
+    Dep_Moneda: Mapped[str] = mapped_column(String(5), default="USD")
+    Dep_Referencia: Mapped[str] = mapped_column(String(100), nullable=True)
 
-    cliente = relationship("Cliente", back_populates="depositos")
+
+    Cli_ID: Mapped[int] = mapped_column(Integer, ForeignKey("Cliente.Cli_ID"))
+    cliente: Mapped["Cliente"] = relationship (back_populates="depositos")
+
+    def __repr__(self):
+        return f"<Deposito ID: {self.Dep_ID}, Monto: {self.Dep_Monto}, Cliente: {self.Cli_ID}>"

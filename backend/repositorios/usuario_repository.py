@@ -24,15 +24,15 @@ class UsuarioRepository:
 
     def create(self, usuario_data: schemas.user.UsuarioCreate):
         # La verificación de duplicados es buena, pero el commit puede fallar por otras razones
-        if self.get_by_username(usuario_data.usuario_nombre):
+        if self.get_by_username(usuario_data.username):
             return None
-        if self.get_by_email(usuario_data.usuario_email):
+        if self.get_by_email(usuario_data.email):
             return None
 
-        hashed_password = get_password_hash(usuario_data.usuario_contraseña)
+        hashed_password = get_password_hash(usuario_data.password)
         db_usuario = models.Usuario(
-            usuario_nombre=usuario_data.usuario_nombre,
-            usuario_email=usuario_data.usuario_email,
+            usuario_nombre=usuario_data.username,
+            usuario_email=usuario_data.email,
             # Asegúrate de que esta columna pueda almacenar la contraseña hasheada
             usuario_contraseña=hashed_password,
             usuario_rol=usuario_data.usuario_rol

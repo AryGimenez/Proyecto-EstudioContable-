@@ -21,6 +21,9 @@ class Cliente(Base):
 #   Relationship para que funcione solo con buscar el id del cliente
 #   sirve para no tener que buscar de 1 en 1.
 
-    # impuestos: Mapped[List["Impuesto"]] = relationship(back_populates="Cliente")
-    # pagos: Mapped[List["Pago"]] = relationship(back_populates="cliente")
-    # depositos: Mapped[List["Deposito"]] = relationship(back_populates="cliente")
+    impuestos: Mapped[List["Impuesto"]] = relationship(back_populates="cliente")
+    pagos: Mapped[List["Pago"]] = relationship(back_populates="cliente")
+    depositos: Mapped[List["Deposito"]] = relationship(back_populates="cliente")
+
+    def __repr__(self):
+        return f"<Cliente ID: {self.Cli_ID}, Nombre: {self.Cli_Nom}>"

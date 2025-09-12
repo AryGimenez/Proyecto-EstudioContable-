@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import relationship, Mapped, mapped_column
+from typing import List
 import enum
 
 from backend.database import Base
@@ -27,8 +28,10 @@ class Impuesto(Base):
     # Clave foránea para la relación con el cliente
     # La clave foránea se define como un campo de tipo Integer que hace referencia a la tabla 'cliente' y su campo 'Cli_ID'
     Cli_ID: Mapped[int] = mapped_column(Integer, ForeignKey("Cliente.Cli_ID"))
+    cliente: Mapped["Cliente"] = relationship(back_populates="impuestos")
 
+    pagos: Mapped[List["Pago"]] = relationship(back_populates="impuesto")
     # Relación con el modelo Cliente
     # back_populates crea una conexión bidireccional, permitiendo acceder a los impuestos desde el cliente y viceversa
 
-    # cliente: Mapped["Cliente"] = relationship(back_populates="Impuesto")
+  

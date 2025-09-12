@@ -1,24 +1,26 @@
-# schemas/pago.py
-from pydantic import BaseModel, EmailStr
+#backend/schemas/pago.py
+
+from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import date
 
 class PagoBase(BaseModel):
-    monto_pago: float
-    fecha_pago: Optional[date] = None
-    red_cobranza: Optional[str] = None
-    concepto: Optional[str] = None
-    cliente_id: int
-    impuesto_id: int
+    Pago_Monto: float = Field(..., gt=0)
+    Cli_ID: int = Field(..., gt=0)
+    Imp_ID: int = Field(..., gt=0)
+    Pago_Fecha: Optional[date] = Field(None)
 
 class PagoCreate(PagoBase):
     pass
 
 class PagoUpdate(PagoBase):
-    pass
+    Pago_Monto: Optional[float] = Field(None, gt=0)
+    Cli_ID: Optional[int] = Field(None, gt=0)
+    Imp_ID: Optional[int] = Field(None, gt=0)
+    Pago_Fecha: Optional[date] = Field(None)
 
 class Pago(PagoBase):
-    id: int
+    Pago_ID: int
 
     class Config:
-        orm_mode = True
+        from_attributes=True
