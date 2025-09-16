@@ -1,10 +1,10 @@
 # backend/models/user.py
 
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
-from typing import List, Optional
-from datetime import datetime
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.sql import func
+from datetime import datetime
+from typing import List, Optional
 
 from backend.database import Base # Asegúrate de que la ruta sea correcta
 
@@ -15,15 +15,16 @@ class Usuario(Base):
     usuario_nombre: Mapped[str] = mapped_column(String(45), unique=True, index=True, nullable=False)
     usuario_email: Mapped[str] = mapped_column(String(45), unique=True, index=True, nullable=False)
     usuario_contraseña: Mapped[str] = mapped_column(String(255), nullable=False)
-    usuario_rol: Mapped[str] = mapped_column(String(45), default="usuario")
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    usuario_rol: Mapped[str] = mapped_column(String(45), default="usuario", nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
 
     # Relación con PasswordResetRequest
     # El 'back_populates' en PasswordResetRequest es 'usuario_asociado'
     password_reset_requests: Mapped[List["PasswordResetRequest"]] = relationship(
         "PasswordResetRequest", 
-        back_populates="usuario_asociado" # Asegura que este nombre coincida
+        back_populates="usuario_asociado", # Asegura que este nombre coincida
+        cascade="all, delete-orphan"
     )
 
     def __repr__(self):

@@ -2,6 +2,7 @@
 
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
+from datetime import datetime
 
 # Base para todos los campos del usuario
 class UsuarioBase(BaseModel):
@@ -15,15 +16,20 @@ class UsuarioBase(BaseModel):
     # Rol del usuario, con valor por defecto
     usuario_rol: Optional[str] = "usuario"
 
+    is_active: Optional[bool] = True
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
 # Esquema para la creación de un nuevo usuario
 class UsuarioCreate(UsuarioBase):
     # Contraseña en texto plano para la creación, con una validación de longitud
     password: str = Field(..., alias="usuario_contraseña", min_length=6, description="Contraseña en texto plano para creación")
     
     # Configuración para permitir el mapeo con el nombre de los campos del modelo ORM
-    class Config:
-        from_attributes = True
-        populate_by_name = True # Permite usar 'username' y 'password' en el request body
+    class Config(UsuarioBase.Config):   # Permite usar 'username' y 'password' en el request body
+        pass
 
 # Esquema para actualizar un usuario
 class UsuarioUpdate(BaseModel):
@@ -33,6 +39,7 @@ class UsuarioUpdate(BaseModel):
     password: Optional[str] = Field(None, alias="usuario_contraseña", min_length=6)
     usuario_rol: Optional[str] = None
     is_active: Optional[bool] = None
+    created_at: datetime
 
     class Config:
         from_attributes = True
@@ -41,7 +48,7 @@ class UsuarioUpdate(BaseModel):
 # Esquema para leer/devolver un usuario (No incluye la contraseña)
 class Usuario(UsuarioBase):
     usuario_id: int
-    is_active: bool = True
 
-    class Config:
-        from_attributes = True
+
+    class Config(UsuarioBase.Config):
+        pass

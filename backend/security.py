@@ -9,6 +9,22 @@ from fastapi import HTTPException, status
 # Aquí la importación, con la variable exacta.
 from backend.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
+
+# Parte encargada de la encripactión de la contraseña del usuario
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def get_password_hash(password: str) -> str:
+    """Cifra una contraseña de texto plano."""
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verifica si una contraseña de texto plano coincide con una encriptada."""
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+# Creador del token para resetear la contraseña
+
 def create_access_token(
     subject: Union[str, Any], expires_delta: timedelta = None
 ) -> str:
@@ -20,6 +36,8 @@ def create_access_token(
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+# Parte que verifica que el codigo este correcto para pasar a la siguiente parte de resetar la contraseña
+ 
 def verify_access_token(token: str) -> Optional[str]:
     """Verifica un token JWT y devuelve el 'subject' (nombre de usuario) si es válido."""
     try:
@@ -32,15 +50,5 @@ def verify_access_token(token: str) -> Optional[str]:
         return None # El token es inválido
 
 
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-def get_password_hash(password: str) -> str:
-    """Cifra una contraseña de texto plano."""
-    return pwd_context.hash(password)
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verifica si una contraseña de texto plano coincide con una encriptada."""
-    return pwd_context.verify(plain_password, hashed_password)
 
 # ... (Otras funciones relacionadas con la seguridad como la creación de tokens JWT)

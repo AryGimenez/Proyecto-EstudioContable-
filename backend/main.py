@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 # Mantén estas importaciones si las usas en otras rutas
-from fastapi.responses import HTMLResponse, RedirectResponse 
-from backend.router import clientes, users, impuestos, pagos, depositos, auth
+from fastapi.responses import HTMLResponse
+from backend.router import clientes, impuestos, pagos, depositos
+from backend.router import users as users_router
+from backend.router import auth
 from backend.database import Base, engine
 
 # Crea las tablas si no existen
@@ -25,7 +27,7 @@ app.add_middleware(
 )
 
 # Incluye los enrutadores
-app.include_router(users.router)
+app.include_router(users_router.router)
 app.include_router(clientes.router)
 app.include_router(impuestos.router)
 app.include_router(pagos.router)

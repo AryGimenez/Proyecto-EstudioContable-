@@ -26,35 +26,32 @@ class ApiService {
     await prefs.remove('access_token');
   }
 
-  // Método para iniciar sesión, enviando el nombre de usuario y la contraseña.
-  Future<Map<String, dynamic>> login(String username, String password) async {
-    final url = Uri.parse('$_baseUrl/auth/token');
-    
-    // Usa MultipartRequest para enviar datos de formulario.
-    final request = http.MultipartRequest('POST', url);
-    request.fields['username'] = username;
-    request.fields['password'] = password;
+// Método para iniciar sesión, enviando el nombre de usuario y la contraseña.
+Future<Map<String, dynamic>> login(String username, String password) async {
+  final url = Uri.parse('$_baseUrl/auth/token');
+  
+  try {
+    // Usa http.post directamente y envíale un Map para el cuerpo.
+    final response = await http.post(
+      url,
+      body: {
+        'username': username,
+        'password': password,
+      },
+    );
 
-    try {
-      // Envía la solicitud y espera la respuesta.
-      final streamedResponse = await request.send();
-      final response = await http.Response.fromStream(streamedResponse);
-
-      if (response.statusCode == 200) {
-        // Si el login es exitoso, decodifica la respuesta y guarda el token.
-        final data = json.decode(response.body);
-        await saveToken(data['access_token']);
-        return {'success': true, 'token': data['access_token']};
-      } else {
-        // Si hay un error, decodifica el mensaje de error del backend.
-        final error = json.decode(response.body);
-        return {'success': false, 'message': error['detail']};
-      }
-    } catch (e) {
-      // Maneja errores de conexión, como cuando el servidor no está corriendo.
-      return {'success': false, 'message': 'No se pudo conectar al servidor. Revisa que el backend esté corriendo.'};
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      await saveToken(data['access_token']);
+      return {'success': true, 'token': data['access_token']};
+    } else {
+      final error = json.decode(response.body);
+      return {'success': false, 'message': error['detail']};
     }
+  } catch (e) {
+    return {'success': false, 'message': 'No se pudo conectar al servidor. Revisa que el backend esté corriendo.'};
   }
+}
 
   // Solicita al backend que envíe un código de reseteo de contraseña.
   Future<Map<String, dynamic>> requestPasswordReset(String email) async {

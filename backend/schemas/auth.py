@@ -1,6 +1,8 @@
 # schemas/auth.py
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
+
 
 class UserLogin(BaseModel):
     """
@@ -20,4 +22,4 @@ class TokenData(BaseModel):
     """
     Esquema para los datos del token JWT.
     """
-    username: str | None = None
+    username: str | None = None # El 'subjectt' del token

@@ -1,3 +1,5 @@
+# backend/schemas/config.py
+
 from pydantic import BaseModel
 
 class AppConfig(BaseModel):
