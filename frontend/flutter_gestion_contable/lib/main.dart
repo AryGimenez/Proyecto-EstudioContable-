@@ -8,6 +8,9 @@ import 'package:flutter_gestion_contable/services/api_service.dart';
 // Importa el tema de la aplicación para mantener un estilo visual consistente.
 import 'package:flutter_gestion_contable/core/theme/app_theme.dart';
 
+import 'package:provider/provider.dart';
+
+
 // La función principal que arranca la aplicación de Flutter.
 void main() async {
   // Asegura que los bindings de Flutter estén inicializados antes de cualquier operación asíncrona.

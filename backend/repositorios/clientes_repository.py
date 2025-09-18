@@ -61,10 +61,17 @@ class ClienteRepository:
 
 #   Elimina un cliente existente
 
-    def delete(self, cliente_id: int):
-        db_cliente = self.get_by_id(cliente_id)
+    def delete(self, cliente_id: int): # Puedes añadir -> Optional[models.Cliente] para el tipo de retorno
+        db_cliente = self.get_by_id(cliente_id) # Asumiendo que get_by_id devuelve el objeto Cliente o None
         if db_cliente is None:
-            return None
+            return None # Si el cliente no existe, devuelve None
+
         self.db.delete(db_cliente)
-        self.db.commit()
-        return db_cliente
+        try:
+            self.db.commit() # Intenta guardar los cambios
+            return db_cliente # Si tiene éxito, devuelve el cliente eliminado
+        except Exception as e:
+            self.db.rollback() # Si falla, deshaz los cambios
+            # Opcional: puedes loggear el error 'e' aquí para depuración
+            print(f"Error al eliminar cliente {cliente_id}: {e}") 
+            return None # Si falla, devuelve None
