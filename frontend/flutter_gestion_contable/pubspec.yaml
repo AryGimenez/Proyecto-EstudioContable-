@@ -6,15 +6,18 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.8.0
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations: # Al mismo nivel que 'flutter:'
+    sdk: flutter  
   http: ^1.1.0
   shared_preferences: ^2.2.2
   provider: ^6.1.2 # Actualiza la versión aquí
   cupertino_icons: ^1.0.8
+
 
 dev_dependencies:
   flutter_test:

@@ -9,6 +9,8 @@ import '../add_clients/add_clients.dart';
 import '../payments/payments_screen.dart';
 import '../deposits/deposits_screen.dart';
 import 'notification_modal.dart';
+import 'package:provider/provider.dart'; // Importa el paquete aquí
+import '../clients/clients_handler.dart'; // Importa el ClientsHandler también
 
 class MainHandler extends StatefulWidget {
   const MainHandler({super.key});
@@ -18,11 +20,8 @@ class MainHandler extends StatefulWidget {
 }
 
 class _MainHandlerState extends State<MainHandler> {
-  // Widget que se mostrará en el área principal de la pantalla. Se inicializa en una pantalla de bienvenida.
-  Widget _currentChild = const Center(child: Text('Bienvenido a la aplicación')); 
-  // Título dinámico que se muestra en la barra superior.
+  Widget _currentChild = const Center(child: Text('Bienvenido a la aplicación'));
   String _currentTitle = 'Bienvenido';
-  // Mapa que gestiona el estado de los botones de la barra lateral (seleccionado o no).
   Map<String, bool> _selectedMenuItem = {
     'Clientes': false,
     'Agregar Cliente': false,
@@ -31,10 +30,8 @@ class _MainHandlerState extends State<MainHandler> {
     'Salir': false, 
   };
 
-  // Instancia de ApiService para realizar la operación de cierre de sesión.
   final ApiService _apiService = ApiService();
 
-  // Método para cambiar el contenido del área principal y el título de la barra superior.
   void _changeContent(Widget newContent, String title, String menuItem) {
     setState(() {
       _currentChild = newContent; 
@@ -43,19 +40,14 @@ class _MainHandlerState extends State<MainHandler> {
     });
   }
 
-  // Método para desmarcar todos los botones y marcar el que fue seleccionado.
   void _updateButtonSelection(String selectedItem) {
     _selectedMenuItem.updateAll((key, value) => false); 
     _selectedMenuItem[selectedItem] = true;
   }
   
-  // Maneja la lógica de cierre de sesión.
   void _logout() async {
-    // Llama al método del ApiService para eliminar el token de autenticación.
     await _apiService.logout();
     
-    // Navega a la pantalla de login y elimina todas las rutas de la pila de navegación
-    // para que el usuario no pueda regresar a la pantalla principal.
     if (mounted) {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const LoginHandler()),
@@ -69,7 +61,6 @@ class _MainHandlerState extends State<MainHandler> {
     return Scaffold(
       body: Column(
         children: [
-          // Barra superior de la interfaz.
           Container(
             height: 60,
             color: AppColors.primary,
@@ -114,11 +105,9 @@ class _MainHandlerState extends State<MainHandler> {
               ],
             ),
           ),
-          // Área principal que contiene la barra lateral y el contenido dinámico.
           Expanded(
             child: Row(
               children: [
-                // Barra lateral de navegación.
                 Container(
                   width: 250,
                   color: AppColors.primary,
@@ -135,7 +124,16 @@ class _MainHandlerState extends State<MainHandler> {
                           style: TextStyle(color: Colors.white, fontSize: 18)),
                       const SizedBox(height: 20),
                       _buildMenuButton('Clientes', Icons.people, onPressed: () {
-                        _changeContent(ClientsScreen(), 'Clientes', 'Clientes');
+                        _changeContent(
+                          // Aquí envolvemos ClientsScreen en el Provider
+                          ChangeNotifierProvider(
+                            // Pasamos la instancia de ApiService al ClientsHandler
+                            create: (context) => ClientsHandler(_apiService), 
+                            child: const ClientsScreen(),
+                          ),
+                          'Clientes',
+                          'Clientes',
+                        );
                       }),
                       _buildMenuButton('Agregar Cliente', Icons.person_add,
                           onPressed: () {
@@ -149,13 +147,11 @@ class _MainHandlerState extends State<MainHandler> {
                         _changeContent(DepositsScreen(), 'Depósito', 'Depósito');
                       }),
                       const Spacer(),
-                      // El botón "Salir" llama al método _logout() para cerrar la sesión.
                       _buildMenuButton('Salir', Icons.exit_to_app, isExit: true,
                           onPressed: _logout),
                     ],
                   ),
                 ),
-                // Contenido dinámico que cambia según el botón seleccionado.
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.all(16),
@@ -183,7 +179,7 @@ class _MainHandlerState extends State<MainHandler> {
                 ? Colors.white
                 : (isExit
                     ? const Color(0xFF792D1F)
-                    : Colors.amber[200]),
+                    : Colors.amber[200]), // ¡Corregido aquí el color!
             foregroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
             shape:

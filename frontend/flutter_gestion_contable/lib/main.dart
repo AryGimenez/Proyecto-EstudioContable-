@@ -1,12 +1,17 @@
+// main.dart
+
 import 'package:flutter/material.dart';
-// Importa la pantalla de inicio de sesión, que será la primera que vea el usuario si no hay sesión.
+// Importa flutter_localizations para el soporte de idiomas (MaterialLocalizations)
+import 'package:flutter_localizations/flutter_localizations.dart'; 
+
+// Asegúrate de que estas rutas sean correctas para tu proyecto:
 import 'package:flutter_gestion_contable/screens/login/login_handler.dart';
-// Importa la pantalla principal, a la que se navegará si hay una sesión activa.
 import 'package:flutter_gestion_contable/screens/main_website/main_handler.dart';
-// Importa el servicio de API para verificar si existe un token de autenticación.
 import 'package:flutter_gestion_contable/services/api_service.dart';
-// Importa el tema de la aplicación para mantener un estilo visual consistente.
 import 'package:flutter_gestion_contable/core/theme/app_theme.dart';
+
+import 'package:provider/provider.dart'; // Si estás usando Provider en tu aplicación, mantenlo.
+
 
 // La función principal que arranca la aplicación de Flutter.
 void main() async {
@@ -35,6 +40,22 @@ class MyApp extends StatelessWidget {
       title: 'Estudio Contable',
       // Aplica el tema de la aplicación para colores, fuentes, etc.
       theme: AppTheme.lightTheme,
+
+      // *******************************************************************
+      // ******* AÑADIR ESTAS LÍNEAS PARA LA LOCALIZACIÓN ******************
+      // *******************************************************************
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate, // Necesario para soporte en iOS
+      ],
+      supportedLocales: const [
+        Locale('en', ''), // Soporte para inglés
+        Locale('es', ''), // Soporte para español
+      ],
+      // *******************************************************************
+      // *******************************************************************
+
       // Define la pantalla inicial basándose en la existencia de un token.
       // Si `hasToken` es verdadero, navega a la pantalla principal.
       // Si es falso, muestra la pantalla de inicio de sesión.
