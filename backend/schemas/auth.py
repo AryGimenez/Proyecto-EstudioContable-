@@ -1,24 +1,25 @@
-from pydantic import BaseModel, EmailStr, validator
+# schemas/auth.py
+
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
+
 
 class UserLogin(BaseModel):
+    """
+    Esquema para la solicitud de inicio de sesión del usuario.
+    """
     username: str
     password: str
 
-class PasswordResetRequestSchema(BaseModel):
-    email: EmailStr
+class Token(BaseModel):
+    """
+    Esquema para la respuesta del token de autenticación.
+    """
+    access_token: str
+    token_type: str
 
-class VerifyCodeSchema(BaseModel):
-    email: EmailStr
-    verification_code: str
-
-class PasswordResetConfirm(BaseModel):
-    email: EmailStr
-    verification_code: str
-    new_password: str
-    confirm_new_password: str
-
-    @validator('confirm_new_password')
-    def passwords_match(cls, value, values):
-        if 'new_password' in values and value != values['new_password']:
-            raise ValueError('Las nuevas contraseñas no coinciden.')
-        return value
+class TokenData(BaseModel):
+    """
+    Esquema para los datos del token JWT.
+    """
+    username: str | None = None # El 'subjectt' del token

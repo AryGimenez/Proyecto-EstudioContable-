@@ -1,256 +1,213 @@
 // lib/screens/login/login_form.dart
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gestion_contable/core/theme/app_text_styles.dart'; // Importa la librería de Material Design de Flutter, utilizada para crear interfaces de usuario.
+// Importa los estilos de la aplicación para mantener la consistencia.
+import 'package:flutter_gestion_contable/core/theme/app_text_styles.dart';
 import 'package:flutter_gestion_contable/core/theme/app_colors.dart';
 import 'package:flutter_gestion_contable/core/theme/app_styles.dart';
 import 'login_styles.dart';
 
 class LoginForm extends StatelessWidget {
-  // Define un widget sin estado que representa un formulario de inicio de sesión.
+  // Define las propiedades que este widget necesita recibir de su padre (el handler).
+  final GlobalKey<FormState> formKey;
+  final TextEditingController userController;
+  final TextEditingController passwordController;
+  final bool isPasswordVisible;
+  final VoidCallback onPasswordVisibilityToggle;
+  final VoidCallback onSubmit; // Callback para el botón de iniciar sesión.
+  final VoidCallback onResetPassword; // Callback para el botón de "Perdí la contraseña".
 
-  final GlobalKey<FormState>
-      formKey; // Clave global utilizada para identificar y manejar el estado del formulario (como la validación).
-  final TextEditingController
-      userController; // Controlador para gestionar el texto ingresado en el campo de usuario.
-  final TextEditingController
-      passwordController; // Controlador para gestionar el texto ingresado en el campo de contraseña.
-  final bool
-      isPasswordVisible; // Bandera que indica si la contraseña debe mostrarse o permanecer oculta.
-  final VoidCallback
-      onPasswordVisibilityToggle; // Función que se llama cuando el usuario alterna la visibilidad de la contraseña.
-
-  final VoidCallback
-      onSubmit; // Función que se ejecuta al enviar el formulario (por ejemplo, al presionar un botón de inicio de sesión).
-
-  final VoidCallback
-      onResetPassword; // Funcion que se llama cuando el usuario presiona restablecer contraseña
-
-  final VoidCallback
-      onMainScreen; // Funcion que se llama cuando el usuario presiona restablecer contraseña
-
-  const LoginForm(
-      {super.key, // Clave opcional que identifica este widget en la jerarquía.
-      required this.formKey, // Requiere la clave del formulario.
-      required this.onMainScreen, // Requiere la clave del formulario.
-      required this.userController, // Requiere el controlador del usuario.
-      required this.passwordController, // Requiere el controlador de la contraseña.
-      required this.isPasswordVisible, // Requiere la bandera de visibilidad de la contraseña.
-      required this.onPasswordVisibilityToggle, // Requiere la función para alternar la visibilidad.
-      required this.onSubmit, // Requiere la función para manejar el envío del formulario.
-      required this.onResetPassword // Requiere la funcion para lanzar el formulario restablecer password
-      });
+  const LoginForm({
+    super.key,
+    required this.formKey,
+    required this.userController,
+    required this.passwordController,
+    required this.isPasswordVisible,
+    required this.onPasswordVisibilityToggle,
+    required this.onSubmit,
+    required this.onResetPassword,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // Construye el widget principal que representa el formulario.
-
+    // La estructura principal del formulario, centrada en la pantalla.
     return Center(
-      // Centra el contenido en el ejes horizontal y vertical
       child: SingleChildScrollView(
         child: ConstrainedBox(
-          constraints: BoxConstraints(
-              maxWidth:
-                  formMaxWidth), // ancho maximo de el cuadro donde se encuetra logo texo etc login_styles.dart,
+          constraints: const BoxConstraints(
+            maxWidth: formMaxWidth
+          ),
           child: Padding(
-              padding:
-                  formPadding, // Espaciado horizontal para el contenido este valor esta en lodign_styles
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment
-                      .center, // Centra los elementos verticalmente
-
-                  children: [
-                    Image.asset(
-                      // Imagen del logo o cabecera
-                      'lib/assets/Logo Barone.png', // Asegúrate de tener esta imagen en la carpeta assets
-                      height:
-                          logoHeight, // Altura de la imagen login_styles.dart
-                    ),
-                    verticalSpaceMedium, // Espaciado entre la imagen y el formulario app_styles.dart
-
-                    Form(
-                      // Formulario de usuario y contraseña
-                      key:
-                          formKey, // Asocia la clave del formulario para manejar su estado (por ejemplo, validaciones)
-                      child: Column(
-                        children: [
-                          _buildUserField(), // Campo de texto para el usuario
-                          verticalSpaceSmall, // Espaciado entre campos de texto app_styles.dart
-                          _buildPasswordField(), // Campo de texto para la contraseña
-                          verticalSpaceMedium, // Espaciado antes del botón de inicio de sesión app_styles.dart
-                          _buildLoginButton(), // Botón de inicio de sesión
-                        ],
-                      ),
-                    ),
-                    verticalSpaceMedium, // Espaciado entre el formulario y la opción "Perdí la contraseña" app_styles.dart
-                    _buildTextButonRestPassword(), // Botón de resetear contraseña
-                    verticalSpaceMedium, // Espaciado antes del botón de configuración app_styles.dart
-                    _buildConfigurationButton(), // Botón de configuración
-                  ])),
+            padding: formPadding,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Imagen del logo.
+                Image.asset(
+                  'lib/assets/Logo Barone.png',
+                  height: logoHeight,
+                ),
+                verticalSpaceMedium,
+                // El formulario que contiene los campos de texto.
+                Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      _buildUserField(), // Campo para el usuario.
+                      verticalSpaceSmall,
+                      _buildPasswordField(), // Campo para la contraseña.
+                      verticalSpaceMedium,
+                      _buildLoginButton(), // Botón de inicio de sesión.
+                    ],
+                  ),
+                ),
+                verticalSpaceMedium,
+                _buildTextButonRestPassword(), // Botón para restablecer contraseña.
+                verticalSpaceMedium,
+                _buildConfigurationButton(), // Botón de configuración.
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
+  // Widget para el botón de "Perdí la contraseña".
   Widget _buildTextButonRestPassword() {
-    //Motodo Custruche el boton Restableser contrasenia
     return TextButton(
+      // Llama a la función onResetPassword que viene del handler.
       onPressed: onResetPassword,
       child: Text(
         'Perdí la contraseña',
-        style: AppTextStyles.bodyText1.copyWith(
-            color: AppColors.primary), // Estilo del texto con color primario
+        style: AppTextStyles.bodyText1.copyWith(color: AppColors.primary),
       ),
     );
   }
 
+  // Widget para el campo de texto del usuario.
   Widget _buildUserField() {
-    // Método privado que construye el campo de texto para el usuario.
     return TextFormField(
       controller: userController,
-      // Vincula el campo de texto con el controlador para gestionar su contenido.
-
-      decoration: InputDecoration(
-        labelText:
-            'Usuario', // Etiqueta que indica al usuario qué debe ingresar en el campo (nombre de usuario).
+      decoration: const InputDecoration(
+        labelText: 'Usuario',
         labelStyle: AppTextStyles.bodyText1,
-
         prefixIcon: Icon(Icons.person),
-        // Icono de persona que aparece al inicio del campo de texto como referencia visual.
       ),
-
+      // Lógica de validación del campo.
       validator: (value) {
-        // Validador que verifica si el campo de usuario contiene texto válido.
-        if (value == null || value.isEmpty) {
-          // Si el valor está vacío o es nulo, muestra un mensaje de error.
+        if (value == null || value.trim().isEmpty) {
           return 'Por favor ingrese su usuario';
         }
         return null;
-        // Si el valor es válido, no retorna ningún error.
       },
     );
   }
 
+  // Widget para el campo de texto de la contraseña.
   Widget _buildPasswordField() {
-    // Método privado que construye el campo de texto para la contraseña.
     return TextFormField(
       controller: passwordController,
-      // Vincula el campo de texto con el controlador para gestionar su contenido.
-
       decoration: InputDecoration(
         labelText: 'Contraseña',
-        // Etiqueta que indica al usuario que debe ingresar su contraseña.
-
         prefixIcon: const Icon(Icons.lock),
-        // Icono de candado que aparece al inicio del campo como referencia visual.
-
+        // Ícono del ojo para mostrar/ocultar la contraseña.
         suffixIcon: IconButton(
-          // Botón que alterna la visibilidad de la contraseña.
           icon: Icon(
             isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-            // Cambia el icono según el estado de visibilidad de la contraseña.
           ),
+          // Llama a la función onPasswordVisibilityToggle que viene del handler.
           onPressed: onPasswordVisibilityToggle,
-          // Llama a la función para alternar la visibilidad de la contraseña.
         ),
       ),
-
       obscureText: !isPasswordVisible,
-      // Oculta o muestra el texto del campo según el estado de visibilidad.
-
+      // Lógica de validación del campo.
       validator: (value) {
-        // Validador que verifica si el campo de contraseña contiene texto válido.
-        if (value == null || value.isEmpty) {
-          // Si el valor está vacío o es nulo, muestra un mensaje de error.
+        if (value == null || value.trim().isEmpty) {
           return 'Por favor ingrese su contraseña';
         }
         return null;
-        // Si el valor es válido, no retorna ningún error.
       },
     );
   }
 
+  // Widget para el botón de inicio de sesión.
   Widget _buildLoginButton() {
-    // Método privado que construye el botón para iniciar sesión.
     return ElevatedButton(
-      onPressed: onMainScreen,
-      // Llama a la función para manejar el envío del formulario al presionar el botón.
-
+      // Llama a la función onSubmit que viene del handler.
+      onPressed: onSubmit,
       child: const Text('Iniciar sesión'),
-      // Texto que aparece dentro del botón.
     );
   }
 
-Widget _buildConfigurationButton() {
-  return Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(12.0), // Bordes redondeados
-      color: AppColors.primary, // Color primario de fondo
-    ),
-    child: ExpansionTile(
-      title: const Text(
-        'Configuración',
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Colors.white, // Texto en blanco
-        ),
+  // Widget para el botón de configuración desplegable.
+  Widget _buildConfigurationButton() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+        color: AppColors.primary,
       ),
-      leading: const Icon(
-        Icons.settings,
-        color: Colors.white, // Ícono de configuración en blanco
-      ),
-      trailing: const Icon(
-        Icons.keyboard_arrow_down,
-        color: Colors.white, // Flecha en blanco
-      ),
-      children: [
-        ListTile(
-          
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
+      child: ExpansionTile(
+        title: const Text(
+          'Configuración',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
-          leading: const Icon(Icons.wifi, color: Colors.white), // Ícono de red
-          title: const Text(
-            'Dirección IP',
-            style: TextStyle(color: Colors.white), // Texto en negro
-          ),
-          onTap: () {
-            // Acción al tocar Dirección IP
-          },
         ),
-        const SizedBox(height: 5), // Espacio entre opciones
-        ListTile(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          leading: const Icon(Icons.router, color: Colors.white), // Ícono de red
-          title: const Text(
-            'Puerto',
-            style: TextStyle(color: Colors.white), // Texto en negro
-          ),
-          onTap: () {
-            // Acción al tocar Puerto
-          },
+        leading: const Icon(
+          Icons.settings,
+          color: Colors.white,
         ),
-        const SizedBox(height: 10), // Espacio antes del botón
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor:  Color(0xFFf8f19f), // Fondo amarillo
-              foregroundColor: AppColors.primary, 
+        trailing: const Icon(
+          Icons.keyboard_arrow_down,
+          color: Colors.white,
+        ),
+        children: [
+          ListTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
             ),
-            onPressed: () {
-              // Acción al tocar Conectar
+            leading: const Icon(Icons.wifi, color: Colors.white),
+            title: const Text(
+              'Dirección IP',
+              style: TextStyle(color: Colors.white),
+            ),
+            onTap: () {
+              // Acción al tocar Dirección IP
             },
-            child: const Text('Conectar'),
           ),
-        ),
-        const SizedBox(height: 10), // Espacio después del botón
-      ],
-    ),
-  );
-}
-
-
+          const SizedBox(height: 5),
+          ListTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            leading: const Icon(Icons.router, color: Colors.white),
+            title: const Text(
+              'Puerto',
+              style: TextStyle(color: Colors.white),
+            ),
+            onTap: () {
+              // Acción al tocar Puerto
+            },
+          ),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFf8f19f),
+                foregroundColor: AppColors.primary,
+              ),
+              onPressed: () {
+                // Acción al tocar Conectar
+              },
+              child: const Text('Conectar'),
+            ),
+          ),
+          const SizedBox(height: 10),
+        ],
+      ),
+    );
+  }
 }
