@@ -58,5 +58,5 @@ app.mount(
 async def connect_to_app(config: AppConfig, db: Session = Depends(get_db)):
     ip_address = config.ip_address
     port = config.port
-    print(f"Intentando conectar a: {ip_address}:{port}")
-    return {"message": f"Configuración recibida. Intentando conectar a {ip_address}:{port}"}
+    print ("Intentando conectar a: {}:{}".format(ip_address, port))
+    return {"message": "Configuración recibida. Intentando conectar a {}:{}".format(ip_address, port)}
