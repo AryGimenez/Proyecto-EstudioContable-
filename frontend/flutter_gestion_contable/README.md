@@ -123,7 +123,7 @@ flutter run -d chrome
 lib/
 ├── core/
 │   ├── theme/
-│   │   ├── app_colors.dart
+│   │   ├── app_colors.dartfdsf
 │   │   ├── app_text_styles.dart
 │   │   └── app_theme.dart
 │   └── utils/
@@ -132,11 +132,12 @@ lib/
 │   │   ├── login_form.dart 
 │   │   ├── login_screen.dart
 │   │   └── login_styles.dart
-│   └── depositos/ // Interfas de depositos  
-│   |    ├── deposit_form.dart
-│   |    └── deposit_screen.dart
-|   └── clients/ // Gestion de clientes
-|   ├── clients_handler.dart // Maneja la logica de negocio
+│   └── depositos/ // Interfas de depositos esta representa las transacciones que los clientes realizan para pagar sus impuestos 
+│   |    ├── deposit_form.dart // 
+│   |    └── deposit_screen.dart // Este se encarga de la comunicacion con el backend y la logica de negocio
+│   └── clients/ // Gestion de clientes
+│   |    ├── clients_handler.dart // Maneja la logica de negocio
+
 └── main.dart // Lanzador de la aplicacion
 ``` 
 
@@ -152,5 +153,14 @@ Maneja la lógica de negocio, la gestión del estado (usando ChangeNotifier) y l
 ### clients_screen.dart
 Se encarga del diseño, la disposición de los widgets (DataTable, SearchBar, ActionButtons) y la gestión de la interacción directa con el usuario (como abrir diálogos, manejar controllers de texto y snackbars). No maneja el estado de los datos.
 
+# Depositos
+Interfaz para mostrar depósitos de la empresa son las transacciones que los clientes realizan. para pagar sus impuestos.
+
+### depositos_handler.dart
+Maneja la lógica de negocio, la gestión del estado (usando ChangeNotifier) y la comunicación con el backend a través de ApiService. Se encarga de cargar, filtrar, agregar, editar y eliminar depósitos, pero no tiene ninguna lógica de UI.
+
+
+### depositos_screen.dart
+Se encarga del diseño, la disposición de los widgets (DataTable, SearchBar, ActionButtons) y la gestión de la interacción directa con el usuario (como abrir diálogos, manejar controllers de texto y snackbars). No maneja el estado de los datos.
 
 # Documentación para Levantar el Entorno de Flutter
