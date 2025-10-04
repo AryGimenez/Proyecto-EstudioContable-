@@ -1,4 +1,4 @@
-// lib/core/theme/appcolor.dart
+// lib/theme/appcolor.dart
 
 /// Clase que define la paleta de colores centralizada para toda la aplicación.
 /// Todos los colores son constantes y estáticos para acceso global.

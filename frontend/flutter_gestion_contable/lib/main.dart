@@ -1,4 +1,4 @@
-// main.dart
+// frontend/flutter_gestion_contable/lib/main.dart
 
 import 'package:flutter/material.dart';
 // Importa flutter_localizations para el soporte de idiomas (MaterialLocalizations)
@@ -20,7 +20,7 @@ void main() async {
   
   // Crea una instancia del ApiService para verificar si hay un token de autenticación.
   final apiService = ApiService();
-  final token = await apiService.getToken();
+  final token = await apiService.getToken(); // Obtiene el token almacenado (si existe).
 
   // Inicia la aplicación, pasando un valor booleano que indica si hay un token.
   runApp(MyApp(hasToken: token != null));

@@ -1,4 +1,5 @@
-// lib/screens/clients/clients_screen.dart
+// frontend/flutter_gestion_contable/lib/screens/clients/clients_screen.dart
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gestion_contable/core/theme/app_colors.dart';

@@ -1,4 +1,5 @@
-// lib/core/theme/app_theme.dart
+// frontend/flutter_gestion_contable/lib/core/theme/app_theme.dart
+
 
 import 'package:flutter/material.dart'; // Importa la librería principal de Flutter para usar Material Design
 import 'app_colors.dart'; // Importa el archivo que contiene los colores definidos en la app

@@ -1,3 +1,5 @@
+// frontend/flutter_gestion_contable/lib/screens/clients/clients_handler.dart
+
 import 'package:flutter/foundation.dart'; // Para debugPrint
 import 'package:flutter/material.dart'; // Para ChangeNotifier
 import 'package:flutter_gestion_contable/services/api_service.dart';

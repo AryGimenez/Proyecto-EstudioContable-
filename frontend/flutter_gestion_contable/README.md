@@ -69,7 +69,6 @@ Vamos a usar una estructura de proyecto bien organizada y separada. La idea es t
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/usuario/Proyecto-EstudioContable-.git
 cd Proyecto-EstudioContable-/frontend/flutter_gestion_contable
 ```
 
@@ -101,6 +100,8 @@ Si quieres levantar la app en modo web:
 flutter run -d chrome
 ```
 
+
+
 ---
 
 ## Notas
@@ -114,3 +115,42 @@ flutter run -d chrome
 ## Recursos Útiles
 
 - [Documentación oficial de Flutter](https://docs.flutter.dev/)
+
+
+# Etructura de proyecto
+
+```
+lib/
+├── core/
+│   ├── theme/
+│   │   ├── app_colors.dart
+│   │   ├── app_text_styles.dart
+│   │   └── app_theme.dart
+│   └── utils/
+├── screens/
+│   └── login/  // Interfaz para logearse al sistema
+│   │   ├── login_form.dart 
+│   │   ├── login_screen.dart
+│   │   └── login_styles.dart
+│   └── depositos/ // Interfas de depositos  
+│   |    ├── deposit_form.dart
+│   |    └── deposit_screen.dart
+|   └── clients/ // Gestion de clientes
+|   ├── clients_handler.dart // Maneja la logica de negocio
+└── main.dart // Lanzador de la aplicacion
+``` 
+
+# Documentación del proyecto general
+
+# Clients
+Interfaz para mostrar clientes de la empresa
+
+### clients_handler.dart
+Maneja la lógica de negocio, la gestión del estado (usando ChangeNotifier) y la comunicación con el backend a través de ApiService. Se encarga de cargar, filtrar, agregar, editar y eliminar clientes, pero no tiene ninguna lógica de UI.
+
+
+### clients_screen.dart
+Se encarga del diseño, la disposición de los widgets (DataTable, SearchBar, ActionButtons) y la gestión de la interacción directa con el usuario (como abrir diálogos, manejar controllers de texto y snackbars). No maneja el estado de los datos.
+
+
+# Documentación para Levantar el Entorno de Flutter
