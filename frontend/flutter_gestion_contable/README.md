@@ -107,12 +107,16 @@ flutter run -d chrome
 ```
 lib/
 ├── core/ // El directorio `core` contiene los elementos fundamentales de la  aplicación
-│   ├── theme // <!> No se que poner
+│   ├── theme // Contiene los estilos y temas de la aplicación
 │   │   ├── app_colors.dart // Colores centralizado
-│   │   ├── app_styles.dart 
-│   │   ├── app_text_styles.dart //<!> Estilo de los textos de la interfasd
-│   │   └── app_theme.dart
-│   └── utils/
+│   │   ├── app_styles.dart // Estilos centralizados
+│   │   ├── app_text_styles.dart // Estilo de los textos de la interfaz
+│   │   └── app_theme.dart // Tema general de la aplicación
+├── models/ // Contiene los modelos de datos utilizados en la aplicación
+│   ├── client.dart // Modelo de cliente <!> Falta
+│   ├── deposit.dart // Modelo de depósito <!> Falta
+│   └── user.dart // Modelo de usuario
+
 ├── screens/
 │   └── login/  // Interfaz para logearse al sistema
 │   │   ├── login_form.dart 

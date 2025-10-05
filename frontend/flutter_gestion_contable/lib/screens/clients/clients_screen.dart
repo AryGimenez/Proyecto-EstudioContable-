@@ -16,7 +16,8 @@ class ClientsScreen extends StatefulWidget {
 
 class _ClientsScreenState extends State<ClientsScreen> {
   // Mantenemos la instancia de ApiService aquí
-  final ApiService _apiService = ApiService(); 
+  
+  final ApiService _apiService = ApiService(); // <!> Creo que esto es para conectarme con el backend no se  Actuamente no se esta usadno 
 
   late Future<void> _clientsFuture;
 
