@@ -9,19 +9,6 @@ Vamos a usar una estructura de proyecto bien organizada y separada. La idea es t
 - **Archivos que terminen en "Screen"**: Serán utilizados para lanzar las diferentes pantallas de la aplicación. 
 - **Archivos que terminen en "Form"**: Contendrán el contenido de los formularios.
 
-### Descripcion de la estructrua de arbol 
- 
-**core/**: 
-**app_colors.dart**:  
-**app_text_styles.dart**: 
-**app_theme.dart**: Configura el tema general de la aplicación
-**utils/**: Contiene utilidades y funciones helper reutilizables.
-**screens/**: Contiene las diferentes pantallas de la aplicación, cada una en su propio módulo.
-**login/**: El directorio contiene los archivos correspondiente a el logeo.
-**login_form.dart**: Pantalla principal de inicio de sesión
-**login_screen.dart**: Es un StatefulWidget para manejar el estado del formulario de login.
-**login_styles.dart**: Estilos específicos para la pantalla de login
-
 ### Beneficios de esta Estructura
 
 1. **Organización Clara**: Separación lógica de componentes y funcionalidades
