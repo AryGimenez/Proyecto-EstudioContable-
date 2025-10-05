@@ -147,6 +147,8 @@ Widget buildTaxInputsRow(BuildContext context, {
   );
 }
 
+
+
 Widget buildTaxTable(BuildContext context, {
   required TextEditingController vencimientoController,
   required TextEditingController nombreController,

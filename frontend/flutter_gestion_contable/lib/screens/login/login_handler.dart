@@ -33,7 +33,10 @@ class _LoginHandlerState extends State<LoginHandler> {
   // Instancia de ApiService para usar sus métodos de login.
   final ApiService _apiService = ApiService();
 
-  // Método que se ejecuta al presionar el botón de "Iniciar sesión".
+  
+  /// Método que se ejecuta al presionar el botón de "Iniciar sesión".
+  /// @returns Un [Future<void>] que se completa después de intentar la autenticación
+  /// y manejar la navegación o mostrar el error.
   void _submitForm() async {
     // Valida el formulario antes de hacer la llamada a la API.
     if (_formKey.currentState?.validate() ?? false) {
@@ -62,14 +65,19 @@ class _LoginHandlerState extends State<LoginHandler> {
     }
   }
 
-  // Alterna la visibilidad de la contraseña.
+  
+   /// Alterna la visibilidad del texto en el campo de contraseña.
+   /// * Llama a [setState] para forzar el redibujo del [LoginForm] y actualizar el
+   /// ícono del ojo y la propiedad [obscureText].
   void _togglePasswordVisibility() {
     setState(() {
       _isPasswordVisible = !_isPasswordVisible;
     });
   }
 
-  // Navega a la pantalla de reseteo de contraseña.
+  /// Navega a la pantalla de reseteo de contraseña.
+  /// * Utiliza [Navigator.of(context).push] para ir a [PasswordResetHandler]
+  /// permitiendo al usuario volver a la pantalla de login.
   void _navigateToPasswordReset() {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const PasswordResetHandler()),
