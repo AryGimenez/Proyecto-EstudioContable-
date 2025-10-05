@@ -1,34 +1,19 @@
 
 
+# Estructura general de proyecto 
+Para cada componente o interfas vamos a generar esta estructura.
 
 Vamos a usar una estructura de proyecto bien organizada y separada. La idea es tener: 
+
 - **Archivos que terminen en "Styles"**: Contendrán los estilos de la aplicación. 
 - **Archivos que terminen en "Screen"**: Serán utilizados para lanzar las diferentes pantallas de la aplicación. 
 - **Archivos que terminen en "Form"**: Contendrán el contenido de los formularios.
 
-## Estructura de proyecto 
-
-``lib/
-├── core/                          
-│   ├── theme/
-│   │   ├── app_colors.dart        
-│   │   ├── app_text_styles.dart   
-│   │   └── app_theme.dart         
-│   └── utils/                     
-├── screens/                       
-│   └── login/
-│   │   ├── login_form.dart    
-│   │   ├── login_screen.dart      
-│   └   └── login_styles.dart
-└── main.dart``
-
-
-
 ### Descripcion de la estructrua de arbol 
  
-**core/**: El directorio `core` contiene los elementos fundamentales de la aplicación
-**app_colors.dart**: Define la paleta de colores centralizada
-**app_text_styles.dart**: Establece los estilos de texto consistentes
+**core/**: 
+**app_colors.dart**:  
+**app_text_styles.dart**: 
 **app_theme.dart**: Configura el tema general de la aplicación
 **utils/**: Contiene utilidades y funciones helper reutilizables.
 **screens/**: Contiene las diferentes pantallas de la aplicación, cada una en su propio módulo.
@@ -121,10 +106,11 @@ flutter run -d chrome
 
 ```
 lib/
-├── core/
-│   ├── theme/
-│   │   ├── app_colors.dartfdsf
-│   │   ├── app_text_styles.dart
+├── core/ // El directorio `core` contiene los elementos fundamentales de la  aplicación
+│   ├── theme // <!> No se que poner
+│   │   ├── app_colors.dart // Colores centralizado
+│   │   ├── app_styles.dart 
+│   │   ├── app_text_styles.dart //<!> Estilo de los textos de la interfasd
 │   │   └── app_theme.dart
 │   └── utils/
 ├── screens/
