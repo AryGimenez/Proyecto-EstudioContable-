@@ -1,4 +1,4 @@
-// loading_styles.dart
+// frontend/flutter_gestion_contable/lib/screens/login/login_styles.dart
 
 // Tamaño de la imagen del logo
 const double logoHeight = 200.0;

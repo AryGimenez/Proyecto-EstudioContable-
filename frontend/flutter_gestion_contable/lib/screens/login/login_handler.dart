@@ -1,29 +1,34 @@
-// lib/screens/login/login_handler.dart
+// frontend/flutter_gestion_contable/lib/screens/login/login_handler.dart
 
-import 'package:flutter/material.dart';
-// Importa el servicio para manejar la comunicación con el backend.
-import 'package:flutter_gestion_contable/services/api_service.dart';
-// Importa el widget del formulario, que solo maneja la UI.
-import 'package:flutter_gestion_contable/screens/login/login_form.dart';
-// Importa la pantalla principal a la que se navegará después del login exitoso.
-import 'package:flutter_gestion_contable/screens/main_website/main_handler.dart';
-// Importa la pantalla para el reseteo de contraseña.
-import 'package:flutter_gestion_contable/screens/password_reset/password_reset_handler.dart';
+import 'package:flutter/material.dart'; // Importa el paquete principal de Flutter.
+import 'package:flutter_gestion_contable/services/api_service.dart'; // Importa el servicio API
+import 'package:flutter_gestion_contable/screens/login/login_form.dart'; // Importa el formulario de login
+import 'package:flutter_gestion_contable/screens/main_website/main_handler.dart'; // Importa la pantalla principal a la que se navegará después del login exitoso.
+import 'package:flutter_gestion_contable/screens/password_reset/password_reset_handler.dart'; // Importa la pantalla para el reseteo de contraseña.
 
-// Widget que maneja el estado de la pantalla de login.
+/// Widget principal que gestiona el estado y la lógica de negocio de la pantalla de Login.
+///
+/// Este [StatefulWidget] es el punto de control para:
+/// 1. Los [TextEditingController] para el formulario.
+/// 2. La visibilidad de la contraseña.
+/// 3. La comunicación con la [ApiService] para la autenticación.
+/// 4. La navegación a la pantalla principal o de reseteo de contraseña.
 class LoginHandler extends StatefulWidget {
-  const LoginHandler({Key? key}) : super(key: key);
+  const LoginHandler({Key? key}) : super(key: key); // Constructor del widget.
 
   @override
-  State<LoginHandler> createState() => _LoginHandlerState();
+  State<LoginHandler> createState() => _LoginHandlerState(); // Crea el estado asociado a este widget.
 }
 
+/// Estado asociado al [LoginHandler].
+///
+/// Implementa la lógica de manejo del formulario y las operaciones asíncronas.
 class _LoginHandlerState extends State<LoginHandler> {
   // Clave para identificar el formulario y sus validaciones.
-  final _formKey = GlobalKey<FormState>();
-  final _userController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _isPasswordVisible = false;
+  final _formKey = GlobalKey<FormState>(); // Clave global para el formulario.
+  final _userController = TextEditingController(); // Controlador para el campo de usuario.
+  final _passwordController = TextEditingController(); // Controlador para el campo de contraseña.
+  bool _isPasswordVisible = false;  // Estado para controlar la visibilidad de la contraseña.
 
   // Instancia de ApiService para usar sus métodos de login.
   final ApiService _apiService = ApiService();

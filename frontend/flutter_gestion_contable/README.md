@@ -17,12 +17,6 @@ Vamos a usar una estructura de proyecto bien organizada y separada. La idea es t
 4. **Reutilización**: Promueve la creación de componentes reutilizables
 5. **Consistencia**: Mantiene un estilo uniforme en toda la aplicación
 
-### Convenciones de Nombrado
-
-- Archivos en `snake_case`
-- Clases en `PascalCase`
-- Variables y funciones en `camelCase`
-
 ---------------------------------------------------------------------
 
 
@@ -103,12 +97,14 @@ lib/
 │   ├── client.dart // Modelo de cliente <!> Falta
 │   ├── deposit.dart // Modelo de depósito <!> Falta
 │   └── user.dart // Modelo de usuario
-
-├── screens/
+├── screens/ // Contiene las diferentes pantallas de la aplicación
+│   |── add_client/ // Interfaz para agregar clientes <!> Arreglar Logica Fuertemente acoplada 
+│   |    ├── add_clients_handler.dart // Maneja la logica de negocio    
+│   |    └── add_client_screen.dart // Pantalla para agregar clientes
 │   └── login/  // Interfaz para logearse al sistema
-│   │   ├── login_form.dart 
-│   │   ├── login_screen.dart
-│   │   └── login_styles.dart
+│   │   ├── login_form.dart // Contiene el formulario de login
+│   │   ├── login_handler.dart // Pantalla de login
+│   │   └── login_styles.dart // Estilos de la pantalla de login
 │   └── depositos/ // Interfas de depositos esta representa las transacciones que los clientes realizan para pagar sus impuestos 
 │   |    ├── deposit_form.dart // 
 │   |    └── deposit_screen.dart // Este se encarga de la comunicacion con el backend y la logica de negocio

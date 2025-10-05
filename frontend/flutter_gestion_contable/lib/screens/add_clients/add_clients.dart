@@ -1,4 +1,5 @@
-// lib/screens/clients/add_clientes.dart
+// frontend/flutter_gestion_contable/lib/screens/add_clients/add_clients.dart
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

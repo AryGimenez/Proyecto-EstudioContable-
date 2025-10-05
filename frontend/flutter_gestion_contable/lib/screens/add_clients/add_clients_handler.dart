@@ -1,9 +1,24 @@
+// frontend/flutter_gestion_contable/lib/screens/add_clients/add_clients_handler.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Para usar el TextInputFormatter
 import 'package:flutter_gestion_contable/core/theme/app_colors.dart';
 
+
+
+/// Función auxiliar que construye una fila de campos de texto ([TextField])
+/// distribuidos uniformemente utilizando el widget [Row] y [Expanded].
+///
+/// **Propósito:** Se utiliza para crear *layouts* de formularios donde múltiples
+/// campos de entrada comparten el mismo espacio horizontal.
+///
+/// **Limitación:** Esta función no está siendo utilizada en el archivo 'add_clients.dart'
+/// tal como fue proporcionado, pero su intención es modularizar la creación de filas.
+///
+/// @param labels Una lista de etiquetas de tipo [String] para cada campo de texto.
+/// @returns Un widget [Row] que contiene un [TextField] por cada etiqueta.
 Widget buildInputRow(List<String> labels) {
-  return Row(
+  return Row( // Crea una fila horizontal
     children: labels.map((label) {
       return Expanded(
         child: SizedBox(
