@@ -32,7 +32,7 @@ class ClientsHandler with ChangeNotifier {
     );
   }
 
-  // Carga inicial de clientes
+  
   Future<void> fetchClients() async {
     try {
       debugPrint('ClientsHandler: Iniciando fetchClients...');

@@ -101,6 +101,16 @@ lib/
 │   |── add_client/ // Interfaz para agregar clientes <!> Arreglar Logica Fuertemente acoplada 
 │   |    ├── add_clients_handler.dart // Maneja la logica de negocio    
 │   |    └── add_client_screen.dart // Pantalla para agregar clientes
+│   |── clientes/ // <!> Creo que es la interfas para mostrar los clietnes
+│   |    ├── clients_handler.dart //<!> Maneja la logica de negocio
+│   |    └── clients_screen.dart // <!> Pantalla para listar clientes
+
+│   ├── depositos/ //<!> Interas para representar las transacciones que los clietes acen para pagar sus impuestos  
+│   |    ├── depositos_handler.dart //<!> Maneja la logica de negocio
+│   |    ├── depositos_screen.dart // <!> Pantalla para visualisar los depositos
+│   |    ├── 
+│   |    ├── 
+
 │   └── login/  // Interfaz para logearse al sistema
 │   │   ├── login_form.dart // Contiene el formulario de login
 │   │   ├── login_handler.dart // Pantalla de login

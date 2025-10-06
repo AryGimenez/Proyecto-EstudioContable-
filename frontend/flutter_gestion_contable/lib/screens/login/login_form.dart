@@ -7,16 +7,44 @@ import 'package:flutter_gestion_contable/core/theme/app_colors.dart';
 import 'package:flutter_gestion_contable/core/theme/app_styles.dart';
 import 'login_styles.dart';
 
+/// Widget de presentación (StatelessWidget) que construye el formulario
+/// de inicio de sesión.
+///
+/// Este widget es puramente de UI y no maneja la lógica de negocio ni el estado
+/// (como los valores de los campos de texto o la visibilidad de la contraseña);
+/// en su lugar, recibe todos los datos (controladores, flags) y las acciones
+/// (callbacks) de su widget padre (el LoginHandler o ViewModel).
+///
+/// Componentes principales:
+/// - Logo de la aplicación.
+/// - Un [Form] que contiene [TextFormField] para Usuario y Contraseña.
+/// - Botón principal de "Iniciar sesión".
+/// - Botones de acción secundaria ("Perdí la contraseña" y "Configuración").
 class LoginForm extends StatelessWidget {
-  // Define las propiedades que este widget necesita recibir de su padre (el handler).
-  final GlobalKey<FormState> formKey;
-  final TextEditingController userController;
-  final TextEditingController passwordController;
-  final bool isPasswordVisible;
-  final VoidCallback onPasswordVisibilityToggle;
+  final GlobalKey<FormState> formKey; // Clave para validar el formulario.
+  final TextEditingController userController; // Controlador para el campo de usuario.
+  final TextEditingController passwordController; // Controlador para el campo de contraseña.
+  final bool isPasswordVisible; // Flag para controlar la visibilidad de la contraseña.
+  final VoidCallback onPasswordVisibilityToggle; // Callback para alternar la visibilidad de la contraseña. 
   final VoidCallback onSubmit; // Callback para el botón de iniciar sesión.
   final VoidCallback onResetPassword; // Callback para el botón de "Perdí la contraseña".
-
+  
+  /// Constructor del widget [LoginForm].
+  ///
+  /// Este widget requiere que todas sus propiedades sean inicializadas por el widget padre
+  /// para establecer las referencias a los controladores de texto, el estado de la UI,
+  /// y las funciones de acción que desencadenarán la lógica de negocio.
+  ///
+  /// @param key La clave del widget.
+  /// @param formKey Una clave global ([GlobalKey<FormState>]) utilizada para validar y
+  ///       guardar los campos del formulario antes de la autenticación.
+  /// @param userController Controlador para gestionar la entrada de texto del campo 'Usuario'.
+  /// @param passwordController Controlador para gestionar la entrada de texto del campo 'Contraseña'.
+  /// @param isPasswordVisible Bandera que indica si el texto de la contraseña debe ser visible o estar ofuscado.
+  /// @param onPasswordVisibilityToggle Callback que se ejecuta al presionar el ícono de visibilidad
+  ///        (el ojo), para cambiar el estado de [isPasswordVisible].
+  /// @param onSubmit Callback que se ejecuta cuando el usuario presiona el botón 'Iniciar sesión'.
+  /// @param onResetPassword Callback que se ejecuta al presionar el botón 'Perdí la contraseña'.
   const LoginForm({
     super.key,
     required this.formKey,
@@ -29,41 +57,51 @@ class LoginForm extends StatelessWidget {
   });
 
   @override
+  /// Construye el árbol de widgets para el formulario de inicio de sesión.
+  ///
+  /// Se utiliza un [Center] y un [SingleChildScrollView] para asegurar que el
+  /// formulario esté centrado en la pantalla y sea desplazable en caso de que
+  /// el teclado ocupe demasiado espacio (especialmente en dispositivos móviles o web).
+  ///
+  /// La estructura es una [Column] que contiene:
+  /// 1. El Logo de la aplicación.
+  /// 2. El [Form] principal, que utiliza la [formKey] para la validación.
+  /// 3. Los botones de acción secundaria ([_buildTextButonRestPassword] y [_buildConfigurationButton]).
+  ///
+  /// @param context El contexto del widget actual.
+  /// @returns El widget central que contiene el formulario de inicio de sesión.
   Widget build(BuildContext context) {
-    // La estructura principal del formulario, centrada en la pantalla.
-    return Center(
-      child: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: formMaxWidth
+    return Center( // Centra el formulario en la pantalla.
+      child: SingleChildScrollView( // Hace que el formulario sea desplazable si es necesario.
+        child: ConstrainedBox( // Limita el ancho máximo del formulario.
+          constraints: const BoxConstraints( // Asegura que el formulario no exceda el ancho máximo.
+            maxWidth: formMaxWidth // Ancho máximo del formulario.
           ),
-          child: Padding(
-            padding: formPadding,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Imagen del logo.
-                Image.asset(
-                  'lib/assets/Logo Barone.png',
-                  height: logoHeight,
+          child: Padding( // Añade espacio alrededor del formulario.
+            padding: formPadding, // Espacio alrededor del formulario.
+            child: Column( // Columna que contiene los elementos del formulario.
+              mainAxisAlignment: MainAxisAlignment.center, // Centra verticalmente los elementos.
+              children: [ // Elementos del formulario.
+                Image.asset( // Imagen del logo.
+                  'lib/assets/Logo Barone.png', // Ruta de la imagen del logo.
+                  height: logoHeight, // Altura del logo.
                 ),
-                verticalSpaceMedium,
-                // El formulario que contiene los campos de texto.
-                Form(
-                  key: formKey,
-                  child: Column(
-                    children: [
+                verticalSpaceMedium, // Espacio vertical entre el logo y el formulario.
+                Form( // Formulario que contiene los campos de texto.
+                  key: formKey, // Clave para validar el formulario.
+                  child: Column( // Columna que contiene los campos de texto.
+                    children: [ // Elementos del formulario.
                       _buildUserField(), // Campo para el usuario.
-                      verticalSpaceSmall,
+                      verticalSpaceSmall, // Espacio vertical entre el campo de usuario y la contraseña.
                       _buildPasswordField(), // Campo para la contraseña.
-                      verticalSpaceMedium,
+                      verticalSpaceMedium, // Espacio vertical entre el campo de contraseña y el botón de inicio de sesión.
                       _buildLoginButton(), // Botón de inicio de sesión.
                     ],
                   ),
                 ),
-                verticalSpaceMedium,
+                verticalSpaceMedium, // Espacio vertical entre el botón de inicio de sesión y el botón de restablecimiento de contraseña.
                 _buildTextButonRestPassword(), // Botón para restablecer contraseña.
-                verticalSpaceMedium,
+                verticalSpaceMedium, // Espacio vertical entre el botón de restablecimiento de contraseña y el botón de configuración.      
                 _buildConfigurationButton(), // Botón de configuración.
               ],
             ),
@@ -79,10 +117,10 @@ class LoginForm extends StatelessWidget {
   Widget _buildTextButonRestPassword() {
     return TextButton(
       // Llama a la función onResetPassword que viene del handler.
-      onPressed: onResetPassword,
-      child: Text(
-        'Perdí la contraseña',
-        style: AppTextStyles.bodyText1.copyWith(color: AppColors.primary),
+      onPressed: onResetPassword, // Callback al presionar el botón.
+      child: Text(  // Texto del botón.
+        'Perdí la contraseña', // Texto del botón.
+        style: AppTextStyles.bodyText1.copyWith(color: AppColors.primary), // Estilo del texto del botón.
       ),
     );
   }

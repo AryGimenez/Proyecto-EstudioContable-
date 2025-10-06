@@ -7,6 +7,22 @@ import 'package:flutter_gestion_contable/services/api_service.dart'; // ¡Manten
 import 'clients_handler.dart';
 import 'package:provider/provider.dart';
 
+/// Clase principal del widget para la pantalla de gestión de clientes.
+///
+/// Este widget con estado (StatefulWidget) es responsable de la composición
+/// general de la interfaz de la vista de clientes, incluyendo:
+/// 1. La barra de búsqueda y filtros ([SearchBar]).
+/// 2. La tabla de datos de clientes ([ClientsTable]).
+/// 3. Los botones de acción (Agregar, Modificar, Eliminar) ([ActionButtons]).
+/// 
+/// `ClientsScreen` accede a [ClientsHandler] a través de [Provider] para:
+/// - Iniciar la carga de datos ([fetchClients]) en el [initState].
+/// - Acceder al estado de la lista de clientes.
+/// - Llamar a métodos de acción (filtrar, agregar, editar, eliminar) a través de sus callbacks.
+/// 
+/// La gestión del estado de la tabla (selección de filas, datos filtrados) es
+/// delegada completamente al [ClientsHandler], lo que mantiene esta clase
+/// enfocada en la presentación y la interacción del usuario (UI).
 class ClientsScreen extends StatefulWidget {
   const ClientsScreen({super.key});
 
@@ -14,54 +30,73 @@ class ClientsScreen extends StatefulWidget {
   _ClientsScreenState createState() => _ClientsScreenState();
 }
 
+//  /// Método para construir el widget.
+//  /// * Muestra la barra de búsqueda y filtros, la tabla de clientes y los botones de acción.
 class _ClientsScreenState extends State<ClientsScreen> {
   // Mantenemos la instancia de ApiService aquí
   
   final ApiService _apiService = ApiService(); // <!> Creo que esto es para conectarme con el backend no se  Actuamente no se esta usadno 
 
-  late Future<void> _clientsFuture;
+  late Future<void> _clientsFuture; // Futuro para la carga inicial de clientes.
 
-  String selectedFilter = 'Nombre';
-  final TextEditingController _searchController = TextEditingController();
+  String selectedFilter = 'Nombre'; // Filtro seleccionado para la búsqueda.
+  final TextEditingController _searchController = TextEditingController(); // Controlador para el campo de búsqueda.
 
+  /// Método para inicializar el estado del widget.
+  /// * Inicializa el futuro para la carga inicial de clientes.
+  /// * Accede a la instancia del handler que el provider te da.
+  /// * Llama al método [fetchClients] para cargar los datos de clientes.
   @override
   void initState() {
-    super.initState();
-    // Accede a la instancia del handler que el provider te da.
-    final handler = Provider.of<ClientsHandler>(context, listen: false);
-    _clientsFuture = handler.fetchClients();
+    super.initState(); // Inicializa el estado del widget.
+    final handler = Provider.of<ClientsHandler>(context, listen: false); // Accede a la instancia del handler que el provider te da.
+    _clientsFuture = handler.fetchClients(); // Llama al método [fetchClients] para cargar los datos de clientes.
   }
 
-  void _onSearch() {
-    final handler = Provider.of<ClientsHandler>(context, listen: false);
+  /// Método para manejar la búsqueda de clientes.
+  /// * Accede a la instancia del handler que el provider te da.
+  /// * Llama al método [filterClients] para filtrar los clientes.
+  void _onSearch() { 
+    final handler = Provider.of<ClientsHandler>(context, listen: false); // Accede a la instancia del handler que el provider te da.
     setState(() {
-      String filterKey = _getFilterKey(selectedFilter);
-      handler.filterClients(_searchController.text, filterKey);
+      String filterKey = _getFilterKey(selectedFilter); // Obtiene la llave del filtro seleccionado.
+      handler.filterClients(_searchController.text, filterKey); // Llama al método [filterClients] para filtrar los clientes.
     });
   }
 
+  /// Método para manejar el cambio de filtro.
+  /// * Accede a la instancia del handler que el provider te da.
+  /// * Llama al método [filterClients] para filtrar los clientes.
   void _onFilterChange(String? value) {
-    final handler = Provider.of<ClientsHandler>(context, listen: false);
-    setState(() {
-      selectedFilter = value ?? 'Nombre';
-      _onSearch();
+    final handler = Provider.of<ClientsHandler>(context, listen: false); // Accede a la instancia del handler que el provider te da.
+    setState(() { // Actualiza el estado del widget.
+      selectedFilter = value ?? 'Nombre';// Actualiza el filtro seleccionado.
+      _onSearch(); // Llama al método [_onSearch] para filtrar los clientes.  
     });
   }
 
+  /// Método para obtener la llave del filtro seleccionado.
+  /// * Recibe el filtro seleccionado.
+  /// * Devuelve la llave del filtro.
   String _getFilterKey(String filter) {
     switch (filter) {
-      case 'ID': return 'Cli_ID';
-      case 'Nombre': return 'Cli_Nom';
-      case 'Email': return 'Cli_Email';
-      case 'Nacimiento': return 'Cli_FechaNac';
-      case 'WhatsApp': return 'Cli_Whatsapp';
-      case 'Saldo': return 'Cli_Saldo';
-      case 'Contacto': return 'Cli_Contacto';
-      case 'Dirección': return 'Cli_Dir';
-      default: return 'Cli_Nom';
+      case 'ID': return 'Cli_ID'; // Llave para el filtro por ID.
+      case 'Nombre': return 'Cli_Nom'; // Llave para el filtro por nombre.
+      case 'Email': return 'Cli_Email'; // Llave para el filtro por email.
+      case 'Nacimiento': return 'Cli_FechaNac'; // Llave para el filtro por nacimiento.
+      case 'WhatsApp': return 'Cli_Whatsapp'; // Llave para el filtro por WhatsApp.
+      case 'Saldo': return 'Cli_Saldo'; // Llave para el filtro por saldo.
+      case 'Contacto': return 'Cli_Contacto'; // Llave para el filtro por contacto.
+      case 'Dirección': return 'Cli_Dir'; // Llave para el filtro por dirección.
+      default: return 'Cli_Nom'; // Llave por defecto para el filtro por nombre.
     }
   }
 
+  /// Método para mostrar el diálogo de edición de cliente.
+  /// * Recibe los datos del cliente a editar.
+  /// * Muestra un formulario con los datos del cliente.
+  /// * Permite editar los datos del cliente.
+  /// * Llama al método [updateClient] para actualizar los datos del cliente.
   void _showEditDialog(Map<String, dynamic> client) {
     final handler = Provider.of<ClientsHandler>(context, listen: false);
     final TextEditingController nameController = TextEditingController(text: client['Cli_Nom']);
@@ -71,6 +106,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
     final TextEditingController contactController = TextEditingController(text: client['Cli_Contacto']);
     final TextEditingController addressController = TextEditingController(text: client['Cli_Dir']);
 
+    
     showDialog(
       context: context,
       builder: (context) {

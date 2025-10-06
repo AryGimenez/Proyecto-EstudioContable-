@@ -7,6 +7,7 @@ import 'package:flutter_gestion_contable/screens/login/login_handler.dart';
 import '../clients/clients_screen.dart';
 import '../add_clients/add_clients.dart';
 import '../payments/payments_screen.dart';
+import '../payments/payments_handler.dart';
 import '../deposits/deposits_screen.dart';
 import 'notification_modal.dart';
 import 'package:provider/provider.dart'; // Importa el paquete aquí
