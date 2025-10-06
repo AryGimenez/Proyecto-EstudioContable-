@@ -38,28 +38,22 @@ class _LoginHandlerState extends State<LoginHandler> {
   /// @returns Un [Future<void>] que se completa después de intentar la autenticación
   /// y manejar la navegación o mostrar el error.
   void _submitForm() async {
-    // Valida el formulario antes de hacer la llamada a la API.
-    if (_formKey.currentState?.validate() ?? false) {
-      final username = _userController.text;
-      final password = _passwordController.text;
+    if (_formKey.currentState?.validate() ?? false) {// Valida el formulario antes de hacer la llamada a la API.
+      final username = _userController.text.trim(); // Obtiene el texto del campo de usuario y lo recorta de espacios.
+      final password = _passwordController.text.trim(); // Obtiene el texto del campo de contraseña y lo recorta de espacios. 
+      final result = await _apiService.login(username, password); // Llama al método de login del servicio API y espera el resultado.
 
-      // Llama al método de login del servicio API y espera el resultado.
-      final result = await _apiService.login(username, password);
-
-      // Verifica si el widget sigue montado antes de actualizar la UI.
-      if (mounted) {
-        if (result['success']) {
-          // Si es exitoso, navega a la pantalla principal y reemplaza la actual.
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const MainHandler()),
+      if (mounted) { // Verifica si el widget sigue montado antes de actualizar la UI.
+        if (result['success']) {// Si la autenticación es exitosa.          
+          Navigator.of(context).pushReplacement( // Si es exitoso, navega a la pantalla principal y reemplaza la actual.
+            MaterialPageRoute(builder: (context) => const MainHandler()), // Construye la ruta a la pantalla principal.
           );
-        } else {
-          // Si falla, muestra un mensaje de error desde el backend.
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(result['message'] ?? 'Error de autenticación.'),
+        } else { // Si la autenticación falla.
+          ScaffoldMessenger.of(context).showSnackBar( // Muestra un mensaje de error en la parte inferior de la pantalla.
+            SnackBar( // Crea un widget SnackBar para mostrar el mensaje de error.
+              content: Text(result['message'] ?? 'Error de autenticación.'), // Muestra el mensaje de error devuelto por el backend o un mensaje predeterminado.
             ),
-          );
+          ); 
         }
       }
     }
@@ -69,8 +63,8 @@ class _LoginHandlerState extends State<LoginHandler> {
   /// * Llama a [setState] para forzar el redibujo del [LoginForm] y actualizar el
   /// ícono del ojo y la propiedad [obscureText].
   void _togglePasswordVisibility() {
-    setState(() {
-      _isPasswordVisible = !_isPasswordVisible;
+    setState(() { // Actualiza el estado para cambiar la visibilidad de la contraseña.
+      _isPasswordVisible = !_isPasswordVisible; // Cambia el valor de _isPasswordVisible a su opuesto.
     });
   }
 
@@ -78,25 +72,26 @@ class _LoginHandlerState extends State<LoginHandler> {
   /// * Utiliza [Navigator.of(context).push] para ir a [PasswordResetHandler]
   /// permitiendo al usuario volver a la pantalla de login.
   void _navigateToPasswordReset() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const PasswordResetHandler()),
+    Navigator.of(context).push( // Navega a la pantalla de reseteo de contraseña.
+      MaterialPageRoute(builder: (context) => const PasswordResetHandler()), // Construye la ruta a la pantalla de reseteo de contraseña.
     );
   }
 
+  /// Construye la interfaz de usuario de la pantalla de login.
+  /// * Utiliza [Scaffold] para proporcionar la estructura básica.
+  /// * Incluye un [LoginForm] para el ingreso de credenciales.
   @override
   Widget build(BuildContext context) {
-    // Construye la estructura de la pantalla de login.
-    return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          // Pasa los controladores y métodos al widget del formulario.
-          child: LoginForm(
-            formKey: _formKey,
-            userController: _userController,
-            passwordController: _passwordController,
-            isPasswordVisible: _isPasswordVisible,
-            onPasswordVisibilityToggle: _togglePasswordVisibility,
+    return Scaffold( // Construye la estructura básica de la pantalla de login.
+      body: Center( // Centra el contenido de la pantalla.
+        child: SingleChildScrollView( // Permite el desplazamiento vertical si el contenido excede la altura de la pantalla.
+          padding: const EdgeInsets.all(16.0), // Añade un padding uniforme alrededor del formulario.
+          child: LoginForm( // Incluye el widget LoginForm para el ingreso de credenciales.
+            formKey: _formKey, // Pasa la clave del formulario para validar y acceder a sus métodos.
+            userController: _userController, // Pasa el controlador para el campo de usuario.
+            passwordController: _passwordController, // Pasa el controlador para el campo de contraseña.
+            isPasswordVisible: _isPasswordVisible, // Pasa el estado de visibilidad de la contraseña.
+            onPasswordVisibilityToggle: _togglePasswordVisibility, // Pasa el método para alternar la visibilidad de la contraseña.
             onSubmit: _submitForm, // El botón de "Iniciar sesión" llama a este método.
             onResetPassword: _navigateToPasswordReset, // El botón "Olvidaste..." llama a este método.
           ),
@@ -105,11 +100,14 @@ class _LoginHandlerState extends State<LoginHandler> {
     );
   }
 
+
+  /// Libera los recursos de los controladores cuando el widget se desmonta.
+  /// * Es importante llamar a [dispose] para liberar memoria y evitar fugas.
   @override
   void dispose() {
-    // Libera los recursos de los controladores para evitar fugas de memoria.
-    _userController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+    _userController.dispose(); // Libera el controlador de usuario.
+    _passwordController.dispose(); // Libera el controlador de contraseña.
+    super.dispose(); // Llama al método dispose de la clase base para liberar recursos adicionales.
   }
+
 }
