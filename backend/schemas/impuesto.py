@@ -1,6 +1,6 @@
 # backend/schemas/impuesto.py
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 import enum
 
@@ -25,6 +25,10 @@ class ImpuestoBase(BaseModel):
     NomIm_ID: int = Field(..., gt=0)
     Cli_ID: int = Field(..., gt=0)
 
+class Config:
+    from_attributes = True
+    populate_by_name = True
+
 # Esquema para la creación (POST)
 class ImpuestoCreate(ImpuestoBase):    
     pass
@@ -38,11 +42,12 @@ class ImpuestoUpdate(BaseModel):
     Imp_Vencimiento: Optional[str] = None
     NomIm_ID: Optional[int] = Field(None, gt=0)
     Cli_ID: Optional[int] = Field(None, gt=0)
+
 # Esquema para la respuesta (GET)
 class Impuesto(ImpuestoBase):
     Imp_ID: int
-    Imp_Honorario: float = Field(..., description="Monto de honorario calculado (20% del Imp_Monto).") # <--- ¡NUEVO CAMPO!
-    # ... (Si tienes schemas anidados para nombre_impuesto_obj)
-    
+    Imp_Honorario: float = Field(..., description="Monto de honorario calculado (%20 del Imp_Monto).") 
+    nombre_impuesto: NombreImpuesto
     class Config:
-        orm_mode = True
+        from_attributes = True 
+        populate_by_name = True

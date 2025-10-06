@@ -10,18 +10,26 @@ class NombreImpuestoRepository:
     def __init__(self, db: Session):
         self.db = db
 
+# Obtiene todos los nombre de impuestos ya registrados
+
     def get_all(self) -> List[NombreImpuesto]:
         return self.db.query(NombreImpuesto).all()
 
-    def get_by_id(self, nombre_impuesto_id: int) -> Optional[NombreImpuesto]:
-        return self.db.query(NombreImpuesto).filter(NombreImpuesto.NomIm_Id == nombre_impuesto_id).first()
+# Busca un Nombre por la ID
 
+    def get_by_id(self, nombre_impuesto_id: int) -> Optional[NombreImpuesto]:
+        return self.db.query(NombreImpuesto).filter(NombreImpuesto.NomIm_ID == nombre_impuesto_id).first()
+
+
+# Crea un nuevo nombre
     def create(self, nombre_impuesto: NombreImpuestoCreate) -> NombreImpuesto:
         db_nombre_impuesto = NombreImpuesto(NomIm_Txt=nombre_impuesto.NomIm_Txt)
         self.db.add(db_nombre_impuesto)
         self.db.commit()
         self.db.refresh(db_nombre_impuesto)
         return db_nombre_impuesto
+
+# Actualiza un nombre existente
 
     def update(self, nombre_impuesto_id: int, nombre_impuesto_update: NombreImpuestoCreate) -> Optional[NombreImpuesto]:
         db_nombre_impuesto = self.get_by_id(nombre_impuesto_id)
@@ -30,6 +38,8 @@ class NombreImpuestoRepository:
             self.db.commit()
             self.db.refresh(db_nombre_impuesto)
         return db_nombre_impuesto
+
+# Elimina un nombre existente
 
     def delete(self, nombre_impuesto_id: int) -> Optional[NombreImpuesto]:
         db_nombre_impuesto = self.get_by_id(nombre_impuesto_id)

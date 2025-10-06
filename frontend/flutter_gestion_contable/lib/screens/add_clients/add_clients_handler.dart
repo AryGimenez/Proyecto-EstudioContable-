@@ -1,3 +1,5 @@
+// frontend/flutter_gestion_contable/lib/screens/add_clients_handler.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Para usar el TextInputFormatter
 import 'package:flutter_gestion_contable/core/theme/app_colors.dart';

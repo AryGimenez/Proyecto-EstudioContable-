@@ -22,11 +22,15 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
   final TextEditingController whatsappController = TextEditingController();
   final TextEditingController datosContactoController = TextEditingController();
   final TextEditingController direccionController = TextEditingController();
+  final TextEditingController idController = TextEditingController();
 
   // URL del endpoint de tu backend para clientes (mantengo tu URL actual)
   final String clientsApiUrl = 'http://127.0.0.1:8000/clientes';
   // URL del endpoint de tu backend para impuestos
   final String taxesApiUrl = 'http://127.0.0.1:8000/impuestos';
+
+  // URL del endpoint de tu backend para nombres de impuestos (si es necesario)
+  final String nombreImpuestoApiUrl = 'http://127.0.0.1:8000/nombre_impuestos';
 
   // Controladores de texto para los campos de impuestos.
   final TextEditingController taxNombreController = TextEditingController();
@@ -35,11 +39,16 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
   final TextEditingController taxVencimientoController = TextEditingController();
   final TextEditingController taxMontoController = TextEditingController();
   final TextEditingController taxHonorarioController = TextEditingController();
+  final TextEditingController taxMonedaController = TextEditingController();
 
   // Lista para almacenar los impuestos obtenidos del backend.
   List<Map<String, dynamic>> _taxesData = [];
   int? _selectedTaxId; // Almacena el ID del impuesto seleccionado del backend
   int? _selectedTaxRowIndex; // Para el estado visual de la fila seleccionada en la tabla
+
+  // Lista para el Dropdown de Nombre de Impuestos
+  List<Map<String, dynamic>> _nombreImpuestoOptions = [];
+  int? _selectedNomImId;
 
   // Variables para saber si estamos modificando un impuesto existente o agregando uno nuevo
   bool _isEditingTax = false;
@@ -48,6 +57,7 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
   void initState() {
     super.initState();
     _fetchTaxes(); // Carga los impuestos al iniciar el widget
+    _fetchNombreImpuestos(); // Carga los nombres de impuestos al iniciar el widget
   }
 
   @override
@@ -67,6 +77,36 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
     super.dispose();
   }
 
+// --- Lógica de conexión con el backend para los nombres de impuestos ---
+Future<void> _fetchNombreImpuestos() async{
+  try{
+    final response = await http.get(Uri.parse(nombreImpuestoApiUrl));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+
+      setState(() {
+        _nombreImpuestoOptions = data.map((item) => {
+          'id': item['NomIm_ID'] as int,
+          'nombre': item['NomIm_Txt'] as String,
+        }).toList();
+
+        if (_nombreImpuestoOptions.isNotEmpty) {
+          _selectedNomImId = _nombreImpuestoOptions.first['id'];
+        }
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error al cargar nombres de impuesto')));
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error de conexion al obtener los nombres de impuestos: $e')));
+  }
+}
+
+
+
   // --- Lógica de conexión con el backend para impuestos ---
 
   // Obtener todos los impuestos del backend
@@ -78,7 +118,8 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
         setState(() {
           _taxesData = data.map((tax) => {
             'id': tax['Imp_ID'],
-            'nombre': tax['Imp_Nom'],
+            'nomImId': tax['NomIm_ID'],
+            'nombre': tax['nombre_impuesto']?['NomIm_Txt'],
             'frecuencia': tax['Imp_Frecuencia'],
             'dias': tax['Imp_Dias'].toString(),
             'vencimiento': tax['Imp_Vencimiento'],
@@ -98,49 +139,59 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
 
   // Agregar un nuevo impuesto al backend
   Future<void> _addTax() async {
-    if (taxNombreController.text.isEmpty ||
-        taxFrecuenciaController.text.isEmpty ||
-        taxDiasController.text.isEmpty ||
-        taxVencimientoController.text.isEmpty ||
-        taxMontoController.text.isEmpty ||
-        taxHonorarioController.text.isEmpty) {
+  if (_selectedNomImId == null || // <--- Verifica que se haya seleccionado un impuesto del Dropdown
+      idController.text.isEmpty || // <--- Asegúrate de que el ID del cliente esté presente
+      taxFrecuenciaController.text.isEmpty ||
+      taxDiasController.text.isEmpty ||
+      taxVencimientoController.text.isEmpty ||
+      taxMontoController.text.isEmpty) { 
+      
+      
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Por favor, complete todos los campos del impuesto.')));
       return;
     }
 
-    try {
-      final taxData = {
-        'Imp_Nom': taxNombreController.text,
-        'Imp_Frecuencia': taxFrecuenciaController.text,
-        'Imp_Dias': int.parse(taxDiasController.text),
-        'Imp_Vencimiento': taxVencimientoController.text,
-        'Imp_Monto': double.parse(taxMontoController.text),
-        'Imp_Honorario': double.parse(taxHonorarioController.text),
-      };
+    // Convertir el Honorario a double de forma segura si está presente
+    final double honorario = double.tryParse(taxHonorarioController.text) ?? 0.0;
+    
+  try {
+   final taxData = {
+    // 🚨 CAMBIO 2: Usa _selectedNomImId directamente. Este es el INT que espera el backend.
+    'NomIm_ID': _selectedNomImId,
+        
+    'Cli_ID': int.parse(idController.text),
+    'Imp_Moneda': 'UYU',
+    'Imp_Frecuencia': taxFrecuenciaController.text,
+    'Imp_Dias': taxDiasController.text,
+    'Imp_Vencimiento': taxVencimientoController.text,
+    'Imp_Monto': double.parse(taxMontoController.text),
+        // Incluye el honorario si lo necesitas, o coméntalo si el backend lo calcula
+        'Imp_Honorario': honorario, 
+   };
 
-      final response = await http.post(
-        Uri.parse(taxesApiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(taxData),
-      );
+   final response = await http.post(
+    Uri.parse(taxesApiUrl),
+    headers: <String, String>{
+     'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(taxData),
+   );
 
-      if (response.statusCode == 201) {
-        _clearTaxFields();
-        _fetchTaxes();
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Impuesto agregado correctamente.')));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error al agregar el impuesto: ${response.statusCode} - ${response.body}')));
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error de conexión o inesperado al agregar impuesto: $e')));
-    }
+   if (response.statusCode == 201 || response.statusCode == 200) {
+    _clearTaxFields();
+    _fetchTaxes();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Impuesto agregado correctamente.')));
+   } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error al agregar el impuesto: ${response.statusCode} - ${response.body}')));
+   }
+  } catch (e) {
+   ScaffoldMessenger.of(context).showSnackBar(
+     SnackBar(content: Text('Error de conexión o inesperado al agregar impuesto: $e')));
   }
+ }
 
   // Actualizar un impuesto existente en el backend
   Future<void> _updateTax() async {
@@ -162,9 +213,9 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
 
     try {
       final taxData = {
-        'Imp_Nom': taxNombreController.text,
+        'NomIm_ID': int.parse(taxNombreController.text),
         'Imp_Frecuencia': taxFrecuenciaController.text,
-        'Imp_DiasVencimiento': int.parse(taxDiasController.text),
+        'Imp_Dias': taxDiasController.text,
         'Imp_Vencimiento': taxVencimientoController.text,
         'Imp_Monto': double.parse(taxMontoController.text),
         'Imp_Honorario': double.parse(taxHonorarioController.text),
@@ -295,7 +346,7 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
     }
     final taxToEdit = _taxesData[_selectedTaxRowIndex!];
     setState(() {
-      taxNombreController.text = taxToEdit['nombre'];
+      _selectedNomImId = taxToEdit['nomImId'] as int?;
       taxFrecuenciaController.text = taxToEdit['frecuencia'];
       taxDiasController.text = taxToEdit['dias'];
       taxVencimientoController.text = taxToEdit['vencimiento'];
@@ -309,16 +360,19 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
 
   // Método auxiliar para limpiar los campos del impuesto.
   void _clearTaxFields() {
-    taxNombreController.clear();
     taxFrecuenciaController.clear();
     taxDiasController.clear();
     taxVencimientoController.clear();
     taxMontoController.clear();
     taxHonorarioController.clear();
+    
     setState(() {
       _isEditingTax = false; // Salir del modo edición al limpiar
       _selectedTaxId = null;
       _selectedTaxRowIndex = null;
+      _selectedNomImId = _nombreImpuestoOptions.isNotEmpty
+        ? _nombreImpuestoOptions.first['id']
+        : null;
     });
   }
 
@@ -435,7 +489,7 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
           ),
           const SizedBox(height: 10),
           _buildInputRow([
-            _buildTextField("Nombre", taxNombreController),
+            _buildTaxNameDropdown(),
             _buildTextField("Frecuencia", taxFrecuenciaController),
             _buildTextField("Días", taxDiasController, keyboardType: TextInputType.number),
             _buildTextField("Vencimiento", taxVencimientoController, onTap: () async {
@@ -463,6 +517,7 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
                 child: DataTable(
                   headingRowColor: MaterialStateProperty.resolveWith<Color?>((states) => AppColors.primary),
                   columns: const [
+                    DataColumn(label: Text('ID', style: TextStyle(color: Colors.white),)),
                     DataColumn(label: Text('Nombre', style: TextStyle(color: Colors.white))),
                     DataColumn(label: Text('Frecuencia', style: TextStyle(color: Colors.white))),
                     DataColumn(label: Text('Días', style: TextStyle(color: Colors.white))),
@@ -491,10 +546,11 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
                         });
                       },
                       cells: [
-                        DataCell(Text(tax['nombre'] ?? '')),
-                        DataCell(Text(tax['frecuencia'] ?? '')),
+                        DataCell(Text(tax['id']?.toString() ?? '')),
+                        DataCell(Text(tax['nombre']?.toString() ?? '')),
+                        DataCell(Text(tax['frecuencia']?.toString() ?? '')),
                         DataCell(Text(tax['dias']?.toString() ?? '')),
-                        DataCell(Text(tax['vencimiento'] ?? '')),
+                        DataCell(Text(tax['vencimiento']?.toString() ?? '')),
                         DataCell(Text(tax['monto']?.toString() ?? '')),
                         DataCell(Text(tax['honorario']?.toString() ?? '')),
                       ],
@@ -550,6 +606,37 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
           ),
         );
       }).toList(),
+    );
+  }
+
+  Widget _buildTaxNameDropdown() {
+    return Container(
+      height: 40,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<int>(
+          isExpanded: true,
+          hint: const Text('Nombre Impuesto'),
+          value: _selectedNomImId,
+
+          items: _nombreImpuestoOptions.map((impuesto) {
+            return DropdownMenuItem<int>(
+              value: impuesto['id'],
+              child: Text(impuesto['nombre']),
+            );
+          }).toList(),
+
+          onChanged: (int? newId) {
+            setState(() {
+              _selectedNomImId = newId;
+            });
+          },
+        ),
+      ),
     );
   }
 

@@ -1,8 +1,10 @@
 # backend/main.py (CORREGIDO)
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse # Mantén estas importaciones si las usas en otras rutas
+from fastapi.responses import HTMLResponse, FileResponse # Mantén estas importaciones si las usas en otras rutas
+from fastapi.staticfiles import StaticFiles
+from sqlalchemy.orm import Session
 from datetime import date
 
 # -----------------------------------------------------------------------------------------------------
@@ -105,28 +107,26 @@ async def shutdown_event():
 # --- FIN DE CONSOLIDACIÓN ---
 
 
-# Ruta de bienvenida simplificada
-@app.get("/", response_class=HTMLResponse)
-async def read_root():
-<<<<<<< HEAD
-    # Asegúrate de haber compilado tu app de Flutter para la web con `flutter build web`
-    return FileResponse("frontend/flutter_gestion_contable/build/web/index.html")
+# Ruta para unir el backend con el frontend
 
-# Sirve todos los archivos estáticos de la app de Flutter
-# Esto le dice a FastAPI dónde encontrar los archivos de la app (CSS, JS, imágenes).
+# 1. Montar archivos estáticos (si tienes un frontend construido)
 app.mount(
-    "/",
-    StaticFiles(directory="frontend/flutter_gestion_contable/build/web"),
-    name="flutter_app"
+    "/static",
+    StaticFiles(directory="frontend/flutter_gestion_contable/build/web"), # Ajusta la ruta según tu estructura de proyecto
+    name="flutter_app_static"
 )
 
-# Ruta de ejemplo para la configuración de conexión
-@app.post("/config/connect")
-async def connect_to_app(config: AppConfig, db: Session = Depends(get_db)):
+# 2. Ruta para servir el archivo index.html
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    return FileResponse("frontend/flutter_gestion_contable/build/web/index.html")
+
+# 3. Ruta para configuración (opcional)
+"""
+@app.get("/config/connect")
+async def connect_to_app(config:AppConfig, db: Session = Depends(get_db)):
     ip_address = config.ip_address
     port = config.port
-    print ("Intentando conectar a: {}:{}".format(ip_address, port))
-    return {"message": "Configuración recibida. Intentando conectar a {}:{}".format(ip_address, port)}
-=======
-    return "<h1>Bienvenido a la API de Estudio Contable</h1>"
->>>>>>> Esteban22-09
+    print("Intentando conectar con la app en {}:{}".format(ip_address, port))
+    return {"message": "Conexión exitosa a la app en {}:{}".format(ip_address, port)}
+"""

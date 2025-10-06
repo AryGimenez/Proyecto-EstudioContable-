@@ -34,7 +34,7 @@ def get_all_impuestos(skip: int = 0, limit: int = 100, db: Session = Depends(get
 
 
 @router.get("/{impuesto_id}", response_model=Impuesto)
-def get_impuesto_by_id(impuesto_id: int, db: Session = Depends(get_db)):
+def get_impuesto(impuesto_id: int, db: Session = Depends(get_db)):
     repo = ImpuestoRepository(db)
     db_impuesto = repo.get_by_id(impuesto_id)
     if db_impuesto is None:

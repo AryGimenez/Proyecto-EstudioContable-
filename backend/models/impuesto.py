@@ -37,13 +37,15 @@ class Impuesto(Base):
     # Clave foránea para la relación con NombreImpuesto
     NomIm_ID: Mapped[int] = mapped_column(Integer, ForeignKey("NombreImpuesto.NomIm_ID"))
     nombre_impuesto: Mapped["NombreImpuesto"] = relationship(
-        "NombreImpuesto", back_populates="impuestos_registrados"
+        "NombreImpuesto", back_populates="impuestos_registrados",
     )
-     # --- ¡CORRECCIÓN AQUÍ! ---
+     # --- Clave Foranea para las notificaciones ---
     notificaciones: Mapped[List["Notificacion"]] = relationship("Notificacion", back_populates="impuesto", cascade="all, delete-orphan")
-    # -------------------------
+    
+    # --- Clave Foranea para los pagos ---
     pagos: Mapped[List["Pago"]] = relationship(back_populates="impuesto")
+    
+    
     # Relación con el modelo Cliente
     # back_populates crea una conexión bidireccional, permitiendo acceder a los impuestos desde el cliente y viceversa
 
-  

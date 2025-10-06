@@ -18,4 +18,5 @@ class NombreImpuesto(NombreImpuestoBase):
     NomIm_ID: int
 
     class Config:
-        orm_mode = True # Esto permite que Pydantic lea directamente de un modelo SQLAlchemy
+        from_attributes = True
+        populate_by_name = True  # Esto permite que Pydantic lea directamente de un modelo SQLAlchemy

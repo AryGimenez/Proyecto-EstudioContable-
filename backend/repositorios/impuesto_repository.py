@@ -15,11 +15,22 @@ class ImpuestoRepository:
 
 # Obtiene un impuesto por ID
     def get_by_id(self, impuesto_id: int) -> Optional[Impuesto]:
-        return self.db.query(Impuesto).options(joinedload(Impuesto.nombre_impuesto)).filter(Impuesto.Imp_ID == impuesto_id).first()
+        return (
+            self.db.query(Impuesto)
+            .options(joinedload(Impuesto.nombre_impuesto))
+            .filter(Impuesto.Imp_ID == impuesto_id)
+            .first()
+        )
 
 # Obtiene todos los impuestos
     def get_all(self, skip: int = 0, limit: int = 100) -> List[Impuesto]:
-        return self.db.query(Impuesto).options(joinedload(Impuesto.nombre_impuesto)).all()
+        return (
+            self.db.query(Impuesto)
+            .options(joinedload(Impuesto.nombre_impuesto))
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
 
 #  Crea un nuevo impuesto
     def create(self, impuesto_data:ImpuestoCreate) -> Impuesto:
@@ -48,8 +59,12 @@ class ImpuestoRepository:
         self.db.commit()
         self.db.refresh(db_impuesto)
         self.db.refresh(cliente)
-        return self.get_by_id(db_impuesto.Imp_ID)
-    
+        
+        impuesto_cargado = self.db.query(Impuesto) \
+               .options(joinedload(Impuesto.nombre_impuesto)) \
+               .filter(Impuesto.Imp_ID == db_impuesto.Imp_ID) \
+               .one()
+        return impuesto_cargado
 
 #   Actualiza un impuesto existente
     def update(self, impuesto_id: int, impuesto_update: ImpuestoUpdate) -> Optional[Impuesto]:
