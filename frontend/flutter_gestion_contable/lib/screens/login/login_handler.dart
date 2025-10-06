@@ -65,17 +65,16 @@ class _LoginHandlerState extends State<LoginHandler> {
     }
   }
 
-  
-   /// Alterna la visibilidad del texto en el campo de contraseña.
-   /// * Llama a [setState] para forzar el redibujo del [LoginForm] y actualizar el
-   /// ícono del ojo y la propiedad [obscureText].
+  /// Alterna la visibilidad del texto en el campo de contraseña.
+  /// * Llama a [setState] para forzar el redibujo del [LoginForm] y actualizar el
+  /// ícono del ojo y la propiedad [obscureText].
   void _togglePasswordVisibility() {
     setState(() {
       _isPasswordVisible = !_isPasswordVisible;
     });
   }
 
-  /// Navega a la pantalla de reseteo de contraseña.
+  /// Navega a la pantalla de reseteo de contraseña.
   /// * Utiliza [Navigator.of(context).push] para ir a [PasswordResetHandler]
   /// permitiendo al usuario volver a la pantalla de login.
   void _navigateToPasswordReset() {
