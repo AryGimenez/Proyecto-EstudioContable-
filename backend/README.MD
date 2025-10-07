@@ -1,359 +1,256 @@
-# Backend - Sistema de Gestión de Pagos y Alertas
+# Backend - Proyecto Estudio Contable
 
-Este backend está desarrollado con **FastAPI** y **SQLAlchemy**. Gestiona usuarios, clientes, pagos, depósitos e impuestos, proporcionando una API REST segura y escalable.
+# Estructura Completa del Backend
 
----
-
-## Estructura de Carpetas
+# 1. Organización de Directorios
+El backend está organizado en una estructura modular siguiendo buenas prácticas de desarrollo:
 
 ```
-backend/
-│
-├── config.py
-├── database.py
-├── dependencies.py
-├── docker-compose.yml
-├── dockerfile
-├── main.py
-├── security.py
-├── utils.py
-│
-├── models/
-│   ├── cliente.py
-│   ├── deposito.py
-│   ├── impuesto.py
-│   ├── pago.py
-│   ├── password_reset_request.py
-│   └── user.py
-│
-├── router/
-│   ├── auth.py
-│   ├── clientes.py
-│   ├── depositos.py
-│   ├── impuestos.py
-│   ├── pagos.py
-│   └── user.py
-│
-├── schemas/
-│   ├── auth.py
-│   ├── cliente.py
-│   ├── config.py
-│   ├── deposito.py
-│   ├── impuesto.py
-│   ├── pago.py
-│   └── user.py
-│
-└── FastApi/
-    ├── main.py
-    └── router/
-        ├── auth.py
-        ├── reauth.py
-        └── users.py
+    backend/
+    ├── Archivos de Configuración Principal
+    │   ├── main.py            # Punto de entrada de la aplicación
+    │   ├── config.py          # Configuraciones y variables de entorno
+    │   ├── database.py        # Configuración de la base de datos
+    │   ├── dependencies.py    # Dependencias e inyección de dependencias
+    │   ├── security.py        # Funciones de seguridad y autenticación
+    │   └── utils.py           # Utilidades generales
+    │
+    ├── models/                         # Modelos de datos (SQLAlchemy)
+    │   ├── cliente.py                  # Modelos datos de clientes
+    │   ├── deposito.py                 # Modelo de depósitos
+    │   ├── impuesto.py                 # Modelo de impuestos
+    │   ├── nombre_impuesto.py          # Modelo de nombres de impuestos
+    │   ├── notificacion.py             # Modelo de notificaciones
+    │   ├── pago.py                     # Modelo de pagos
+    │   ├── password_reset_request.py   # Modelo de solicitudes de restablecimiento de contraseña
+    │   └── user.py                     # Modelo de usuarios
+    │
+    ├── schemas/                    # Esquemas Pydantic para validación
+    │   ├── auth.py                 # Esquema Pydantic de autenticación
+    │   ├── cliente.py              # Esquema Pydantic para clientes
+    │   ├── config.py               # Esquema Pydantic para configuración
+    │   ├── deposito.py             # Esquema Pydantic para depósitos
+    │   ├── impuesto.py             # Esquema Pydantic para impuestos
+    │   ├── nombre_impuesto.py      # Esquema Pydantic para nombres de impuestos
+    │   ├── notificacion.py         # Esquema Pydantic para notificaciones
+    │   ├── pago.py                 # Esquema Pydantic para pagos
+    │   ├── token.py                # Esquema Pydantic para tokens
+    │   └── user.py                 # Esquema Pydantic para usuarios
+    │
+    ├── router/                     # Endpoints de la API
+    │   ├── auth.py                 # Rutas de autenticación
+    │   ├── clientes.py             # Rutas para gestión de clientes
+    │   ├── depositos.py            # Rutas para gestión de depósitos
+    │   ├── impuestos.py            # Rutas para gestión de impuestos
+    │   ├── nombre_impuesto.py      # Rutas para gestión de nombres de impuestos
+    │   ├── notificaciones.py       # Rutas para gestión de notificaciones
+    │   ├── pagos.py                # Rutas para gestión de pagos
+    │   └── users.py                # Rutas para gestión de usuarios
+    │
+    ├── repositorios/                       # Capa de acceso a datos
+    │   ├── clientes_repository.py          # Repositorio para clientes
+    │   ├── deposito_repository.py          # Repositorio para depósitos
+    │   ├── impuesto_repository.py          # Repositorio para impuestos
+    │   ├── nombre_impuesto_repository.py   # Repositorio para nombres de impuestos
+    │   ├── notification_repository.py      # Repositorio para notificaciones
+    │   ├── pago_repository.py              # Repositorio para pagos
+    │   └── usuario_repository.py           # Repositorio para usuarios
+    │
+    ├── services/                       # Servicios de la aplicación
+    │   ├── scheduler_service.py        # Servicio para tareas programadas
+    │   ├── websocket_manager.py        # Servicio para gestionar conexiones WebSocket
+    │   └── whatsapp_service.py         # Servicio para enviar notificaciones por WhatsApp
+    │
+    └── Archivos de Despliegue
+        ├── requirements.txt
+        ├── dockerfile
+        └── docker-compose.yml
+
 ```
 
----
-
-## Descripción de Archivos
-
-### Archivos Principales
-
-- **config.py**  
-  Configuración global del proyecto (variables de entorno, claves, rutas).
-
-- **database.py**  
-  Configuración y conexión a la base de datos con SQLAlchemy.
-
-- **dependencies.py**  
-  Dependencias reutilizables para los endpoints (sesión de BD, autenticación).
-
-- **main.py**  
-  Punto de entrada de la aplicación FastAPI. Inicializa la app, routers y middlewares.
-
-- **security.py**  
-  Funciones de seguridad: manejo de contraseñas y tokens JWT.
-
-- **utils.py**  
-  Funciones auxiliares y utilitarias para el backend.
-
----
-
-### Carpeta `models/`
-
-Modelos ORM que representan las tablas de la base de datos:
-
-- **cliente.py**: Modelo de cliente.
-- **deposito.py**: Modelo de depósito.
-- **impuesto.py**: Modelo de impuesto.
-- **pago.py**: Modelo de pago.
-- **password_reset_request.py**: Solicitudes de restablecimiento de contraseña.
-- **user.py**: Modelo de usuario.
-
----
-
-### Carpeta `router/`
-
-Endpoints de la API REST:
-
-- **auth.py**: Autenticación (login, registro, recuperación).
-- **clientes.py**: CRUD de clientes.
-- **depositos.py**: CRUD de depósitos.
-- **impuestos.py**: CRUD de impuestos.
-- **pagos.py**: CRUD de pagos.
-- **user.py**: Gestión de usuarios.
-
----
-
-### Carpeta `schemas/`
-
-Esquemas Pydantic para validación y serialización de datos:
-
-- **auth.py**: Esquemas de autenticación.
-- **cliente.py**: Esquemas de clientes.
-- **config.py**: Esquemas de configuración.
-- **deposito.py**: Esquemas de depósitos.
-- **impuesto.py**: Esquemas de impuestos.
-- **pago.py**: Esquemas de pagos.
-- **user.py**: Esquemas de usuarios.
-
----
-
-### Carpeta `FastApi/`
-
-Sub-aplicación o módulo adicional:
-
-- **main.py**: Punto de entrada de la sub-aplicación.
-- **router/auth.py**: Endpoints de autenticación.
-- **router/reauth.py**: Endpoints de re-autenticación.
-- **router/users.py**: Gestión de usuarios.
-
----
-
-## Despliegue
-
-- Utiliza **Docker** y **Docker Compose** para contenerización y despliegue.
-- Configura variables de entorno y credenciales en `config.py` o archivos `.env`.
-
----
-
-## Requisitos
-
-- Python 3.9+
-- FastAPI
-- SQLAlchemy
-- Uvicorn
-- Otros paquetes según los modelos y rutas (ver `requirements.txt`)
-
----
-
-## Contribución
-
-Sigue la estructura modular para agregar nuevos modelos, rutas o esquemas.  
-Asegúrate de documentar y testear tus cambios.
-
----
-
-## Licencia
-
-Este proyecto está bajo
-
-## Uvicorn
-
-tener el entorno venv para que funcione uvicorn correctamente.
-
---- Comandos ---
-
-python -m venv venv  <---- crear entorno virtual venv
-source venv/bin/activate  # En Linux/Mac
-& venv\Scripts\activate.ps1  # En Windows
-
-(venv) C:\Users\argi\tu-proyecto> deactivate
-
-una vez abierto el venv por primera vez usar 
-
-pip install "uvicorn[standard]"
-
-antes del comando de abajo crear archivos requirements.txt con comando
-pip freeze > requirements.txt
-
-despues ejecturar comando 
-pip install -r requirements.txt
-
-despues de tener el archivo de arriba ejecutar la instalacion de abajo
-pip install fastapi <---  instalar fastapi
-
-cuando tengas todo instalado ya podras usar el comando de abajo
-
-uvicorn main:app --reload  <---- comando para abrir el servidor
-
-<<<<<<< HEAD
 
 
-# Nombre de tu proyecto
+# 2. Componentes Principales
 
-Breve descripción del proyecto: para qué sirve, qué problema resuelve y con qué tecnologías está construido.
 
----
+# Configuración y Arranque
+- main.py : Punto de entrada que configura FastAPI, CORS, routers y el scheduler de notificaciones
+- config.py : Variables de configuración como claves secretas, configuración de email, etc.
+- database.py : Configuración de SQLAlchemy y conexión a la base de datos
+- dependencies.py : Funciones para inyección de dependencias en los endpoints
 
-## 🚀 Puesta en marcha
 
-Sigue estos pasos para tener una copia local de este proyecto en funcionamiento en tu máquina.
+# Modelos de Datos
+Definen la estructura de la base de datos usando SQLAlchemy ORM:
 
-### 📋 Requisitos previos
+- cliente.py : Modelo para clientes del estudio contable
+- impuesto.py : Modelo para impuestos a pagar
+- pago.py : Modelo para registrar pagos realizados
+- deposito.py : Modelo para depósitos o transferencias
+- nombre_impuesto.py : Catálogo de tipos de impuestos
+- notificacion.py : Sistema de notificaciones
+- user.py : Usuarios del sistema
 
-Asegúrate de tener instalados los siguientes programas:
 
-- **Python 3.x**
-- **pip** (el gestor de paquetes de Python)
-- **Node.js** (si tu frontend lo necesita)
-- **Flutter** (para el frontend web)
+# Schemas (Pydantic)
+Definen la validación de datos para las API:
 
-### ⚙️ Instalación
+- Cada schema corresponde a un modelo y define cómo se validan los datos de entrada/salida
+- Incluye schemas para autenticación, tokens y configuración
 
-1.  **Clona el repositorio**:
-    ```bash
-    git clone [https://github.com/tu-usuario/tu-proyecto.git](https://github.com/tu-usuario/tu-proyecto.git)
-    cd tu-proyecto
+
+# Routers
+Definen los endpoints de la API REST:
+
+- Cada router maneja un recurso específico (clientes, impuestos, etc.)
+- auth.py : Endpoints para autenticación y gestión de sesiones
+
+
+# Repositorios
+Implementan el patrón repositorio para acceso a datos:
+
+- Cada repositorio encapsula las operaciones CRUD para un modelo específico
+- Separa la lógica de acceso a datos de la lógica de negocio
+
+
+# Servicios
+Implementan lógica de negocio compleja:
+
+- scheduler_service.py : Servicio para verificar vencimientos y generar notificaciones
+- websocket_manager.py : Gestión de conexiones WebSocket para notificaciones en tiempo real
+- whatsapp_service.py : Integración con WhatsApp para envío de notificaciones
+
+
+# Despliegue
+- requirements.txt : Dependencias del proyecto
+- dockerfile y docker-compose.yml : Configuración para despliegue con Docker
+
+
+# 3. Flujo de Datos
+1. 1.
+   Las peticiones HTTP llegan a los routers
+2. 2.
+   Los routers utilizan schemas para validar los datos de entrada
+3. 3.
+   Los routers llaman a los repositorios para acceder a la base de datos
+4. 4.
+   Los repositorios utilizan los modelos para interactuar con la base de datos
+5. 5.
+   Los servicios implementan lógica de negocio compleja (notificaciones, programación de tareas)
+6. 6.
+
+Los datos validados se devuelven como respuesta HTTP
+Esta arquitectura sigue el patrón de diseño de capas, separando claramente las responsabilidades y facilitando el mantenimiento y la escalabilidad del sistema.
+
+
+
+# Guía de Instalación Paso a Paso para el Backend
+
+
+# Requisitos Previos
+- Python 3.10 o superior
+- Acceso a la línea de comandos (PowerShell o CMD en Windows)
+- Git (para clonar el repositorio)
+
+
+# Paso 1: Preparar el Entorno Virtual
+
+1. 1.
+   Abre una terminal (PowerShell o CMD) en la carpeta raíz del proyecto:
+   
+   ``` 
+    cd 
+    c:\Users\silva\Documents\GitHub\Proyecto-EstudioContable-
     ```
 
-2.  **Configura el backend (Python)**:
-    -   Crea un entorno virtual:
-        ```bash
-        python -m venv venv
-        ```
-    -   Activa el entorno virtual:
-        -   En Windows: `venv\Scripts\activate`
-        -   En macOS/Linux: `source venv/bin/activate`
-    -   Instala las dependencias del backend:
-        ```bash
-        pip install -r requirements.txt
-        ```
 
-3.  **Configura el frontend (Flutter)**:
-    -   Navega al directorio del frontend:
-        ```bash
-        cd frontend/flutter_gestion_contable
-        ```
-    -   Instala las dependencias de Flutter:
-        ```bash
-        flutter pub get
-        ```
-    -   Compila el proyecto para la web:
-        ```bash
-        flutter build web
-        ```
+2. 2.
+   Crea un entorno virtual:
+   
+   ```
+   python -m venv venv
+   ```
 
----
+3. 3.
+   Activa el entorno virtual:
+   
+   - En Windows (PowerShell):
+     ```
+     .\venv\Scripts\Activate.ps1
+     ```
+   - En Windows (CMD):
+     ```
+     venv\Scripts\activate.bat
+     ```
 
-## 🖥️ Uso
+## Paso 2: Instalar Dependencias
 
-1.  **Vuelve al directorio principal**:
-    ```bash
-    cd ../..
-    ```
-2.  **Inicia el servidor backend**:
-    ```bash
-    uvicorn main:app --reload
-    ```
-3.  **Abre la aplicación**:
-    -   Una vez que el servidor se esté ejecutando, abre tu navegador y visita `http://127.0.0.1:8000`.
+1. 1.
+Asegúrate de que el entorno virtual está activado (verás (venv) al inicio de la línea de comandos)
 
----
+2. 2.
+Instala todas las dependencias del archivo requirements.txt:
 
-## 🧩 Solución de problemas comunes
-
-Aquí tienes un resumen de los errores que puedes encontrar y cómo resolverlos.
-
-### 1. `SyntaxError: Missing parentheses in call to 'print'`
-
--   **Causa**: Este error ocurre cuando una de las librerías instaladas (como `python-jose`) es una versión antigua que utiliza la sintaxis de Python 2.
--   **Solución**: Desinstala y reinstala la librería para obtener la versión correcta compatible con Python 3.
-    ```bash
-    pip uninstall python-jose
-    pip install "python-jose[cryptography]"
-    ```
-
-### 2. `RuntimeError: Directory 'frontend/flutter_gestion_contable/build/web' does not exist`
-
--   **Causa**: El servidor de Uvicorn no puede encontrar los archivos del frontend porque no han sido generados.
--   **Solución**: Asegúrate de haber ejecutado el comando `flutter build web` en el directorio correcto (`frontend/flutter_gestion_contable`) antes de iniciar el servidor.
-
----
-
-## 👥 Colaboración
-
-Si quieres contribuir a este proyecto, sigue estos pasos:
-
-1.  Haz un "Fork" del proyecto.
-2.  Crea tu rama de función (`git checkout -b feature/MiCaracteristicaGenial`).
-3.  Haz tus "commits" (`git commit -m 'Añadir nueva característica'`).
-4.  Sube tu rama (`git push origin feature/MiCaracteristicaGenial`).
-5.  Abre un "Pull Request".
-
----
-
-## 🛡️ Licencia
-
-Este proyecto está bajo la Licencia MIT.
+```
+pip install -r backend\requirements.txt
+Esto instalará:
+```
+    FastAPI: Framework web para crear APIs
+    SQLAlchemy: ORM para interactuar con la base de datos
+    Uvicorn: Servidor ASGI para ejecutar la aplicación
+    Pydantic: Para validación de datos
+    Otras dependencias necesarias
 
 
-=======
-📝 Documentación: Configuración y Arranque de Backend
-Este documento detalla los pasos para instalar y configurar el entorno de desarrollo necesario para la API, incluyendo la base de datos MySQL con XAMPP y el servidor de la API con FastAPI.
+# Paso 3: Configuraciones Adicionales
 
-Paso 1: Instalación de XAMPP (Servidor Local)
-XAMPP es un paquete de software gratuito que instala un servidor web (Apache) y una base de datos (MySQL) en tu computadora.
+1. 1.
+Configura las variables de entorno en el archivo backend/config.py:
 
-Descarga XAMPP: Ve al sitio web oficial de Apache Friends y descarga el instalador de XAMPP para tu sistema operativo.
+Actualiza SECRET_KEY con una clave segura
+Configura los datos de correo electrónico si vas a usar notificaciones por email
 
-Instala XAMPP: Ejecuta el instalador. Es recomendable usar la configuración por defecto. Asegúrate de que Apache y MySQL estén seleccionados para la instalación.
+2. 2.
+Asegúrate de que la base de datos esté configurada correctamente en backend/database.py
 
-Paso 2: Iniciar la Base de Datos con XAMPP
-Para que tu backend pueda conectarse a la base de datos, el servidor de MySQL debe estar en ejecución.
+Paso 4: Iniciar el Backend
+1. 1.
+Desde la carpeta raíz del proyecto, con el entorno virtual activado, ejecuta:
 
-Abre el Panel de Control de XAMPP: Puedes encontrarlo en el menú de inicio de Windows.
-
-Inicia los módulos: En el panel de control, haz clic en el botón Start (Iniciar) junto a los módulos Apache y MySQL. Una vez que se inicien, el nombre del módulo y el botón se pondrán en verde.
-
-Paso 3: Crear la Base de Datos en phpMyAdmin
-Tu código espera una base de datos con un nombre específico, base_de_datos. Debes crearla manualmente.
-
-Abre phpMyAdmin: En el Panel de Control de XAMPP, haz clic en el botón Admin junto al módulo de MySQL. Esto abrirá phpMyAdmin en tu navegador web.
-
-Crea la base de datos: En la página principal de phpMyAdmin, ve a la pestaña Bases de datos. En el campo de texto, escribe base_de_datos y haz clic en el botón Crear.
-
-Paso 4: Configurar la Conexión en la API (FastAPI)
-La DATABASE_URL en tu código debe coincidir con la configuración por defecto de XAMPP.
-
-Host: localhost
-
-Usuario: root
-
-Contraseña: No tiene (déjala vacía)
-
-Puerto: 3306
-
-Nombre de la BD: base_de_datos
-
-Tu archivo database.py debe lucir así:
-
-Python
-
-# backend/database.py
-
-DATABASE_URL = "mysql+mysqlconnector://root:@localhost:3306/base_de_datos"
-# Si usas PyMySQL, cambia el conector
-# DATABASE_URL = "mysql+pymysql://root:@localhost:3306/base_de_datos"
-Paso 5: Iniciar el Servidor de FastAPI
-Una vez que XAMPP esté corriendo y la base de datos exista, puedes iniciar tu backend.
-
-Abre tu terminal en la carpeta principal de tu proyecto.
-
-Activa tu entorno virtual (venv).
-
-Inicia el servidor: Ejecuta el siguiente comando para arrancar la API.
-
-Bash
-
+```
+cd backend
 uvicorn main:app --reload
-Verifica la conexión: Si todo está configurado correctamente, el servidor se iniciará sin errores. La línea Base.metadata.create_all() en tu main.py creará automáticamente las tablas (como la tabla Usuario) dentro de la base de datos base_de_datos.
->>>>>>> Esteban22-09
+```
+2. 2.
+El servidor se iniciará en http://127.0.0.1:8000
+
+3. 3.
+Puedes acceder a la documentación automática de la API en:
+
+Swagger UI: http://127.0.0.1:8000/docs
+ReDoc: http://127.0.0.1:8000/redoc
+Solución de Problemas Comunes
+
+1. 1.
+Error de importación de módulos:
+
+Asegúrate de que estás ejecutando el servidor desde la carpeta correcta
+Verifica que el entorno virtual esté activado
+
+2. 2.
+Error de conexión a la base de datos:
+
+Revisa la configuración en database.py
+Asegúrate de que la base de datos existe y es accesible
+
+3. 3.
+Error con las dependencias:
+
+Si hay conflictos, intenta: pip install -r backend\requirements.txt --force-reinstall
+
+4. 4.
+Problemas con el scheduler:
+
+Verifica que APScheduler esté correctamente instalado
+Revisa los logs para identificar errores específicos
+Esta guía te permitirá configurar y ejecutar el backend del sistema de gestión contable. Si encuentras algún problema específico durante la instalación, revisa los mensajes de error para obtener más detalles.
