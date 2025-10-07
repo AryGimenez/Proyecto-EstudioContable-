@@ -214,6 +214,7 @@ Future<void> _fetchNombreImpuestos() async{
     try {
       final taxData = {
         'NomIm_ID': int.parse(taxNombreController.text),
+        'Cli_ID' : int.parse(idController.text),
         'Imp_Frecuencia': taxFrecuenciaController.text,
         'Imp_Dias': taxDiasController.text,
         'Imp_Vencimiento': taxVencimientoController.text,
@@ -299,7 +300,7 @@ Future<void> _fetchNombreImpuestos() async{
         'Cli_Email': emailController.text,
         'Cli_Whatsapp': whatsappController.text,
         'Cli_Contacto': datosContactoController.text,
-        'Cli_FechNac': fechaNacimientoController.text,
+        'Cli_FechaNac': fechaNacimientoController.text,
         'Cli_Saldo': 0.0,
       };
 
@@ -490,6 +491,7 @@ Future<void> _fetchNombreImpuestos() async{
           const SizedBox(height: 10),
           _buildInputRow([
             _buildTaxNameDropdown(),
+            _buildTextField("ID Cliente", idController, keyboardType: TextInputType.number),
             _buildTextField("Frecuencia", taxFrecuenciaController),
             _buildTextField("Días", taxDiasController, keyboardType: TextInputType.number),
             _buildTextField("Vencimiento", taxVencimientoController, onTap: () async {

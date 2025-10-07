@@ -1,5 +1,7 @@
 # backend/repositorios/__init__.py
 
+# Archivo encargado de importar todos los repositorios para facilitar su acceso desde otras partes de la aplicación.
+
 from .clientes_repository import ClienteRepository
 from .usuario_repository import UsuarioRepository
 from .impuesto_repository import ImpuestoRepository

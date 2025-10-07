@@ -1,8 +1,13 @@
+# backend/schemas/notificacion.py
+
+# Imporataciones para la funcionalidad del esquema de notificacion
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 
-class NotificationMessage(BaseModel):
+
+
+class NotificationMessage(BaseModel): # Clase para generar el mensaje con los archivos del la carpeta services
     """
     Esquema Pydantic para un mensaje de notificacion general.
     se usa tanto para WebSockets como para la logica de mensajes como whatsapp

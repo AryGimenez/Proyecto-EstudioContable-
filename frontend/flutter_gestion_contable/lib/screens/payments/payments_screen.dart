@@ -196,25 +196,41 @@ Widget _buildDataTable() {
               DataColumn(label: Text('Monto')),
               DataColumn(label: Text('Honorario')),
             ],
-            rows: List.generate(10, (index) {
-              return DataRow(
-                cells: [
-                  DataCell(Checkbox(
-                    value: _handler.selectedRows[index], // Estado de cada fila
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _handler.toggleSelection(index, value ?? false); // Cambia el estado de la fila
-                      });
-                    },
-                  )),
-                  DataCell(Text('Nombre ${index + 1}')),
-                  DataCell(Text('Cliente ${index + 1}')),
-                  DataCell(Text('01/01/2025')),
-                  DataCell(Text('\$500')),
-                  DataCell(Text('\$300')),
-                ],
-              );
-            }),
+            rows: _handler.filteredImpuestos.isEmpty
+                ? [DataRow(
+                    cells: [
+                      DataCell(Container()),
+                      DataCell(Text('No hay datos disponibles')),
+                      DataCell(Container()),
+                      DataCell(Container()),
+                      DataCell(Container()),
+                      DataCell(Container()),
+                    ],
+                  )]
+                : List.generate(_handler.filteredImpuestos.length, (index) {
+                    final impuesto = _handler.filteredImpuestos[index];
+                    return DataRow(
+                      cells: [
+                        DataCell(Checkbox(
+                          value: index < _handler.selectedRows.length
+                              ? _handler.selectedRows[index]
+                              : false,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _handler.toggleSelection(index, value ?? false);
+                            });
+                          },
+                        )),
+                        DataCell(Text(impuesto['Imp_Nom'] ?? 'Sin nombre')),
+                        DataCell(Text(impuesto['Cli_Nom'] ?? 'Sin cliente')),
+                        DataCell(Text(impuesto['Imp_Vencimiento'] != null
+                            ? _formatDate(impuesto['Imp_Vencimiento'])
+                            : 'Sin fecha')),
+                        DataCell(Text('\$${(impuesto["Imp_Monto"]?.toStringAsFixed(2) ?? "0.00")}' )),
+                        DataCell(Text('\$${(impuesto["Imp_Honorario"]?.toStringAsFixed(2) ?? "0.00")}' )),
+                      ],
+                    );
+                  }),
           ),
         ),
       ),
@@ -224,55 +240,65 @@ Widget _buildDataTable() {
 
 
 Widget _buildPaymentsTable() {
-  return Expanded(
+  return Container(
+    width: double.infinity,
     child: SingleChildScrollView(
-      child: SizedBox(
-        width: double.infinity, // Ancho completo de la pantalla
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical, // Desplazamiento vertical
-          child: DataTable(
-            columnSpacing: 20.0,
-            dataRowHeight: 24.0,
-            headingRowHeight: 24.0,
-            headingRowColor: MaterialStateProperty.all(AppColors.primary),
-            columns: [
-              DataColumn(
-                label: Checkbox(
-                  value: _handler.isSelectAll2, // Estado global de selección
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _handler.toggleSelectAll2(value ?? false); // Cambia el estado de todos los checkboxes
-                    });
-                  },
-                ),
-              ),
-              DataColumn(label: Text('Nombre')),
-              DataColumn(label: Text('Pago')),
-              DataColumn(label: Text('Monto')),
-              DataColumn(label: Text('Fecha')),
-              DataColumn(label: Text('Comentario')),
-            ],
-            rows: List.generate(10, (index) {
-              return DataRow(
-                cells: [
-                  DataCell(Checkbox(
-                    value: _handler.selectedRows2[index], // Estado de cada fila
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _handler.toggleSelection2(index, value ?? false); // Actualiza el estado de la fila
-                      });
-                    },
-                  )),
-                  DataCell(Text('Pago ${index + 1}')),
-                  DataCell(Text('Pago ${index + 1}')),
-                  DataCell(Text('\$300')),
-                  DataCell(Text('01/01/2025')),
-                  DataCell(Text('Comentario ${index + 1}')),
-                ],
-              );
-            }),
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+        columns: [
+          DataColumn(
+            label: Checkbox(
+              value: _handler.isSelectAll2,
+              onChanged: (bool? value) {
+                setState(() {
+                  _handler.toggleSelectAll2(value ?? false);
+                });
+              },
+            ),
           ),
-        ),
+          DataColumn(label: Text('Nombre')),
+          DataColumn(label: Text('Moneda')),
+          DataColumn(label: Text('Monto')),
+          DataColumn(label: Text('Fecha')),
+          DataColumn(label: Text('Comentario')),
+        ],
+        rows: _handler.filteredPagos.isEmpty
+            ? [
+                DataRow(
+                  cells: [
+                    DataCell(Container()),
+                    DataCell(Text('No hay datos disponibles')),
+                    DataCell(Container()),
+                    DataCell(Container()),
+                    DataCell(Container()),
+                    DataCell(Container()),
+                  ],
+                ),
+              ]
+            : List.generate(_handler.filteredPagos.length, (index) {
+                final pago = _handler.filteredPagos[index];
+                return DataRow(
+                  cells: [
+                    DataCell(Checkbox(
+                      value: index < _handler.selectedRows2.length
+                          ? _handler.selectedRows2[index]
+                          : false,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _handler.toggleSelection2(index, value ?? false);
+                        });
+                      },
+                    )),
+                    DataCell(Text(pago['Pago_Nom'] ?? 'Sin nombre')),
+                    DataCell(Text(pago['Pago_Moneda'] ?? 'Sin tipo')),
+                    DataCell(Text('\$${(pago["Pago_Monto"]?.toStringAsFixed(2) ?? "0.00")}' )),
+                    DataCell(Text(pago['Pago_Fecha'] != null
+                        ? _formatDate(pago['Pago_Fecha'])
+                        : 'Sin fecha')),
+                    DataCell(Text(pago['Pago_Comentario'] ?? 'Sin comentario')),
+                  ],
+                );
+              }),
       ),
     ),
   );
@@ -396,6 +422,16 @@ Widget _buildPaymentsTable() {
         ),
       ],
     );
+  }
+
+  // Método para formatear fechas
+  String _formatDate(String dateStr) {
+    try {
+      final date = DateTime.parse(dateStr);
+      return '${date.day}/${date.month}/${date.year}';
+    } catch (e) {
+      return dateStr;
+    }
   }
 
   Widget _buildActionButtons() {

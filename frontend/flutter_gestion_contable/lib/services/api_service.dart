@@ -184,6 +184,16 @@ class ApiService {
   Future<Map<String, dynamic>> createClient(Map<String, dynamic> clientData) async {
     return await post('clientes', clientData);
   }
+  
+  // Método para obtener todos los impuestos
+  Future<List<dynamic>> getImpuestos() async {
+    return await get('impuestos');
+  }
+  
+  // Método para obtener todos los pagos
+  Future<List<dynamic>> getPagos() async {
+    return await get('pagos');
+  }
 
   // Método de actualización de cliente, usado en ClientsHandler
   // Este ya lo tienes implementado en ClientsHandler y llama al put genérico.
