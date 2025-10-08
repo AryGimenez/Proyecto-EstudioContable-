@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gestion_contable/core/theme/app_colors.dart';
 
+// <!> Falta documentar 
+
 class NotificationModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

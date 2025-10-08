@@ -13,6 +13,7 @@ import 'notification_modal.dart';
 import 'package:provider/provider.dart'; // Importa el paquete aquí
 import '../clients/clients_handler.dart'; // Importa el ClientsHandler también
 
+/// <!> Croe qeu esto da la logica de el menu lateral 
 
 /// Widget principal que gestiona el estado y la navegación del sitio principal.
 ///
@@ -21,7 +22,7 @@ import '../clients/clients_handler.dart'; // Importa el ClientsHandler también
 /// 1. El contenido ([_currentChild]) y título actual de la vista.
 /// 2. La selección visual del menú lateral.
 /// 3. La lógica de cierre de sesión (`_logout`).
-/// 4. La inyección de dependencias (e.g., [ApiService]) a las sub-vistas
+/// 4. La inyección de dependencias (e.g., [ApiService]) a las sub-vistas <!> Creo que aca tento que mejorar la dependencia Estudiar
 ///    mediante [ChangeNotifierProvider] (como en el caso de 'Clientes').
 class MainHandler extends StatefulWidget {
   const MainHandler({super.key}); // Constructor de la clase.

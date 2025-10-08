@@ -99,27 +99,34 @@ lib/
 │   └── user.dart // Modelo de usuario
 ├── screens/ // Contiene las diferentes pantallas de la aplicación
 │   |── add_client/ // Interfaz para agregar clientes <!> Arreglar Logica Fuertemente acoplada 
-│   |    ├── add_clients_handler.dart // Maneja la logica de negocio    
+│   |    ├── add_clients_handler.dart // Maneja la logica de negocio <!> Falta terminar de documentar    
 │   |    └── add_client_screen.dart // Pantalla para agregar clientes
 │   |── clientes/ // <!> Creo que es la interfas para mostrar los clietnes
 │   |    ├── clients_handler.dart //<!> Maneja la logica de negocio
 │   |    └── clients_screen.dart // <!> Pantalla para listar clientes
-
 │   ├── depositos/ //<!> Interas para representar las transacciones que los clietes acen para pagar sus impuestos  
 │   |    ├── depositos_handler.dart //<!> Maneja la logica de negocio
 │   |    ├── depositos_screen.dart // <!> Pantalla para visualisar los depositos
 │   |    ├── 
 │   |    ├── 
-
-│   └── login/  // Interfaz para logearse al sistema
+│   ├── login/  // Interfaz para logearse al sistema
 │   │   ├── login_form.dart // Contiene el formulario de login
 │   │   ├── login_handler.dart // Pantalla de login
 │   │   └── login_styles.dart // Estilos de la pantalla de login
-│   └── depositos/ // Interfas de depositos esta representa las transacciones que los clientes realizan para pagar sus impuestos 
-│   |    ├── deposit_form.dart // 
-│   |    └── deposit_screen.dart // Este se encarga de la comunicacion con el backend y la logica de negocio
-│   └── clients/ // Gestion de clientes
-│   |    ├── clients_handler.dart // Maneja la logica de negocio
+│   ├── main_website <!> Creo que esto es barra lateral 
+│   │   ├── main_content.dart <!> NO lo tengo claro para que es mejorar documentacion en el archivo tambien
+│   │   ├── main_handler.dart <!> Creo que es la logica paro no se esta un poco cunfuso
+│   │   ├── main_style.dart <!> Creo que tiene la paleta de colores del menu lateral no se porque tantos colores
+│   │   └── notification_modal.dart <!> Falta documentar 
+│   ├── password_reset <!> Interfas de reseteo de password
+│   │   ├── password_reset_form.dart <!> Falta documentar 
+│   │   ├── password_reset_handler.dart <!> Falta documentar
+│   │   ├── password_reset_style.dart <!> Estilos uniocs interras
+│   │   ├── 
+│   │   ├── 
+
+
+│   ├── main_website <!> ni idea para que es
 
 └── main.dart // Lanzador de la aplicacion
 ``` 
