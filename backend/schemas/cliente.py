@@ -9,6 +9,7 @@ from datetime import date # Importacion para el Cli_FechaNac
 
 
 class ClienteBase(BaseModel): # Clase BaseModel para las clase Create y Update
+
     Cli_Nom: str = Field(..., min_length=1, description="Nombre del cliente.") # Linea encargada de listar los clientes por nombre.
     Cli_Dir: str = Field(..., min_length=1, description="Dirección del cliente.") # Linea encargada de listar los clientes por direccion.
     Cli_Email: str = Field(..., min_length=1, description="Correo electrónico del cliente.") # Linea encargada de listar el correo electronico de los clientes.

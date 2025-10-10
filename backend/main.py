@@ -3,11 +3,11 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, FileResponse # Mantén estas importaciones si las usas en otras rutas
-from fastapi.staticfiles import StaticFiles
-from sqlalchemy.orm import Session
-from datetime import date
+from fastapi.staticfiles import StaticFiles # Para servir archivos estáticos (frontend), necesario para la ruta al index.html
+from sqlalchemy.orm import Session # Si necesitas sesiones de base de datos en alguna ruta
+from datetime import date # Para manejar fechas, si es necesario
 
-# -----------------------------------------------------------------------------------------------------
+
 # Importaciones de routers
 from backend.router import (
     clientes,
@@ -27,7 +27,7 @@ from backend.database import Base, engine
 
 # -----------------------------------------------------------------------------------------------------
 # Importaciones del Scheduler
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler # Scheduler para tareas asíncronas
 from apscheduler.triggers.interval import IntervalTrigger # O CronTrigger si prefieres horas específicas
 from datetime import timedelta # Útil si usas timedelta en el trigger o cálculos de fecha
 from .services.scheduler_service import verificar_vencimientos_diarios # Tu lógica de alertas

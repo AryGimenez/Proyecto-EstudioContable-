@@ -1,27 +1,29 @@
 # backend/router/auth.py
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
-from datetime import timedelta
-from typing import Optional
+# Importaciones de FastAPI y SQLAlchemy
+
+from fastapi import APIRouter, Depends, HTTPException, status # Importaciones necesarias para funciones de FastAPI
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm # Importaciones para seguridad y autenticación
+from sqlalchemy.orm import Session # Importación para manejar sesiones de base de datos
+from datetime import timedelta # Para manejar expiración de tokens
+from typing import Optional # Para tipos opcionales
 
 # Importaciones de tu proyecto
-from backend.dependencies import get_db
-from backend.repositorios.usuario_repository import UsuarioRepository
-from backend.schemas.user import UsuarioCreate, Usuario as UsuarioSchema
-from backend.schemas.auth import Token
-from backend.security import ( # Tus funciones de seguridad
+from backend.dependencies import get_db # Dependencia para obtener la sesión de la base de datos
+from backend.repositorios.usuario_repository import UsuarioRepository # Repositorio de usuarios
+from backend.schemas.user import UsuarioCreate, Usuario as UsuarioSchema # Esquemas de usuario
+from backend.schemas.auth import Token # Esquema de token
+from backend.security import ( # Exporta las funciones de seguridad, creadas en security.py
     create_access_token,
     verify_access_token,
     verify_password
 )
-from backend.config import ACCESS_TOKEN_EXPIRE_MINUTES
+from backend.config import ACCESS_TOKEN_EXPIRE_MINUTES # Configuración del tiempo de expiración del token
 
 # Define el esquema de autenticación para obtener el token
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token") # La URL donde los usuarios obtienen el token
 
-router = APIRouter(prefix="/auth", tags=["Autenticación"])
+router = APIRouter(prefix="/auth", tags=["Autenticación"]) # Prefijo y etiquetas para el router
 
 # Dependencia para obtener el usuario actuenticado
 async def get_current_user(
