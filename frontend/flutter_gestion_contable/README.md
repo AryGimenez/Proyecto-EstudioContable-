@@ -94,8 +94,8 @@ lib/
 │   │   ├── app_text_styles.dart // Estilo de los textos de la interfaz
 │   │   └── app_theme.dart // Tema general de la aplicación
 ├── models/ // Contiene los modelos de datos utilizados en la aplicación
-│   ├── client.dart // Modelo de cliente <!> Falta
-│   ├── deposit.dart // Modelo de depósito <!> Falta
+│   ├── client.dart // Modelo de cliente <!> Falta prograrm Archivo Vasio 
+│   ├── deposit.dart // Modelo de depósito <!> Falta prograrm Archivo Vasio 
 │   └── user.dart // Modelo de usuario
 ├── screens/ // Contiene las diferentes pantallas de la aplicación
 │   |── add_client/ // Interfaz para agregar clientes <!> Arreglar Logica Fuertemente acoplada 
