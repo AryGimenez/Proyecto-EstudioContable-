@@ -22,7 +22,7 @@ class _AgregarClientesContentState extends State<AgregarClientesContent> {
   final TextEditingController whatsappController = TextEditingController();
   final TextEditingController datosContactoController = TextEditingController();
   final TextEditingController direccionController = TextEditingController();
-  final TextEditingController idController = TextEditingController();
+  
 
   // URL del endpoint de tu backend para clientes (mantengo tu URL actual)
   final String clientsApiUrl = 'http://127.0.0.1:8000/clientes';
@@ -117,7 +117,6 @@ Future<void> _fetchNombreImpuestos() async{
         final List<dynamic> data = json.decode(response.body);
         setState(() {
           _taxesData = data.map((tax) => {
-            'id': tax['Imp_ID'],
             'nomImId': tax['NomIm_ID'],
             'nombre': tax['nombre_impuesto']?['NomIm_Txt'],
             'frecuencia': tax['Imp_Frecuencia'],
@@ -139,8 +138,7 @@ Future<void> _fetchNombreImpuestos() async{
 
   // Agregar un nuevo impuesto al backend
   Future<void> _addTax() async {
-  if (_selectedNomImId == null || // <--- Verifica que se haya seleccionado un impuesto del Dropdown
-      idController.text.isEmpty || // <--- Asegúrate de que el ID del cliente esté presente
+  if (_selectedNomImId == null || // <--- Verifica que se haya seleccionado un impuesto del Dropdown  // <--- Asegúrate de que el ID del cliente esté presente
       taxFrecuenciaController.text.isEmpty ||
       taxDiasController.text.isEmpty ||
       taxVencimientoController.text.isEmpty ||
@@ -160,7 +158,6 @@ Future<void> _fetchNombreImpuestos() async{
     // 🚨 CAMBIO 2: Usa _selectedNomImId directamente. Este es el INT que espera el backend.
     'NomIm_ID': _selectedNomImId,
         
-    'Cli_ID': int.parse(idController.text),
     'Imp_Moneda': 'UYU',
     'Imp_Frecuencia': taxFrecuenciaController.text,
     'Imp_Dias': taxDiasController.text,
@@ -214,7 +211,6 @@ Future<void> _fetchNombreImpuestos() async{
     try {
       final taxData = {
         'NomIm_ID': int.parse(taxNombreController.text),
-        'Cli_ID' : int.parse(idController.text),
         'Imp_Frecuencia': taxFrecuenciaController.text,
         'Imp_Dias': taxDiasController.text,
         'Imp_Vencimiento': taxVencimientoController.text,
@@ -491,7 +487,6 @@ Future<void> _fetchNombreImpuestos() async{
           const SizedBox(height: 10),
           _buildInputRow([
             _buildTaxNameDropdown(),
-            _buildTextField("ID Cliente", idController, keyboardType: TextInputType.number),
             _buildTextField("Frecuencia", taxFrecuenciaController),
             _buildTextField("Días", taxDiasController, keyboardType: TextInputType.number),
             _buildTextField("Vencimiento", taxVencimientoController, onTap: () async {
@@ -519,7 +514,6 @@ Future<void> _fetchNombreImpuestos() async{
                 child: DataTable(
                   headingRowColor: MaterialStateProperty.resolveWith<Color?>((states) => AppColors.primary),
                   columns: const [
-                    DataColumn(label: Text('ID', style: TextStyle(color: Colors.white),)),
                     DataColumn(label: Text('Nombre', style: TextStyle(color: Colors.white))),
                     DataColumn(label: Text('Frecuencia', style: TextStyle(color: Colors.white))),
                     DataColumn(label: Text('Días', style: TextStyle(color: Colors.white))),
@@ -548,7 +542,6 @@ Future<void> _fetchNombreImpuestos() async{
                         });
                       },
                       cells: [
-                        DataCell(Text(tax['id']?.toString() ?? '')),
                         DataCell(Text(tax['nombre']?.toString() ?? '')),
                         DataCell(Text(tax['frecuencia']?.toString() ?? '')),
                         DataCell(Text(tax['dias']?.toString() ?? '')),

@@ -9,3 +9,4 @@ from . import pago # Importa el esquema de pago
 from . import deposito # Importa el esquema de deposito
 from . import nombre_impuesto # Importa el esquema de nombre_impuesto
 from . import notificacion # Importa el esquema de notificacion
+from . import cheques # Importa el esquema de cheques

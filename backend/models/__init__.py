@@ -8,3 +8,4 @@ from .impuesto import Impuesto
 from .pago import Pago
 from .deposito import Deposito
 from .nombre_impuesto import NombreImpuesto
+from .cheque import Cheque

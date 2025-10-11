@@ -16,7 +16,8 @@ from backend.router import (
     depositos,
     # Alias para especificar nombre de impuesto 
     nombre_impuesto as nombre_impuesto_router,
-    notificaciones as notificaciones_router
+    notificaciones as notificaciones_router,
+    cheques as cheques_router
 )
 from backend.router import users as users_router
 from backend.router import auth
@@ -36,7 +37,7 @@ from .services.scheduler_service import verificar_vencimientos_diarios # Tu lóg
 
 # Importar todos los modelos para que Base.metadata.create_all los vea
 # Esto es una buena práctica para asegurar que SQLAlchemy registre todos los modelos
-from .models import cliente, deposito, impuesto, nombre_impuesto, pago, user, notificacion # Asegúrate de tener todos tus modelos aquí
+from .models import cliente, deposito, impuesto, nombre_impuesto, pago, user, notificacion, cheque # Asegúrate de tener todos tus modelos aquí
 
 # Crea las tablas si no existen (debe estar después de las importaciones de modelos)
 Base.metadata.create_all(bind=engine) # <--- Linea encargada de la creacion de la base de datos (existe otra llamada alembic, pero la encontre un poco compleja voy a estudiarla un poco mas para ver)
@@ -67,6 +68,7 @@ app.include_router(depositos.router)
 app.include_router(auth.router)
 app.include_router(nombre_impuesto_router.router)
 app.include_router(notificaciones_router.router)
+app.include_router(cheques_router.router)
 
 # --- CONFIGURACION PARA SCHEDULER DE NOTIFICACION FUNCIONE CORRECTAMENTE ---
 

@@ -25,6 +25,7 @@ class Cliente(Base):
     impuestos: Mapped[List["Impuesto"]] = relationship("Impuesto", back_populates="cliente", cascade="all, delete-orphan")
     pagos: Mapped[List["Pago"]] = relationship("Pago", back_populates="cliente", cascade="all, delete-orphan")
     depositos: Mapped[List["Deposito"]] = relationship("Deposito", back_populates="cliente", cascade="all, delete-orphan")
+    cheques: Mapped[List["Cheque"]] = relationship("Cheque", back_populates="cliente", cascade="all, delete-orphan")
 
     # --- ¡CORRECCIÓN AQUÍ! ---
     notificaciones: Mapped[List["Notificacion"]] = relationship("Notificacion", back_populates="cliente", cascade="all, delete-orphan")
