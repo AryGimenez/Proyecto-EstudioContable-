@@ -1,53 +1,55 @@
 # backend/models/user.py
 
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
-from sqlalchemy.orm import relationship, Mapped, mapped_column
-from sqlalchemy.sql import func
-from datetime import datetime
-from typing import List, Optional
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey # Importa los tipos de columna de SQLAlchemy
+from sqlalchemy.orm import relationship, Mapped, mapped_column # Importa sintaxis ORM moderna (Mapped) y relaciones
+from sqlalchemy.sql import func # Importa las funciones SQL (como func.now())
+from datetime import datetime # Importa el tipo datetime de Python
+from typing import List, Optional # Tipos para anotaciones y relaciones uno-a-muchos
 
-from backend.database import Base # Asegúrate de que la ruta sea correcta
+from backend.database import Base # Importa la clase base declarativa de SQLAlchemy (Base)
 
-class Usuario(Base):
+class Usuario(Base): # Clase que define el modelo ORM para la tabla de usuarios
     __tablename__ = "Usuario" # Nombre de la tabla en la base de datos MySQL
 
-    usuario_id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
-    usuario_nombre: Mapped[str] = mapped_column(String(45), unique=True, index=True, nullable=False)
-    usuario_email: Mapped[str] = mapped_column(String(45), unique=True, index=True, nullable=False)
-    usuario_contraseña: Mapped[str] = mapped_column(String(255), nullable=False)
-    usuario_rol: Mapped[str] = mapped_column(String(45), default="usuario", nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
+    # --- Columnas del Usuario ---
+    usuario_id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True) # ID único, clave primaria y autoincremental
+    usuario_nombre: Mapped[str] = mapped_column(String(45), unique=True, index=True, nullable=False) # Nombre de usuario, único, indexado y obligatorio
+    usuario_email: Mapped[str] = mapped_column(String(45), unique=True, index=True, nullable=False) # Email, clave de negocio única, indexada y obligatoria
+    usuario_contraseña: Mapped[str] = mapped_column(String(255), nullable=False) # Contraseña hasheada (campo largo), obligatoria
+    usuario_rol: Mapped[str] = mapped_column(String(45), default="usuario", nullable=False) # Rol de acceso (ej: 'admin', 'operador'), por defecto "usuario"
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False) # Estado de la cuenta, booleano, por defecto True
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False) # Timestamp de creación, por defecto la hora del servidor
 
-    # Relación con PasswordResetRequest
-    # El 'back_populates' en PasswordResetRequest es 'usuario_asociado'
-    password_reset_requests: Mapped[List["PasswordResetRequest"]] = relationship(
+    # --- Relación con Solicitudes de Reseteo ---
+    password_reset_requests: Mapped[List["PasswordResetRequest"]] = relationship( # Relación uno-a-muchos (un usuario tiene muchas solicitudes)
         "PasswordResetRequest", 
-        back_populates="usuario_asociado", # Asegura que este nombre coincida
-        cascade="all, delete-orphan"
+        back_populates="usuario_asociado", # Define el campo de relación inversa en el otro modelo
+        cascade="all, delete-orphan" # Asegura que las solicitudes se eliminen si se borra el usuario
     )
 
-    def __repr__(self):
+    def __repr__(self): # Método para representación legible del objeto
         return f"<Usuario(id={self.usuario_id}, nombre='{self.usuario_nombre}')>"
 
-# --- Nuevo modelo para las solicitudes de reseteo de contraseña ---
-class PasswordResetRequest(Base):
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+class PasswordResetRequest(Base): # Clase que define el modelo ORM para las solicitudes de reseteo de contraseña
     __tablename__ = "PasswordResetRequest" # Nombre de la tabla en la base de datos MySQL
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
-    # Referencia la columna 'usuario_email' de tu tabla 'Usuario'
-    email: Mapped[str] = mapped_column(String(45), ForeignKey("Usuario.usuario_email"), nullable=False)
-    token: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False) # Para la expiración del token
+    # --- Columnas del Reseteo ---
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True) # ID único de la solicitud
+    # Referencia la columna 'usuario_email' de tu tabla 'Usuario' (NO el ID, lo cual requiere primaryjoin)
+    email: Mapped[str] = mapped_column(String(45), ForeignKey("Usuario.usuario_email"), nullable=False) # Email del usuario, clave foránea al email del Usuario
+    token: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False) # Token secreto único y obligatorio
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now()) # Fecha y hora de creación del token
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False) # Fecha y hora en que el token dejará de ser válido
 
-    # Relación con Usuario. El 'back_populates' en Usuario es 'password_reset_requests'
-    usuario_asociado: Mapped["Usuario"] = relationship(
+    # --- Relación con Usuario ---
+    usuario_asociado: Mapped["Usuario"] = relationship( # Relación muchos-a-uno (muchas solicitudes a un solo usuario)
         "Usuario", 
-        back_populates="password_reset_requests",
-        foreign_keys=[email], # Especificamos la clave externa
-        primaryjoin="PasswordResetRequest.email == Usuario.usuario_email" # Para evitar ambigüedades
+        back_populates="password_reset_requests", # Define el campo de relación inversa en el modelo Usuario
+        foreign_keys=[email], # Indica a SQLAlchemy que use la columna 'email' como la clave externa
+        primaryjoin="PasswordResetRequest.email == Usuario.usuario_email" # Establece la condición de unión (JOIN) usando el email
     )
 
-    def __repr__(self):
+    def __repr__(self): # Método para representación legible del objeto
         return f"<PasswordResetRequest(id={self.id}, email='{self.email}', token='{self.token[:10]}...')>"
