@@ -6,7 +6,8 @@ Para cada componente o interfas vamos a generar esta estructura.
 Vamos a usar una estructura de proyecto bien organizada y separada. La idea es tener: 
 
 - **Archivos que terminen en "Styles"**: Contendrán los estilos de la aplicación. 
-- **Archivos que terminen en "Screen"**: Serán utilizados para lanzar las diferentes pantallas de la aplicación. 
+- **Archivos que terminen en "Screen"**: Serán utilizados para lanzar las diferentes pantallas de la aplicación. <!> NO Creo qeu esto es la logica de la interfas pero hay que revisar 
+
 - **Archivos que terminen en "Form"**: Contendrán el contenido de los formularios.
 
 ### Beneficios de esta Estructura
@@ -48,7 +49,7 @@ flutter pub get
 
 ### 3. Verificar configuración
 
-Comprueba que no haya errores en el archivo `pubspec.yaml` y que todas las dependencias se hayan instalado correctamente.
+Comprueba que no haya errores en el archivo `pubspec.yaml` y que todas las dependencias sqe hayan instalado correctamente.
 
 ### 4. Ejecutar la aplicación
 
@@ -66,10 +67,6 @@ Si quieres levantar la app en modo web:
 flutter run -d chrome
 ```
 
-
-
----
-
 ## Notas
 
 - Si agregas nuevas dependencias, recuerda ejecutar `flutter pub get` nuevamente.
@@ -82,6 +79,12 @@ flutter run -d chrome
 
 - [Documentación oficial de Flutter](https://docs.flutter.dev/)
 
+
+
+
+
+# <!> Estaria bueno averiguar para usar un patron de disenio Fachada cpas para que de una menera al pasar 
+# los datos actualice en el bakend no se que decicion toar quiero algo que modifique escturctjra 
 
 # Etructura de proyecto
 
@@ -96,7 +99,7 @@ lib/
 ├── models/ // Contiene los modelos de datos utilizados en la aplicación
 │   ├── client.dart // Modelo de cliente <!> Falta prograrm Archivo Vasio 
 │   ├── deposit.dart // Modelo de depósito <!> Falta prograrm Archivo Vasio 
-│   └── user.dart // Modelo de usuario
+│   └── user.dart // Modelo de usuario <!> No entendi bien como es el tema de modificar datos 
 ├── screens/ // Contiene las diferentes pantallas de la aplicación
 │   |── add_client/ // Interfaz para agregar clientes <!> Arreglar Logica Fuertemente acoplada 
 │   |    ├── add_clients_handler.dart // Maneja la logica de negocio <!> Falta terminar de documentar    

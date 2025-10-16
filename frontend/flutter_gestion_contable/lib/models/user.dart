@@ -12,6 +12,7 @@ class User {
   final bool isActive; // Estado activo del usuario
   final DateTime createdAt; // Fecha de creación del usuario
 
+  // <!> Supongo que esto es un constructor 
   User({
     required this.usuarioId, // ID en la base de datos
     required this.username, // Nombre de usuario para login
