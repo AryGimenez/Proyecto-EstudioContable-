@@ -107,20 +107,18 @@ lib/
 │   |── clientes/ // <!> Creo que es la interfas para mostrar los clietnes
 │   |    ├── clients_handler.dart //<!> Maneja la logica de negocio
 │   |    └── clients_screen.dart // <!> Pantalla para listar clientes
-│   ├── depositos/ //<!> Interas para representar las transacciones que los clietes acen para pagar sus impuestos  
-│   |    ├── depositos_handler.dart //<!> Maneja la logica de negocio
-│   |    ├── depositos_screen.dart // <!> Pantalla para visualisar los depositos
-│   |    ├── 
-│   |    ├── 
+│   ├── deposits/ // Interfaz para representar la transacción que el cliente realiza para pagar sus impuestos y los honorarios del estudio contable   <!> Fuertemente Vinculado  
+│   |    ├── deposits_handler.dart // Maneja la lógica de negocio
+│   |    └── deposits_screen.dart // Pantalla para visualizar los depósitos
 │   ├── login/  // Interfaz para logearse al sistema
 │   │   ├── login_form.dart // Contiene el formulario de login
 │   │   ├── login_handler.dart // Pantalla de login
 │   │   └── login_styles.dart // Estilos de la pantalla de login
-│   ├── main_website <!> Creo que esto es barra lateral 
-│   │   ├── main_content.dart <!> NO lo tengo claro para que es mejorar documentacion en el archivo tambien
-│   │   ├── main_handler.dart <!> Creo que es la logica paro no se esta un poco cunfuso
-│   │   ├── main_style.dart <!> Creo que tiene la paleta de colores del menu lateral no se porque tantos colores
-│   │   └── notification_modal.dart <!> Falta documentar 
+│   ├── main_website/ // 🎛️ Contenedor principal que define el layout y la navegación (Barra lateral y Contenido).
+│   │   ├── main_content.dart //🏠 Vista de Bienvenida (Home). Es el placeholder inicial de la aplicación.
+│   │   ├── main_handler.dart //🧠 Manejador de Estado y Navegación. Controla el menú lateral, el cambio de pantallas, y la inyección de la lógica (Providers).
+│   │   ├── main_style.dart //🎨 Paleta de Colores Global. Define los colores usados en toda la aplicación (primario, secundario, fondo, texto, éxito, error). <!> Esto no entiendo porque esta aca tendria que estar en otro lugar no se parese que esta en un menu 
+│   │   └── notification_modal.dart //🔔 Componente Modal de Notificaciones. Muestra el pop-up con la lista de alertas. <!> Falta documentar 
 │   ├── password_reset <!> Interfas de reseteo de password
 │   │   ├── password_reset_form.dart <!> Falta documentar 
 │   │   ├── password_reset_handler.dart <!> Falta documentar
@@ -156,4 +154,18 @@ Maneja la lógica de negocio, la gestión del estado (usando ChangeNotifier) y l
 ### depositos_screen.dart
 Se encarga del diseño, la disposición de los widgets (DataTable, SearchBar, ActionButtons) y la gestión de la interacción directa con el usuario (como abrir diálogos, manejar controllers de texto y snackbars). No maneja el estado de los datos.
 
-# Documentación para Levantar el Entorno de Flutter
+
+# main_website
+El módulo main_website contiene los componentes esenciales para la estructura principal de la aplicación (el layout o shell). Su responsabilidad principal es gestionar el estado de la navegación, la barra lateral y la visualización del contenido de la página actual.
+
+### main_content.dart
+Contenido de Bienvenida/Home: Es un widget simple (StatelessWidget) que representa la vista inicial por defecto (Bienvenido al sitio principal). Contiene una AppBar básica con el botón de cerrar sesión y se usa como el placeholder inicial cuando el usuario ingresa a la aplicación.
+
+### main_handler.dart
+Lógica de la Interfaz Principal (Shell): Es el Widget Stateful (MainHandler) que gestiona el estado de toda la página. Maneja la selección del menú lateral, el cambio de pantalla (inyectando el widget adecuado como _currentChild), la lógica de cierre de sesión (_logout) y la inyección de dependencias (ApiService) a través de ChangeNotifierProvider.
+
+### main_style.dart
+Paleta de Colores Global: Este archivo define las constantes de color de toda la aplicación (AppColors). Tener varios colores es una buena práctica porque define una paleta completa (Primario, Secundario, Fondo, Texto, Éxito, Error) que debe usarse de forma consistente en toda la aplicación, no solo en la barra lateral.
+
+### notification_modal.dart
+Componente Modal de Notificaciones: Es un Widget Stateless que define la estructura visual del pop-up (diálogo o modal) que se muestra cuando el usuario hace clic en el ícono de notificaciones en la barra superior. Contiene la lógica para cerrarse (Navigator.of(context).pop()).
