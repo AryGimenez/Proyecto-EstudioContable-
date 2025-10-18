@@ -1,6 +1,7 @@
 // frontend/flutter_gestion_contable/lib/screens/payments/payments_handler.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gestion_contable/services/api_service.dart';
 
 /// Clase que maneja el estado, la lógica de la UI y las interacciones
 /// para la pantalla de Pagos.
@@ -15,12 +16,55 @@ class PaymentsHandler extends ChangeNotifier {
   bool isDateChecked = false; // Filtro para fecha
   DateTime? selectedDate; // Fecha seleccionada
 
-  // Lista para manejar la selección de las filas en la tabla
-  List<bool> selectedRows = [false, false, false, false, false, false, false, false, false, false]; // Estado de los checkboxes para las filas, la longitud de esta lista puede variar
-  List<bool> selectedRows2 = [false, false, false, false, false, false, false, false, false, false]; // Estado de los checkboxes para las filas, la longitud de esta lista puede variar
+  // Listas para almacenar los datos reales
+  List<Map<String, dynamic>> impuestos = [];
+  List<Map<String, dynamic>> pagos = [];
+  
+  // Listas filtradas para mostrar
+  List<Map<String, dynamic>> filteredImpuestos = [];
+  List<Map<String, dynamic>> filteredPagos = [];
+
+  // API Service para obtener datos
+  final ApiService _apiService = ApiService();
+
+  // Listas para manejar la selección de las filas en la tabla
+  List<bool> selectedRows = []; // Estado de los checkboxes para las filas de impuestos
+  List<bool> selectedRows2 = []; // Estado de los checkboxes para las filas de pagos
+  
   // Checkbox global para seleccionar todos los registros
   bool isSelectAll = false;
   bool isSelectAll2 = false;
+  
+  // Constructor
+  PaymentsHandler() {
+    fetchData();
+  }
+  
+  // Método para obtener datos del backend
+  Future<void> fetchData() async {
+    try {
+      // Obtener impuestos
+      final impuestosData = await _apiService.getImpuestos();
+      impuestos = List<Map<String, dynamic>>.from(impuestosData);
+      filteredImpuestos = List<Map<String, dynamic>>.from(impuestosData);
+      selectedRows = List.filled(impuestos.length, false);
+      
+      // Obtener pagos
+      final pagosData = await _apiService.getPagos();
+      pagos = List<Map<String, dynamic>>.from(pagosData);
+      filteredPagos = List<Map<String, dynamic>>.from(pagosData);
+      selectedRows2 = List.filled(pagos.length, false);
+    } catch (e) {
+      print('Error al obtener datos: $e');
+      // Inicializar con listas vacías en caso de error
+      impuestos = [];
+      pagos = [];
+      filteredImpuestos = [];
+      filteredPagos = [];
+      selectedRows = [];
+      selectedRows2 = [];
+    }
+  }
 
   /// Muestra un selector de fecha modal ([showDatePicker]) al usuario.
   /// 

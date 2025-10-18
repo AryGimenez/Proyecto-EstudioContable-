@@ -1,11 +1,13 @@
 # backend/main.py (CORREGIDO)
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse # Mantén estas importaciones si las usas en otras rutas
-from datetime import date
+from fastapi.responses import HTMLResponse, FileResponse # Mantén estas importaciones si las usas en otras rutas
+from fastapi.staticfiles import StaticFiles # Para servir archivos estáticos (frontend), necesario para la ruta al index.html
+from sqlalchemy.orm import Session # Si necesitas sesiones de base de datos en alguna ruta
+from datetime import date # Para manejar fechas, si es necesario
 
-# -----------------------------------------------------------------------------------------------------
+
 # Importaciones de routers
 from backend.router import (
     clientes,
@@ -14,7 +16,8 @@ from backend.router import (
     depositos,
     # Alias para especificar nombre de impuesto 
     nombre_impuesto as nombre_impuesto_router,
-    notificaciones as notificaciones_router
+    notificaciones as notificaciones_router,
+    cheques as cheques_router
 )
 from backend.router import users as users_router
 from backend.router import auth
@@ -25,7 +28,7 @@ from backend.database import Base, engine
 
 # -----------------------------------------------------------------------------------------------------
 # Importaciones del Scheduler
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler # Scheduler para tareas asíncronas
 from apscheduler.triggers.interval import IntervalTrigger # O CronTrigger si prefieres horas específicas
 from datetime import timedelta # Útil si usas timedelta en el trigger o cálculos de fecha
 from .services.scheduler_service import verificar_vencimientos_diarios # Tu lógica de alertas
@@ -34,7 +37,7 @@ from .services.scheduler_service import verificar_vencimientos_diarios # Tu lóg
 
 # Importar todos los modelos para que Base.metadata.create_all los vea
 # Esto es una buena práctica para asegurar que SQLAlchemy registre todos los modelos
-from .models import cliente, deposito, impuesto, nombre_impuesto, pago, user, notificacion # Asegúrate de tener todos tus modelos aquí
+from .models import cliente, deposito, impuesto, nombre_impuesto, pago, user, notificacion, cheque # Asegúrate de tener todos tus modelos aquí
 
 # Crea las tablas si no existen (debe estar después de las importaciones de modelos)
 Base.metadata.create_all(bind=engine) # <--- Linea encargada de la creacion de la base de datos (existe otra llamada alembic, pero la encontre un poco compleja voy a estudiarla un poco mas para ver)
@@ -65,6 +68,7 @@ app.include_router(depositos.router)
 app.include_router(auth.router)
 app.include_router(nombre_impuesto_router.router)
 app.include_router(notificaciones_router.router)
+app.include_router(cheques_router.router)
 
 # --- CONFIGURACION PARA SCHEDULER DE NOTIFICACION FUNCIONE CORRECTAMENTE ---
 
@@ -105,28 +109,26 @@ async def shutdown_event():
 # --- FIN DE CONSOLIDACIÓN ---
 
 
-# Ruta de bienvenida simplificada
-@app.get("/", response_class=HTMLResponse)
-async def read_root():
-<<<<<<< HEAD
-    # Asegúrate de haber compilado tu app de Flutter para la web con `flutter build web`
-    return FileResponse("frontend/flutter_gestion_contable/build/web/index.html")
+# Ruta para unir el backend con el frontend
 
-# Sirve todos los archivos estáticos de la app de Flutter
-# Esto le dice a FastAPI dónde encontrar los archivos de la app (CSS, JS, imágenes).
+# 1. Montar archivos estáticos (si tienes un frontend construido)
 app.mount(
-    "/",
-    StaticFiles(directory="frontend/flutter_gestion_contable/build/web"),
-    name="flutter_app"
+    "/static",
+    StaticFiles(directory="frontend/flutter_gestion_contable/build/web"), # Ajusta la ruta según tu estructura de proyecto
+    name="flutter_app_static"
 )
 
-# Ruta de ejemplo para la configuración de conexión
-@app.post("/config/connect")
-async def connect_to_app(config: AppConfig, db: Session = Depends(get_db)):
+# 2. Ruta para servir el archivo index.html
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    return FileResponse("frontend/flutter_gestion_contable/build/web/index.html")
+
+# 3. Ruta para configuración (opcional)
+"""
+@app.get("/config/connect")
+async def connect_to_app(config:AppConfig, db: Session = Depends(get_db)):
     ip_address = config.ip_address
     port = config.port
-    print ("Intentando conectar a: {}:{}".format(ip_address, port))
-    return {"message": "Configuración recibida. Intentando conectar a {}:{}".format(ip_address, port)}
-=======
-    return "<h1>Bienvenido a la API de Estudio Contable</h1>"
->>>>>>> Esteban22-09
+    print("Intentando conectar con la app en {}:{}".format(ip_address, port))
+    return {"message": "Conexión exitosa a la app en {}:{}".format(ip_address, port)}
+"""

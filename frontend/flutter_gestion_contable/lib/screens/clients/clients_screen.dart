@@ -409,10 +409,10 @@ class ClientsTable extends StatelessWidget {
     final double emailColumnWidth = _calculateColumnWidth(clientsData, 'Cli_Email', cellStyle);
     final double nacimientoColumnWidth = _calculateColumnWidth(clientsData, 'Cli_FechaNac', cellStyle);
     final double whatsappColumnWidth = _calculateColumnWidth(clientsData, 'Cli_Whatsapp', cellStyle);
-    final double saldoColumnWidth = _calculateColumnWidth(clientsData, 'Cli_Saldo', cellStyle);
     final double contactoColumnWidth = _calculateColumnWidth(clientsData, 'Cli_Contacto', cellStyle);
     final double direccionColumnWidth = _calculateColumnWidth(clientsData, 'Cli_Dir', cellStyle);
-    
+    final double saldoColumnWidth = _calculateColumnWidth(clientsData, 'Cli_Saldo', cellStyle);
+
     const double checkboxHeaderColumnWidth = 50; 
     const double editIconColumnWidth = 60; 
 
@@ -450,9 +450,9 @@ class ClientsTable extends StatelessWidget {
                 DataColumn(label: SizedBox(width: emailColumnWidth, child: const Text('Email', style: headerStyle))),
                 DataColumn(label: SizedBox(width: nacimientoColumnWidth, child: const Text('Nacimiento', style: headerStyle))),
                 DataColumn(label: SizedBox(width: whatsappColumnWidth, child: const Text('WhatsApp', style: headerStyle))),
-                DataColumn(label: SizedBox(width: saldoColumnWidth, child: const Text('Saldo', style: headerStyle))),
-                DataColumn(label: SizedBox(width: contactoColumnWidth, child: const Text('Contacto', style: headerStyle))),
                 DataColumn(label: SizedBox(width: direccionColumnWidth, child: const Text('Dirección', style: headerStyle))),
+                DataColumn(label: SizedBox(width: contactoColumnWidth, child: const Text('Contacto', style: headerStyle))),
+                DataColumn(label: SizedBox(width: saldoColumnWidth, child: const Text('Saldo', style: headerStyle))),
                 const DataColumn(label: SizedBox.shrink()), 
               ],
               rows: handler.filteredClients.isNotEmpty
@@ -474,10 +474,21 @@ class ClientsTable extends StatelessWidget {
                             DataCell(SizedBox(width: nombreColumnWidth, child: Text(client['Cli_Nom'] ?? '', style: cellStyle))),
                             DataCell(SizedBox(width: emailColumnWidth, child: Text(client['Cli_Email'] ?? '', style: cellStyle))),
                             DataCell(SizedBox(width: nacimientoColumnWidth, child: Text(client['Cli_FechaNac']?.toString().split(' ')[0] ?? '', style: cellStyle))),
-                            DataCell(SizedBox(width: whatsappColumnWidth, child: Text(client['Cli_Whatsapp'] ?? '', style: cellStyle))),
-                            DataCell(SizedBox(width: saldoColumnWidth, child: Text('\$${client['Cli_Saldo']?.toStringAsFixed(2) ?? '0.00'}', style: cellStyle))),
-                            DataCell(SizedBox(width: contactoColumnWidth, child: Text(client['Cli_Contacto'] ?? '', style: cellStyle))),
+                            DataCell(SizedBox(width: whatsappColumnWidth, child: Text(client['Cli_Whatsapp'] ?? '', style: cellStyle))),        
                             DataCell(SizedBox(width: direccionColumnWidth, child: Text(client['Cli_Dir'] ?? '', style: cellStyle))),
+                            DataCell(SizedBox(width: contactoColumnWidth, child: Text(client['Cli_Contacto'] ?? '', style: cellStyle))),
+                            DataCell(SizedBox(
+                              width: saldoColumnWidth, 
+                              child: Text(
+                                '\$${client['Cli_Saldo']?.toStringAsFixed(2) ?? '0.00'}', 
+                                style: TextStyle(
+                                  color: (client['Cli_Saldo'] ?? 0) < 0 
+                                    ? Colors.red 
+                                    : Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )),
                             const DataCell(SizedBox.shrink()),
                           ],
                         );

@@ -1,11 +1,13 @@
 # schemas/token.py
 
-from pydantic import BaseModel
-from typing import Optional
+# Importaciones para la funcionalidad del archivo
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
+from pydantic import BaseModel # Importaciones para el Pydantic
+from typing import Optional # Importaciones para los Optional
 
-class TokenData(BaseModel):
-    username: Optional[str] = None
+class Token(BaseModel): # Esquema para la respuesta del token de autenticación.
+    access_token: str # El token JWT
+    token_type: str # Tipo de token, típicamente "bearer"
+
+class TokenData(BaseModel): # Esquema para los datos del token JWT.
+    username: Optional[str] = None # El 'subject' del token
