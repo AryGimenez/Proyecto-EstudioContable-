@@ -1,5 +1,3 @@
-
-
 # Estructura general de proyecto 
 Para cada componente o interfas vamos a generar esta estructura.
 
@@ -68,7 +66,6 @@ flutter run -d chrome
 ```
 
 ## Notas
-
 - Si agregas nuevas dependencias, recuerda ejecutar `flutter pub get` nuevamente.
 - Para solucionar errores de dependencias, revisa el archivo `pubspec.yaml` y asegúrate de que las versiones sean compatibles.
 - Puedes usar `flutter doctor` para verificar que tu entorno esté correctamente configurado.
@@ -79,12 +76,8 @@ flutter run -d chrome
 
 - [Documentación oficial de Flutter](https://docs.flutter.dev/)
 
-
-
-
-
-# <!> Estaria bueno averiguar para usar un patron de disenio Fachada cpas para que de una menera al pasar 
-# los datos actualice en el bakend no se que decicion toar quiero algo que modifique escturctjra 
+<!> Estaria bueno averiguar para usar un patron de disenio Fachada cpas para que de una menera al pasar 
+los datos actualice en el bakend no se que decicion toar quiero algo que modifique escturctjra 
 
 # 📂 Estructura de proyecto
 
