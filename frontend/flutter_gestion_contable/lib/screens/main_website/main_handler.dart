@@ -174,7 +174,7 @@ class _MainHandlerState extends State<MainHandler> {
                         onPressed: () {
                           _changeContent( // Cambia el contenido de la pantalla.
                             ChangeNotifierProvider( // Provider para PaymentsHandler.
-                              create: (context) => PaymentsHandler(_apiService), // Crea una instancia de PaymentsHandler.
+                              create: (context) => PaymentsHandler(), // Crea una instancia de PaymentsHandler. <!> Deberia agregar AppService error fuertmente vincualdo
                               child: const PaymentsScreen(), // Pantalla para mostrar la lista de pagos.
                             ),
                             'Pagos', // Título para la lista de pagos.

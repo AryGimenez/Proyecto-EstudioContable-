@@ -1,56 +1,61 @@
-# docker-compose.yml
+# docker-compose.yml (Versión Mejorada)
 
 version: '3.8'
 
 services:
-  # Servicio para el backend (FastAPI)
   backend:
-    build: .
+    build: 
+      context: ./backend # Ajustado a la nueva ubicación (asumiendo que docker-compose.yml está en la raíz)
     volumes:
-      - ./:/app
+      - ./backend:/app
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT_HOST}:8000" # Usa variable de entorno
     depends_on:
       - db
+    env_file: .env # Carga las variables de .env
     environment:
-      - DATABASE_URL=mysql+pymysql://root:password@db:3306/estudio_contable
+      # Pasa la URL de la DB que contiene la contraseña
+      - DATABASE_URL=${DATABASE_URL}
     restart: always
 
-  # Servicio para el frontend (Flutter Web)
   frontend:
     build: 
-      context: ../frontend/flutter_gestion_contable
-      dockerfile: Dockerfile
+      context: ./frontend/flutter_gestion_contable
     ports:
-      - "80:80"
-    depends_on:
-      - backend
+      - "${FRONTEND_PORT_HOST}:80" # Usa variable de entorno
+    # depends_on: # Se recomienda eliminar esta dependencia para desarrollo.
+    #   - backend
     restart: always
 
-  # Servicio para la base de datos MySQL
   db:
     image: mysql:8.0
+    # Usa un bind mount para persistir los datos en una ruta específica en el HOST
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ${MYSQL_DATA_PATH}:/var/lib/mysql # Usa variable de entorno
     ports:
-      - "3306:3306"
+      - "${DB_PORT_HOST}:3306" # Usa variable de entorno
+    env_file: .env # Carga las variables de .env
     environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=estudio_contable
+      # Carga las variables desde .env
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD} 
+      - MYSQL_DATABASE=${DB_NAME}
     restart: always
 
-  # Servicio para phpMyAdmin
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     ports:
       - "8080:80"
+    env_file: .env # Carga las variables de .env
     environment:
       - PMA_HOST=db
       - PMA_PORT=3306
-      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     depends_on:
       - db
     restart: always
 
-volumes:
-  mysql_data:
+# ❌ ELIMINAR el bloque 'volumes:' al final si solo usas 'bind mounts'
+# Si quieres seguir usando volúmenes nombrados, mantén el bloque,
+# pero el 'bind mount' de arriba es mejor para saber la ruta en el HOST.
+# volumes:
+#  mysql_data:
