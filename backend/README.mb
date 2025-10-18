@@ -5,7 +5,7 @@
 # 1. Organización de Directorios
 El backend está organizado en una estructura modular siguiendo buenas prácticas de desarrollo:
 
-```
+```bash
     backend/
     ├── Archivos de Configuración Principal
     │   ├── main.py            # Punto de entrada de la aplicación
