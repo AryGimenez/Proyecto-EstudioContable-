@@ -1,16 +1,36 @@
+# backend/Dockerfile
+
+# Usamos una imagen ligera de Python.
+# Considera usar una versión más reciente (ej. 3.11 o 3.12) si tu código lo soporta.
 FROM python:3.9-slim
 
+# Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Instalar dependencias
+# 1. OPTIMIZACIÓN DE CACHÉ: Copiamos solo el archivo de dependencias
+# Esto permite a Docker saltarse este paso si requirements.txt no ha cambiado.
 COPY requirements.txt requirements.txt
+
+# Instalar dependencias
+# --no-cache-dir es vital para mantener la imagen final pequeña.
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar el código fuente
+# 2. Copiar el resto del código fuente después de instalar dependencias
 COPY . .
+
+# 3. MEJORA DE SEGURIDAD: Crear un usuario no-root para ejecutar la aplicación
+# Esto previene que la aplicación se ejecute con privilegios de root.
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+USER appuser
 
 # Exponer el puerto
 EXPOSE 8000
 
-# Comando para ejecutar la aplicación
+# Comando para ejecutar la aplicación (Modo Desarrollo/Debugging)
+# El 'reload' es excelente para desarrollo cuando se monta el volumen en docker-compose.
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+# -------------------------------------------------------------
+# Opcional: CMD para producción (sin --reload y con más workers)
+# CMD ["gunicorn", "main:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
+# -------------------------------------------------------------

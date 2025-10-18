@@ -1,41 +1,39 @@
-# Etapa de compilación
-FROM ubuntu:20.04 AS build
+# frontend/flutter_gestion_contable/Dockerfile
 
-# Evitar interacciones durante la instalación
-ENV DEBIAN_FRONTEND=noninteractive
+# ----------------------------------------------------
+# 1. Etapa de Compilación: Usamos una imagen que ya tiene Flutter
+# ----------------------------------------------------
+FROM cirrusci/flutter:stable AS build
 
-# Instalar dependencias
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    unzip \
-    xz-utils \
-    libglu1-mesa \
-    && rm -rf /var/lib/apt/lists/*
-
-# Instalar Flutter
-RUN git clone https://github.com/flutter/flutter.git /flutter
-ENV PATH="/flutter/bin:${PATH}"
-RUN flutter channel stable
-RUN flutter upgrade
+# Configurar el entorno (si se necesita una versión específica, aunque 'stable' es lo estándar)
+# RUN flutter channel stable
+# RUN flutter upgrade
 RUN flutter config --enable-web
 
-# Copiar el código fuente
 WORKDIR /app
+
+# 1. Optimización: Copiar solo los archivos de dependencia para cachear pub get
+COPY pubspec.yaml pubspec.lock /app/
+RUN flutter pub get
+
+# 2. Copiar el resto del código
 COPY . .
 
-# Obtener dependencias y compilar para web
-RUN flutter pub get
+# 3. Compilar para web
 RUN flutter build web --release
 
-# Etapa de producción
+# ----------------------------------------------------
+# 2. Etapa de Producción: Servidor ligero Nginx
+# ----------------------------------------------------
 FROM nginx:alpine
 
-# Copiar los archivos compilados a Nginx
+# Copiar configuración de Nginx (Opcional, pero recomendado para Flutter Web)
+# Esto asegura que Nginx maneje correctamente el ruteo de URLs (deep linking)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copiar los archivos compilados desde la etapa 'build'
 COPY --from=build /app/build/web /usr/share/nginx/html
 
-# Exponer el puerto
 EXPOSE 80
 
-# Iniciar Nginx
 CMD ["nginx", "-g", "daemon off;"]
