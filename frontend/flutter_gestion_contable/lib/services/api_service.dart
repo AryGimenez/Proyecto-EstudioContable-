@@ -1,4 +1,4 @@
-// lib/services/api_service.dart
+// frontend/flutter_gestion_contable/lib/services/api_service.dart
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;

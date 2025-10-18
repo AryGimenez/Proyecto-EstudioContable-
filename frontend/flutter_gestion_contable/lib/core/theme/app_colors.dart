@@ -1,4 +1,5 @@
-// lib/core/theme/appcolor.dart
+// frontend/flutter_gestion_contable/lib/core/theme/app_colors.dart
+
 
 /// Clase que define la paleta de colores centralizada para toda la aplicación.
 /// Todos los colores son constantes y estáticos para acceso global.

@@ -1,4 +1,4 @@
-// main.dart
+// frontend/flutter_gestion_contable/lib/main.dart
 
 import 'package:flutter/material.dart';
 // Importa flutter_localizations para el soporte de idiomas (MaterialLocalizations)
@@ -9,7 +9,7 @@ import 'package:flutter_gestion_contable/screens/login/login_handler.dart';
 import 'package:flutter_gestion_contable/screens/main_website/main_handler.dart';
 import 'package:flutter_gestion_contable/services/api_service.dart';
 import 'package:flutter_gestion_contable/core/theme/app_theme.dart';
-
+// <!> No se para que es ni idea 
 import 'package:provider/provider.dart'; // Si estás usando Provider en tu aplicación, mantenlo.
 
 
@@ -20,7 +20,7 @@ void main() async {
   
   // Crea una instancia del ApiService para verificar si hay un token de autenticación.
   final apiService = ApiService();
-  final token = await apiService.getToken();
+  final token = await apiService.getToken(); // Obtiene el token almacenado (si existe).
 
   // Inicia la aplicación, pasando un valor booleano que indica si hay un token.
   runApp(MyApp(hasToken: token != null));

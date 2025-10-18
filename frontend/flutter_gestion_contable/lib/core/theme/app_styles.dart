@@ -1,4 +1,4 @@
-// lib/core/theme/app_styles.dart
+// frontend/flutter_gestion_contable/lib/core/theme/app_styles.dart
 
 import 'package:flutter/material.dart'; // Importa la librería principal de Flutter para usar widgets de Material Design
 

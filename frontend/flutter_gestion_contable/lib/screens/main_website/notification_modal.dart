@@ -1,5 +1,9 @@
+// frontend/flutter_gestion_contable/lib/screens/main_website/notification_modal.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gestion_contable/core/theme/app_colors.dart';
+
+// <!> Falta documentar 
 
 class NotificationModal extends StatelessWidget {
   @override

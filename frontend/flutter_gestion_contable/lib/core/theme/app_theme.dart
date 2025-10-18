@@ -1,11 +1,16 @@
-// lib/core/theme/app_theme.dart
+// frontend/flutter_gestion_contable/lib/core/theme/app_theme.dart
+
 
 import 'package:flutter/material.dart'; // Importa la librería principal de Flutter para usar Material Design
 import 'app_colors.dart'; // Importa el archivo que contiene los colores definidos en la app
 
+
+
+/// Clase que define el tema general de la aplicación.
+/// Configura colores, estilos de botones, campos de texto, etc.
 class AppTheme {
   // Método getter para obtener el tema claro de la aplicación (lightTheme)
-
+  
   static ThemeData get lightTheme {
     return ThemeData(
       // Define el color principal para la aplicación, que se usará en elementos como el AppBar, botones, etc.
