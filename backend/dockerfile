@@ -1,7 +1,7 @@
 # backend/dockerfile
 # Usamos una imagen ligera de Python.
 # Considera usar una versión más reciente (ej. 3.11 o 3.12) si tu código lo soporta.
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 # Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app

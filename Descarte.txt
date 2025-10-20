@@ -1,0 +1,44 @@
+# .env
+
+# --- Variables de la Base de Datos ---
+DB_ROOT_PASSWORD=unacontrasenasegura
+DB_NAME=estudio_contable_dev
+DB_PORT_HOST=3306
+
+# --- Volúmenes (Ruta en el Host) ---
+# Define la carpeta en tu HOST para almacenar los datos de MySQL
+MYSQL_DATA_PATH=/mnt/c/Users/argi_/baseDeDatos/gestionContable
+
+# --- Variables del Backend ---
+BACKEND_PORT_HOST=8000
+# La URL de conexión al servicio 'db' (no necesita cambiarse)
+# DATABASE_URL=mysql+pymysql://root:${DB_ROOT_PASSWORD}@db:3306/${DB_NAME} 
+# *Nota: La directiva 'env_file' no expande variables de entorno en otras variables;
+# es más fácil definir la URL completa si el backend la usa directamente.
+DATABASE_URL=mysql+pymysql://root:unacontrasenasegura@db:3306/estudio_contable_dev
+
+# --- Variables del Frontend ---
+FRONTEND_PORT_HOST=80
+
+
+
+
+# docker-compose.yml (Versión Mejorada)
+
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./backend # Ajustado a la nueva ubicación (asumiendo que docker-compose.yml está en la raíz)
+    env_file: .env # Carga las variables de .env
+    volumes:
+      - ./backend:/app
+    ports:
+      - "${BACKEND_PORT_HOST}:8000" # Usa variable de entorno
+    depends_on:
+      - db
+    environment:
+      # Pasa la URL de la DB que contiene la contraseña
+      - DATABASE_URL=${DATABASE_URL}
+    restart: always
