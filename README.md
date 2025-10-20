@@ -10,8 +10,8 @@ Sistema integral para gestión de pagos de impuestos y servicios en estudios con
 - **Infraestructura**: 
   - Docker (gestión de contenedores)
   - Nginx (servidor web/reverse proxy)
-  - Restic (copias de seguridad)
-  - Nagios (monitoreo del sistema)
+  - Restic (copias de seguridad) <!> Falta configurar en docker-compose.yml
+  - Nagios (monitoreo del sistema) <!> Falta configurar de docker-compose.yml
 
 ## Características Principales
 
@@ -57,10 +57,17 @@ Sistema integral para gestión de pagos de impuestos y servicios en estudios con
 
 ## Instalación y Configuración
 
-### Requisitos Previos
-- Docker y Docker Compose instalados
-- Flutter SDK (versión estable)
-- MySQL 8.0+
+
+### 🧰 Requisitos Previos
+
+- **Docker y Docker Compose instalados**
+Necesarios para levantar la infraestructura completa del proyecto (backend, base de datos y herramientas auxiliares).
+
+- **Flutter SDK (versión estable)**
+Requerido para compilar y ejecutar el frontend de la aplicación de forma independiente, sin necesidad de levantar la infraestructura con Docker.
+
+- **MySQL 8.0 o superior**
+Motor de base de datos utilizado por el proyecto. Puede ejecutarse tanto dentro del contenedor como de forma local.
 
 ### Instalación en Windows y Recomendación de Ubuntu
 
@@ -77,7 +84,22 @@ wsl --install Ubuntu
 
  **Recomendación:** Por compatibilidad y facilidad de uso, se recomienda trabajar en Ubuntu, que es el entorno principal utilizado en este proyecto.
 
-# Instalacion del Zsh
+
+
+<!> Aca tengo que agregar lo de zsh cuando lo ordene 
+
+
+
+
+# Instalación de Zsh (Recomendado)
+
+> **Recomendado para trabajar con la terminal de Ubuntu**, tanto en **WSL** como en **host**.  
+> Zsh mejora la visualización del código y, junto con sus complementos, permite:
+> - Autocompletado inteligente de los últimos comandos utilizados.  
+> - Mostrar el estado de la rama Git actual.  
+> - Mejorar la productividad en la terminal.
+
+### 🧩 Instalación básica zsh
 
 ```bash
 # Instalar Zsh
@@ -93,75 +115,11 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 exec zsh
 ```
 
-
-# Personalización del Tema en Zsh
-
-Para cambiar el tema por defecto en Oh My Zsh y aprovechar las ventajas visuales (estado de ramas, ruta actual, etc.), edita el archivo de configuración:
-
-```bash
-vim ~/.zshrc
-```
-
-Busca la línea que contiene `ZSH_THEME` y modifícala para usar el tema **agnoster**:
-
-```bash
-ZSH_THEME="agnoster"
-```
-
-Guarda los cambios y reinicia la terminal con:
-
-```bash
-zsh
-```
-
-> El tema **agnoster** muestra el estado de las ramas de git y la ruta actual, lo que facilita el trabajo diario.  
-> Puedes consultar [otros temas disponibles](https://github.com/ohmyzsh/ohmyzsh/wiki/Themes) para personalizar aún más
-
-# Instalar plug-in para autocompletar en zsh
-
-```bash
-mkdir ~/.zsh
-mkdir ~/.zsh/zsh-autosuggestions # Crear el directorio
-git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
-vim ~/.zshrc #modificar directorio de configuracion
-        source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh # agregar linia
-```
-
-Te dejo a cahtgpt el critero para todo esto el orden segun sea mas claro para la docuemtacion  una ves terminado  todo solo tengo que iniciar zsh y ya esta lo que estaria gueno es que se iniciara solo 
-
-cuando ejecuto wsl 
-
-
-Bueno haora nos toca instalr docker. 
-Yo te voy a pasar unos comandos que he usado y me funcionan. 
-
-### Instalacion 
-
-
-### Estandarización de Proyectos y Usuarios
-
-Este estándar se aplica tanto en Ubuntu como en Windows (usando WSL):
-
-```bash
-# Crear directorio de proyectos en el home
-mkdir ~/Proyect
-
-# Crear usuario y grupo para proyectos (ejecutar como root)
-sudo groupadd group-proyect
-sudo useradd -m -g group-proyect user-proyect
-
-# Guardar la contraseña en un archivo fuera del repositorio
-echo "tu_password_segura" > ~/user-proyect.pass
-chmod 600 ~/user-proyect.pass
-```
-> **Nota:** No subas archivos de contraseñas al repositorio. Mantén la información sensible fuera de la estructura del proyecto.
----
-
-### Mejorar la Terminal (zsh + zwt)
+### ⚙️ Mejorar la Terminal (zsh + zwt) 
 
 A continuación se detallan los pasos para instalar y personalizar la terminal usando **Oh My Zsh** y el plugin de autocompletado. Esto es opcional, pero facilita mucho el trabajo diario y mejora la experiencia en la terminal.
 
-#### 1. Instalar Oh My Zsh
+#### 1️⃣ Instalar Oh My Zsh
 - [Web Oficial](https://ohmyz.sh/)
 - [Guía GeekyTheory](https://geekytheory.com/como-instalar-oh-my-zsh-en-ubuntu)
 
@@ -176,7 +134,7 @@ wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - 
 chsh -s $(which zsh)
 ```
 
-#### 2. Personalizar el Tema de Zsh
+#### 2️⃣ Personalizar el Tema de Zsh
 - [Lista de temas](https://github.com/ohmyzsh/ohmyzsh/wiki/Themes)
 
 ```bash
@@ -184,8 +142,10 @@ vim ~/.zshrc
 # Buscar la línea ZSH_THEME y modificarla:
 ZSH_THEME="agnoster"
 ```
+Sugerencia: agnoster es uno de los temas más usados, muestra información útil sobre Git y la ruta actual.
 
-#### 3. Instalar Plugin de Autocompletado
+
+#### 3️⃣ Instalar Plugin de Autocompletado
 
 ```bash
 # Crear directorio para el plugin
@@ -198,7 +158,7 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosugges
 echo 'source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh' >> ~/.zshrc
 ```
 
-#### 4. Iniciar Zsh
+#### 4️⃣ Iniciar Zsh
 
 ```rbash
 zsh
@@ -280,6 +240,96 @@ docker-compose --version
 
 
 
+# <!> Aca val las recomendaciones de produccion 
+
+
+
+
+# 🧠 Recomendado para producción
+
+## 🧱 Creación del entorno de producción con Docker
+
+### 📁 Estructura recomendada para producción
+
+Para mantener un estándar en entornos de producción, recomendamos crear un directorio base en:
+```/home/project```
+
+Dentro de este directorio, se deben vincular los proyectos siguiendo esta estructura:
+
+```bash
+sudo ln -s /mnt/c/Users/argi_/Documents/GitHub/Proyecto-EstudioContable- /home/project/Proyecto-EstudioContable-
+```
+
+
+>**Beneficio:**
+>Esta estructura facilita la organización, la replicación de entornos y la administración de permisos, evitando conflictos entre proyectos.
+
+
+### 👥 Estándar de usuarios y permisos
+
+Se recomienda crear un usuario y grupo dedicados para cada proyecto con el fin de mejorar la seguridad y evitar el uso de root en entornos de producción.
+
+**Ejemplo:**
+
+```bash
+# Crear grupo del proyecto
+sudo groupadd group-project
+
+# Crear usuario asignado al grupo
+sudo useradd -m -g group-project user-project
+```
+
+### 🔐 Manejo seguro de contraseñas
+
+Guardá la contraseña del usuario fuera del repositorio, por ejemplo:
+
+```bash
+echo "tu_password_segura" > ~/user-project.pass
+chmod 600 ~/user-project.pass
+```
+> ⚠️ Importante:
+> - No subas contraseñas, llaves o tokens al repositorio.
+> - Usá variables de entorno, archivos .env fuera del proyecto o herramientas como Docker Secrets, Vault, o 1Password CLI.
+
+### 💡 Buenas prácticas adicionales
+
+- Nunca ejecutes contenedores o servicios como root.
+- Ejecutá los procesos del proyecto con el usuario user-project.
+- Documentá los permisos y usuarios definidos en tu espacio de infraestructura o wiki (por ejemplo, en Notion).
+- Si querés automatizar este proceso, usá el siguiente script:
+
+```bash
+#!/bin/bash
+# setup_project_user.sh
+
+# Crear grupo y usuario del proyecto
+sudo groupadd -f group-project
+sudo id -u user-project &>/dev/null || sudo useradd -m -g group-project user-project
+
+# Crear archivo de contraseña fuera del repo
+PASS_FILE=~/user-project.pass
+if [ ! -f "$PASS_FILE" ]; then
+  echo "Generando contraseña segura..."
+  openssl rand -base64 16 > "$PASS_FILE"
+  chmod 600 "$PASS_FILE"
+  echo "Contraseña almacenada en $PASS_FILE"
+fi
+```
+
+### ⚙️ Propósito del estándar
+
+Este procedimiento busca:
+- Mejorar la seguridad del entorno.
+- Asegurar consistencia entre desarrollo y producción.
+- Aislar los procesos del sistema principal.
+
+>💬 En resumen:
+Aunque en desarrollo no es obligatorio, aplicar este estándar te permitirá replicar condiciones reales de producción y detectar problemas antes del despliegue.
+
+
+
+
+<!> Aca abria que agregar el directoiro de proyecto 
 
 
 
@@ -303,9 +353,22 @@ docker-compose --version
 
 
 
-## Proceso de crear el entorno de desarrollo con docker.
 
-Nosotros por estándar lo que hacemos es crear un directorio en /home/project
+
+
+
+
+
+
+
+
+
+
+
+# Proceso de crear el entorno de desarrollo con docker.
+
+## Recomondacion Produccion 
+  Para estandarizar Produccion nosotros por estándar lo que hacemos es crear un directorio en /home/project
 
 y  vinculamos el directorio del proyecto a /home/project/NombreProyecto para seguir un estandar. 
 
@@ -315,7 +378,21 @@ tambien recomendamos crear un usuario  user-project group-project y darle permis
   sudo ln -s /mnt/c/Users/argi_/Documents/GitHub/Proyecto-EstudioContable- /home/project/Proyecto-EstudioContable-
 ```
 
-## Proceso para crear el entorno de desarrollo con Docker
+
+
+> **Recomendado para entornos de producción:**  
+> Implementar esta configuración mejora la **seguridad del proyecto** y evita que los procesos o instrucciones se ejecuten con **permisos de administrador**.  
+> De esta forma, si ocurre un error o una instrucción malintencionada, no afectará al sistema principal.  
+> *(Opcional, pero altamente recomendable).*
+
+
+ 
+ 
+ # <!> Revisar y mejora con ChatGpt 
+
+
+
+## Proceso para crear el entorno de desarrollo con Docker <!> Esto esta repetido para mi no va
 
 Por estándar, recomendamos organizar todos los proyectos en el directorio `/home/project` en el entorno de desarrollo y producción. Esto facilita la administración, el despliegue y el mantenimiento de los proyectos.
 

@@ -2,29 +2,48 @@
 
 version: '3.8'
 
+
 services:
+# Servicio backend usando imagen creada manualmente a partir dockerfile en ./backend 
   backend:
-    build: 
-      context: ./backend # Ajustado a la nueva ubicación (asumiendo que docker-compose.yml está en la raíz)
+    image: estudio_contable_backend:latest
+    env_file: .env # Carga las variables de .env
     volumes:
       - ./backend:/app
     ports:
       - "${BACKEND_PORT_HOST}:8000" # Usa variable de entorno
     depends_on:
       - db
-    env_file: .env # Carga las variables de .env
     environment:
       # Pasa la URL de la DB que contiene la contraseña
       - DATABASE_URL=${DATABASE_URL}
     restart: always
 
+# # Servicio backend usando dockerfile en ./backend <!> ERROR: invalid reference format al levantar backend con Docker Compose (Problema de sintaxis/red) Tambine falta cargar las variables de entern 
+#   backend:
+#     build:
+#       context: ./backend
+#       dockerfile: Dockerfile
+#     volumes:
+#       - ./backend:/app
+#     ports:
+#       - "8000:8000" # Usa variable de entorno
+#     depends_on:
+#       - db
+#     environment:
+#       # Pasa la URL de la DB que contiene la contraseña
+#       - DATABASE_URL=mysql+pymysql://root:unacontrasenasegura@db:3306/estudio_contable_dev
+#     restart: always
+
   frontend:
-    build: 
+    build:
       context: ./frontend/flutter_gestion_contable
+      dockerfile: Dockerfile
     ports:
       - "${FRONTEND_PORT_HOST}:80" # Usa variable de entorno
     # depends_on: # Se recomienda eliminar esta dependencia para desarrollo.
     #   - backend
+    env_file: .env # Carga las variables de .env
     restart: always
 
   db:

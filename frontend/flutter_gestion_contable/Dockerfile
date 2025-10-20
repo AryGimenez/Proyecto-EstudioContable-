@@ -1,4 +1,4 @@
-# frontend/flutter_gestion_contable/dockerfile
+# frontend/flutter_gestion_contable/Dockerfile
 
 # ----------------------------------------------------
 # 1. Etapa de Compilación: Usamos una imagen que ya tiene Flutter
