@@ -11,7 +11,7 @@ Sistema integral para gestión de pagos de impuestos y servicios en estudios con
   - Docker (gestión de contenedores)
   - Nginx (servidor web/reverse proxy)
   - Restic (copias de seguridad) <!> Falta configurar en docker-compose.yml
-  - Nagios (monitoreo del sistema) <!> Falta configurar de docker-compose.yml
+  - Nagios (mono del sistema) <!> Falta configurar de docker-compose.yml
 
 ## Características Principales
 
@@ -57,9 +57,30 @@ Sistema integral para gestión de pagos de impuestos y servicios en estudios con
 
 ## Instalación y Configuración
 
+<!> Aca tendria que ir la estructura de el proyecto solo hasta llegar a bakend y fonte caps las tegnologicas y los link a fonte y bakend lo de docker tendria que ir debajo paro la infrastructuar me parese 
+
+
+
+Este proyecto tiene backend y frontend, estos están divididos en dos carpetas principales:
+
+**Estructura general de proyecto**
+```
+frontend/flutter_gestion_contable/ // Aplicación Flutter para la gestión contable
+  ├── lib/ // Contiene el código fuente principal de la aplicación
+backend/ // API REST construida con FastAPI
+  ├── app/ // Código fuente de la aplicación backend
+```
+
+[Ver Documentación del Backend](./backend/README.md)
+
+[Ver Documentación del Frontend](./frontend/flutter_gestion_contable/README.md)
+
+
+
+
+
 
 ### 🧰 Requisitos Previos
-
 - **Docker y Docker Compose instalados**
 Necesarios para levantar la infraestructura completa del proyecto (backend, base de datos y herramientas auxiliares).
 
@@ -243,8 +264,6 @@ docker-compose --version
 # <!> Aca val las recomendaciones de produccion 
 
 
-
-
 # 🧠 Recomendado para producción
 
 ## 🧱 Creación del entorno de producción con Docker
@@ -329,170 +348,17 @@ Aunque en desarrollo no es obligatorio, aplicar este estándar te permitirá rep
 
 
 
-<!> Aca abria que agregar el directoiro de proyecto 
 
 
+<!> Esto voy a empesar a mejorar Capas seria bueno meter esto enseima de las recomendaciones de produccion me parese mas interesante 
+
+# Configurar Infraestructura con Docker Entorno Desarrollo
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Proceso de crear el entorno de desarrollo con docker.
-
-## Recomondacion Produccion 
-  Para estandarizar Produccion nosotros por estándar lo que hacemos es crear un directorio en /home/project
-
-y  vinculamos el directorio del proyecto a /home/project/NombreProyecto para seguir un estandar. 
-
-tambien recomendamos crear un usuario  user-project group-project y darle permiso a el proyecto a fin de mantener la seguridad y un estandar para el entorno de produccion
-
+Genera la imagen Docker del frontend Flutter para el sistema de gestión contable ejecutando el siguiente comando desde la raíz del proyecto:
 ```bash
-  sudo ln -s /mnt/c/Users/argi_/Documents/GitHub/Proyecto-EstudioContable- /home/project/Proyecto-EstudioContable-
-```
-
-
-
-> **Recomendado para entornos de producción:**  
-> Implementar esta configuración mejora la **seguridad del proyecto** y evita que los procesos o instrucciones se ejecuten con **permisos de administrador**.  
-> De esta forma, si ocurre un error o una instrucción malintencionada, no afectará al sistema principal.  
-> *(Opcional, pero altamente recomendable).*
-
-
- 
- 
- # <!> Revisar y mejora con ChatGpt 
-
-
-
-## Proceso para crear el entorno de desarrollo con Docker <!> Esto esta repetido para mi no va
-
-Por estándar, recomendamos organizar todos los proyectos en el directorio `/home/project` en el entorno de desarrollo y producción. Esto facilita la administración, el despliegue y el mantenimiento de los proyectos.
-
-Para mantener la seguridad y seguir buenas prácticas, sugerimos crear un usuario y un grupo específicos para cada proyecto. De esta forma, los archivos y procesos del proyecto estarán aislados y protegidos de otros usuarios del sistema.
-
-### Pasos recomendados
-
-1. **Crear el directorio estándar para proyectos, lo hacemos como administrador porque necesitamos permisos elevados en el directorio /home:**
-   ```bash
-   sudo mkdir -p /home/project \
-   ```
-
-2. **Crear un usuario y grupo para el proyecto:**
-   ```bash
-   sudo groupadd group-project
-   sudo useradd -m -g group-project user-project
-   ```
-
-3. **Corroborar que el usuario y grupo se crearon correctamente:**
-```bash
-   id user-project
-
-   # te va a dar un resultado como este
-   uid=1001(user-project) gid=1001(group-project) groups=1001(group-project)
-```
-
-   > Es correcto y recomendable crear un usuario y grupo dedicados para cada proyecto, ya que esto mejora la seguridad y facilita la gestión de permisos en el servidor.
-
-3. **Dar permisos al usuario y grupo sobre el directorio del proyecto:**
-   ```bash
-   sudo chown -R user-project:group-project /home/project/NombreProyecto
-   ```
-
-4. **Vincular el directorio del proyecto (por ejemplo, desde WSL) al estándar suele pedir perisos por lo que debes ejecutarlo como root:**
-   ```bash
-   sudo ln -s /mnt/c/Users/argi_/Documents/GitHub/Proyecto-Estudiocontabler- /home/project/Proyecto-Estudiocontabler-
-   ```
-
-5. **Dar permisos al usuario y grupo sobre el directorio del proyecto:**
-   ```bash
-   sudo chown -R user-project:group-project /home/project/Proyecto-Estudiocontabler-
-   ```
-
-
-
-/mnt/c/Users/argi_/Documents/GitHub/Proyecto-EstudioContable-
-/mnt/c/Users/argi_/Documents/GitHub/Proyecto-Estudiocontabler-
-
-
-
-
-
----
-
-**Ventajas de esta organización:**
-- Permite estandarizar la estructura en todos los servidores y entornos de desarrollo.
-- Facilita el control de acceso y la administración de permisos.
-- Mejora la seguridad al aislar los archivos y
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### Proceso de Instalación del Proyecto
-
-```bash
-# 1. Clonar repositorio
-git clone https://github.com/tu-usuario/apa-sa-sistema.git
-cd apa-sa-sistema
-
-# 2. Iniciar contenedores
-docker-compose up -d --build
-
-# 3. Configurar base de datos
-docker exec -it api python manage.py migrate
-
-# 4. Iniciar aplicación Flutter
+sudo docker build \
+  -f frontend/flutter_gestion_contable/Dockerfile \
+  -t estudio_contable_frontend \
+  ./frontend/flutter_gestion_contable
 ```
