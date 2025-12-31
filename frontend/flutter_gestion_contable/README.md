@@ -133,6 +133,7 @@ lib/
 
 # clients/
 Interfaz para mostrar clientes de la empresa
+<!> Si es posible como puedo agregar una imben de com seria la interfas 
 
 ### clients_handler.dart
 Maneja la lógica de negocio, la gestión del estado (usando ChangeNotifier) y la comunicación con el backend a través de ApiService. Se encarga de cargar, filtrar, agregar, editar y eliminar clientes, pero no tiene ninguna lógica de UI.
@@ -140,15 +141,22 @@ Maneja la lógica de negocio, la gestión del estado (usando ChangeNotifier) y l
 ### clients_screen.dart
 Se encarga del diseño, la disposición de los widgets (DataTable, SearchBar, ActionButtons) y la gestión de la interacción directa con el usuario (como abrir diálogos, manejar controllers de texto y snackbars). No maneja el estado de los datos.
 
+<<<<<<< Updated upstream
 # depositos/
+=======
+# Depositos
+<!> Esto podria mejorarlo 
+>>>>>>> Stashed changes
 Interfaz para mostrar depósitos de la empresa son las transacciones que los clientes realizan. para pagar sus impuestos.
 
+<!> Cargar imagen 
 ### depositos_handler.dart
 Maneja la lógica de negocio, la gestión del estado (usando ChangeNotifier) y la comunicación con el backend a través de ApiService. Se encarga de cargar, filtrar, agregar, editar y eliminar depósitos, pero no tiene ninguna lógica de UI.
 
 ### depositos_screen.dart
 Se encarga del diseño, la disposición de los widgets (DataTable, SearchBar, ActionButtons) y la gestión de la interacción directa con el usuario (como abrir diálogos, manejar controllers de texto y snackbars). No maneja el estado de los datos.
 
+<<<<<<< Updated upstream
 # main_website/
 El módulo main_website contiene los componentes esenciales para la estructura principal de la aplicación (el layout o shell). Su responsabilidad principal es gestionar el estado de la navegación, la barra lateral y la visualización del contenido de la página actual.
 
@@ -166,3 +174,11 @@ Componente Modal de Notificaciones: Es un Widget Stateless que define la estruct
 
 
 <!> Terminar de documentar los componentes
+=======
+
+
+
+# Documentación para Levantar el Entorno de Flutter
+
+<!> Documetar como levantarlo con docker y como levantarlo en web para el desarollo en local 
+>>>>>>> Stashed changes
