@@ -4,7 +4,7 @@
 Sistema integral para gestión de pagos de impuestos y servicios en estudios contables. Permite registro de clientes, control de pagos, generación de alertas automáticas y administración de usuarios con diferentes niveles de permisos. Incluye módulos de contabilidad para seguimiento de ingresos y gastos.
 
 ## Tecnologías Utilizadas
-- **Frontend**: Flutter (aplicación web y móvil)
+- **Frontend**: Flutter (Para <!> En esta version por un tema de seguridad para la clita )
 - **Backend**: FastAPI (lógica del sistema)
 - **Base de Datos**: MySQL
 - **Infraestructura**: 
@@ -325,7 +325,7 @@ Para mantener la seguridad y seguir buenas prácticas, sugerimos crear un usuari
 
 1. **Crear el directorio estándar para proyectos, lo hacemos como administrador porque necesitamos permisos elevados en el directorio /home:**
    ```bash
-   sudo mkdir -p /home/project 
+   sudo mkdir -p /home/project \
    ```
 
 2. **Crear un usuario y grupo para el proyecto:**
