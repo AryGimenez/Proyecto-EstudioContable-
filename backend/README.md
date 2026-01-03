@@ -123,7 +123,7 @@ Implementan lógica de negocio compleja:
 
 # Despliegue
 - requirements.txt : Dependencias del proyecto
-- dockerfile y docker-compose.yml : Configuración para despliegue con Docker
+- dockerfile: Configuración para despliegue con Docker
 
 
 # 3. Flujo de Datos

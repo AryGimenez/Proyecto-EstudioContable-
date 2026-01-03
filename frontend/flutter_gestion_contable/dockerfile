@@ -1,3 +1,4 @@
+# /frontend/flutter_gestion_contable/dockerfile
 # Etapa de compilación
 FROM ubuntu:20.04 AS build
 
@@ -14,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Instalar Flutter
-RUN git clone https://github.com/flutter/flutter.git /flutter
+RUN git clone https://github.com/flutter/flutter.git /flutter 
 ENV PATH="/flutter/bin:${PATH}"
 RUN flutter channel stable
 RUN flutter upgrade

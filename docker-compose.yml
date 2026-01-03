@@ -1,11 +1,15 @@
+# /docker-compose.yml
 version: '3.8'
 
 services:
   # Servicio para el backend (FastAPI)
   backend:
-    build: .
+    container_name: backend_estudio_contable
+    build:
+      context: ./backend
+      dockerfile: dockerfile
     volumes:
-      - ./:/app
+      - ./backend:/app
     ports:
       - "8000:8000"
     depends_on:
@@ -16,9 +20,10 @@ services:
 
   # Servicio para el frontend (Flutter Web)
   frontend:
+    container_name: frontend_estudio_contable
     build: 
-      context: ../frontend/flutter_gestion_contable
-      dockerfile: Dockerfile
+      context: ./frontend/flutter_gestion_contable
+      dockerfile: dockerfile
     ports:
       - "80:80"
     depends_on:
@@ -27,6 +32,7 @@ services:
 
   # Servicio para la base de datos MySQL
   db:
+    container_name: db_estudio_contable
     image: mysql:8.0
     volumes:
       - mysql_data:/var/lib/mysql
