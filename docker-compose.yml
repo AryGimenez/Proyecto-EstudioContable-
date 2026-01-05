@@ -40,7 +40,6 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=estudio_contable
     restart: always
 
   # Servicio para phpMyAdmin

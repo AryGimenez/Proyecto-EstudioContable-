@@ -27,14 +27,17 @@ class UsuarioRepository:
         """Obtiene un usuario por su ID primario."""
         return self.db.query(models.Usuario).filter(models.Usuario.usuario_id == usuario_id).first()
 
-    def get_by_username(self, usuario_nombre: str) -> Optional[models.Usuario]:
         """Obtiene un usuario por su nombre de usuario, clave única para login."""
         return self.db.query(models.Usuario).filter(models.Usuario.usuario_nombre == usuario_nombre).first()
 
     def get_by_email(self, usuario_email: str) -> Optional[models.Usuario]:
         """Obtiene un usuario por su dirección de email, clave única."""
-        return self.db.query(models.Usuario).filter(models.Usuario.usuario_email == usuario_email).first()
+        return self.db.query(models.Usuario).filter(models.Usuario.Usu_email == usuario_email).first()
 
+    def get_by_username(self, usuario_nombre: str) -> Optional[models.Usuario]:
+        """Obtiene un usuario por su nombre de usuario, clave única para login."""
+        return self.db.query(models.Usuario).filter(models.Usuario.Usu_nombre == usuario_nombre).first()
+    
     def get_all(self, skip: int = 0, limit: int = 255) -> List[models.Usuario]:
         """Obtiene todos los usuarios, con soporte para paginación."""
         return self.db.query(models.Usuario).offset(skip).limit(limit).all()

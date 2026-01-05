@@ -156,15 +156,34 @@ CREATE TABLE IF NOT EXISTS `estudioContable`.`Usuario` (
   `Usu_id` INT NOT NULL AUTO_INCREMENT,
   `Usu_nombre` VARCHAR(45) NOT NULL COMMENT 'Nombre de usuario para login',
   `Usu_email` VARCHAR(45) NOT NULL COMMENT 'Email del usuario para contacto y recuperación de contraseña',
-  `Usu_password` VARCHAR(45) NOT NULL COMMENT 'Contraseña del usuario',
+  `Usu_password` VARCHAR(255) NOT NULL COMMENT 'Contraseña del usuario',
   `Usu_rol` ENUM('admin', 'user') NOT NULL COMMENT 'Rol del usuario',
   PRIMARY KEY (`Usu_id`),
   UNIQUE INDEX `Usu_nombre_UNIQUE` (`Usu_nombre` ASC) VISIBLE)
+  UNIQUE INDEX `Usu_email_UNIQUE` ()
 ENGINE = InnoDB;
 
 insert into estudioContable.Usuario 
   (Usu_nombre, Usu_email, Usu_password, Usu_rol) 
   values ('Ary', 'argi.prog@gmail.com', 'hmq7381spudla', 'admin');
+
+-- -----------------------------------------------------
+-- Table `estudioContable`.`PasswordResetRequest`
+-- Tabla de Soporte para Reseteo de Clave
+-- -----------------------------------------------------
+
+DROP TABLE IF EXISTS PasswordResetRequest;
+
+-- Tabla de Soporte para Reseteo de Clave
+CREATE TABLE PasswordResetRequest (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(45) NOT NULL,
+    token VARCHAR(255) UNIQUE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    expires_at DATETIME NOT NULL,
+    CONSTRAINT fk_usuario_email FOREIGN KEY (email) REFERENCES Usuario(Usu_email) ON DELETE CASCADE
+);
+
 
 -- -----------------------------------------------------
 -- Table `estudioContable`.`Eventos`

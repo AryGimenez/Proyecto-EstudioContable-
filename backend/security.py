@@ -18,6 +18,7 @@ def get_password_hash(password: str) -> str:
     """Cifra una contraseña de texto plano."""
     return pwd_context.hash(password)
 
+# Funcion que verifica la contraseña
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verifica si una contraseña de texto plano coincide con una encriptada."""
     return pwd_context.verify(plain_password, hashed_password)

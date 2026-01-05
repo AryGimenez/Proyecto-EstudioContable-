@@ -40,7 +40,7 @@ from .services.scheduler_service import verificar_vencimientos_diarios # Tu lóg
 from .models import cliente, deposito, impuesto, nombre_impuesto, pago, user, notificacion, cheque # Asegúrate de tener todos tus modelos aquí
 
 # Crea las tablas si no existen (debe estar después de las importaciones de modelos)
-Base.metadata.create_all(bind=engine) # <--- Linea encargada de la creacion de la base de datos (existe otra llamada alembic, pero la encontre un poco compleja voy a estudiarla un poco mas para ver)
+# Base.metadata.create_all(bind=engine) # <--- Linea encargada de la creacion de la base de datos (existe otra llamada alembic, pero la encontre un poco compleja voy a estudiarla un poco mas para ver)
 
 
 app = FastAPI(
@@ -78,25 +78,26 @@ scheduler_instance = None # Inicializa a None o declara globalmente aquí
 async def startup_event():
     global scheduler_instance # Accede a la instancia global
     
-    # Imprime la fecha de inicio del servidor una sola vez
-    print(f"Fecha de inicio del servidor: {date.today()}")
+    # <!> Mantener comentado asta reparar las tabals que llama 
+    # # Imprime la fecha de inicio del servidor una sola vez
+    # print(f"Fecha de inicio del servidor: {date.today()}")
 
-    # 1. Asegurarse de que las tablas existan (si no se han creado ya)
-    # Base.metadata.create_all(bind=engine) # Ya lo tienes fuera de un evento, eso está bien.
+    # # 1. Asegurarse de que las tablas existan (si no se han creado ya)
+    # # Base.metadata.create_all(bind=engine) # Ya lo tienes fuera de un evento, eso está bien.
 
-    # 2. Inicializar y arrancar el scheduler
-    if scheduler_instance is None: # Solo inicializa si no está ya (medida extra de seguridad)
-        scheduler_instance = AsyncIOScheduler()
-        scheduler_instance.add_job(
-            verificar_vencimientos_diarios,
-            trigger=IntervalTrigger(minutes=1), # o 'cron', hour=9, minute=0 para producción
-            id='diario_vencimiento_job',
-            replace_existing=True # Esto es útil para el --reload de Uvicorn
-        )
-        scheduler_instance.start()
-        print("Scheduler de alertas de vencimiento iniciado.")
-    else:
-        print("Advertencia: Scheduler ya estaba inicializado. Saltando inicio.")
+    # # 2. Inicializar y arrancar el scheduler
+    # if scheduler_instance is None: # Solo inicializa si no está ya (medida extra de seguridad)
+    #     scheduler_instance = AsyncIOScheduler()
+    #     scheduler_instance.add_job(
+    #         verificar_vencimientos_diarios,
+    #         trigger=IntervalTrigger(minutes=1), # o 'cron', hour=9, minute=0 para producción
+    #         id='diario_vencimiento_job',
+    #         replace_existing=True # Esto es útil para el --reload de Uvicorn
+    #     )
+    #     scheduler_instance.start()
+    #     print("Scheduler de alertas de vencimiento iniciado.")
+    # else:
+    #     print("Advertencia: Scheduler ya estaba inicializado. Saltando inicio.")
 
 
 @app.on_event("shutdown")
@@ -109,19 +110,29 @@ async def shutdown_event():
 # --- FIN DE CONSOLIDACIÓN ---
 
 
+
+
+
+
+
 # Ruta para unir el backend con el frontend
 
-# 1. Montar archivos estáticos (si tienes un frontend construido)
-app.mount(
-    "/static",
-    StaticFiles(directory="frontend/flutter_gestion_contable/build/web"), # Ajusta la ruta según tu estructura de proyecto
-    name="flutter_app_static"
-)
+# # 1. Montar archivos estáticos (si tienes un frontend construido)
+# app.mount(
+#     "/static",
+#     StaticFiles(directory="frontend/flutter_gestion_contable/build/web"), # Ajusta la ruta según tu estructura de proyecto
+#     name="flutter_app_static"
+# )
 
-# 2. Ruta para servir el archivo index.html
-@app.get("/", response_class=HTMLResponse)
-async def read_root():
-    return FileResponse("frontend/flutter_gestion_contable/build/web/index.html")
+# # 2. Ruta para servir el archivo index.html
+# @app.get("/", response_class=HTMLResponse)
+# async def read_root():
+#     return FileResponse("frontend/flutter_gestion_contable/build/web/index.html")
+
+
+
+
+
 
 # 3. Ruta para configuración (opcional)
 """

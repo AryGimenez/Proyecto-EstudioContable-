@@ -1,5 +1,7 @@
 # backend/router/auth.py
 
+# <!> Creo que este archivo sire para la autenticacion y manejo de usuarios
+
 # Importaciones de FastAPI y SQLAlchemy
 
 from fastapi import APIRouter, Depends, HTTPException, status # Importaciones necesarias para funciones de FastAPI
@@ -87,7 +89,7 @@ async def login_for_access_token(
     # 1. Autenticar al usuario
     user_in_db = user_repo.get_by_username(form_data.username) # Busca el usuario por nombre de usuario
     
-    if not user_in_db or not verify_password(form_data.password, user_in_db.usuario_contraseña): # Verifica la contraseña
+    if not user_in_db or not verify_password(form_data.password, user_in_db.Usu_password): # Verifica la contraseña
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, # Si falla la autenticación, lanza un error 401
             detail="Credenciales incorrectas",
@@ -97,7 +99,7 @@ async def login_for_access_token(
     # 2. Crear el token de acceso
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES) # Define el tiempo de expiración del token
     access_token = create_access_token(
-        subject=user_in_db.usuario_nombre, # 'sub' (subject) es el nombre de usuario, manera de identificar al usuario
+        subject=user_in_db.Usu_nombre, # 'sub' (subject) es el nombre de usuario, manera de identificar al usuario
         expires_delta=access_token_expires # Tiempo de expiración
     )
     return {"access_token": access_token, "token_type": "bearer"} # Retorna el token y el tipo

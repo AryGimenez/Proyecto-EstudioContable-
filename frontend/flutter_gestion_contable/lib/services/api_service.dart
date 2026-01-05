@@ -58,29 +58,74 @@ class ApiService {
     }
     return headers;
   }
+  // <!> metodo para borrar si el de abajo funcina 
+  // Future<Map<String, dynamic>> login(String username, String password) async {
+  //   final url = Uri.parse('$_baseUrl/auth/token');
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       body: {
+  //         'username': username,
+  //         'password': password,
+  //       },
+  //     );
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //       await saveToken(data['access_token']);
+  //       return {'success': true, 'token': data['access_token']};
+  //     } else {
+  //       final error = json.decode(response.body);
+  //       return {'success': false, 'message': error['detail']};
+  //     }
+  //   } catch (e) {
+  //     return {'success': false, 'message': 'No se pudo conectar al servidor. Revisa que el backend esté corriendo.'};
+  //   }
+  // }
 
+
+
+  /// Realiza la autenticación del usuario enviando credenciales al servidor.
+  /// Devuelve un [Map] con el resultado de la operación.
   Future<Map<String, dynamic>> login(String username, String password) async {
+    // 1. Definimos la dirección exacta a la que vamos a golpear (el endpoint)
     final url = Uri.parse('$_baseUrl/auth/token');
+
     try {
+      // 2. Realizamos la petición POST. El 'await' detiene la ejecución 
+      // hasta que el servidor de Python responda.
       final response = await http.post(
         url,
         body: {
-          'username': username,
-          'password': password,
+          'username': username, // Clave que espera el backend
+          'password': password, // Valor obtenido del formulario
         },
       );
+
+      // 3. Verificamos si el servidor respondió con un código 200 (Éxito)
       if (response.statusCode == 200) {
+        // 4. Convertimos la respuesta de texto plano a un formato de Mapa (JSON)
         final data = json.decode(response.body);
+
+        // 5. Guardamos el token en la memoria del dispositivo para futuras peticiones
         await saveToken(data['access_token']);
+
+        // 6. Devolvemos éxito al LoginHandler
         return {'success': true, 'token': data['access_token']};
       } else {
+        // 7. Si el código no es 200, algo falló (ej: 401 credenciales incorrectas)
         final error = json.decode(response.body);
         return {'success': false, 'message': error['detail']};
       }
     } catch (e) {
-      return {'success': false, 'message': 'No se pudo conectar al servidor. Revisa que el backend esté corriendo.'};
+      // 8. Si hubo un error de red (sin internet, servidor apagado), el 'catch' lo atrapa
+      return {
+        'success': false, 
+        'message': 'No se pudo conectar al servidor. Revisa que el backend esté corriendo.'
+      };
     }
   }
+
+  
 
   // **MÉTODOS GENÉRICOS (GET, POST, PUT, DELETE)**
   // Todos ahora usan _getHeaders para la autenticación y _handleResponse.
