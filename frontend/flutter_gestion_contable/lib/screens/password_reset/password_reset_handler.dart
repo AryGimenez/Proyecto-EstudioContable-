@@ -1,11 +1,9 @@
 // frontend/flutter_gestion_contable/lib/screens/password_reset/password_reset_handler.dart
 
 import 'package:flutter/material.dart';
-// Importa el servicio que se comunica con tu backend (FastAPI).
 import 'package:flutter_gestion_contable/services/api_service.dart';
-// Importa el widget que define la apariencia del formulario.
 import 'package:flutter_gestion_contable/screens/password_reset/password_reset_form.dart'; 
-
+import ''
 /// Widget con estado (Stateful) que actúa como el **Handler** (Manejador) de la pantalla
 /// de restablecimiento de contraseña.
 ///
@@ -48,12 +46,13 @@ class _PasswordResetHandlerState extends State<PasswordResetHandler> {
   // Controladores para obtener el texto de los campos del formulario.
   final _emailController = TextEditingController(); // Controldaor email
   final _codeController = TextEditingController(); // Controlador Codigo de verificacion
-  final _newPasswordController = TextEditingController(); // Controlador Nueva contraseña
+       TextEditingController(); // Controldaor email
+  final _codeController = TextEditingController(); // Controlador Codigo de verificacion
+  final _newPasswordControfinal _newPasswordContro
+  ller = TextEditingController(); // Controlador Nueva contraseña
   final _confirmNewPasswordController = TextEditingController(); // Controlador Confirmar contraseña
   
-  
-  final ApiService _apiService = ApiService(); // Instancia del servicio API para hacer las llamadas HTTP.
-  
+
   
   int _currentStep = 0; // Variable de estado que controla qué "paso" del formulario se muestra (0 para email, 1 para código).
 
@@ -75,7 +74,7 @@ class _PasswordResetHandlerState extends State<PasswordResetHandler> {
       return;
     }
 
-    final result = await _apiService.requestPasswordReset(email); // Llama al método del ApiService para enviar la solicitud al backend.
+    final result = await ApiService().requestPasswordReset(email); // Llama al método del ApiService para enviar la solicitud al backend.
     
     if (mounted) { // Verifica si el widget sigue montado antes de actualizar el estado.
       if (result['success']) {
@@ -120,7 +119,10 @@ class _PasswordResetHandlerState extends State<PasswordResetHandler> {
     }
 
     // Llama al método del ApiService para confirmar el reseteo con el backend.
-    final result = await _apiService.confirmPasswordReset(email, code, newPassword);
+    // final result = await ApiService().confirmPasswordReset(email, code, newPassword);
+
+    final result = null;
+
 
     // Verifica si el widget sigue montado antes de actualizar el estado.
     if (mounted) {

@@ -3,7 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gestion_contable/core/theme/app_colors.dart';
-import 'package:flutter_gestion_contable/services/api_service.dart'; // ¡Mantenemos esta importación!
+import 'package:flutter_gestion_contable/services/api_service-1.dart'; // ¡Mantenemos esta importación!
 import 'clients_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -35,8 +35,7 @@ class ClientsScreen extends StatefulWidget {
 class _ClientsScreenState extends State<ClientsScreen> {
   // Mantenemos la instancia de ApiService aquí
   
-  final ApiService _apiService = ApiService(); // <!> Creo que esto es para conectarme con el backend no se  Actuamente no se esta usadno 
-
+ 
   late Future<void> _clientsFuture; // Futuro para la carga inicial de clientes.
 
   String selectedFilter = 'Nombre'; // Filtro seleccionado para la búsqueda.

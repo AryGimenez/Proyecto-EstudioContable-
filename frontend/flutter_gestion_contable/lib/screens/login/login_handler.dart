@@ -34,9 +34,6 @@ class _LoginHandlerState extends State<LoginHandler> {
   bool _isPasswordVisible =
       false; // Estado para controlar la visibilidad de la contraseña.
 
-  // Instancia de ApiService para usar sus métodos de login.
-  final ApiService _apiService = ApiService();
-
   /// Método que se ejecuta al presionar el botón de "Iniciar sesión".
   /// @returns Un [Future<void>] que se completa después de intentar la autenticación
   /// y manejar la navegación o mostrar el error.
@@ -47,7 +44,7 @@ class _LoginHandlerState extends State<LoginHandler> {
           .trim(); // Obtiene el texto del campo de usuario y lo recorta de espacios.
       final password = _passwordController.text
           .trim(); // Obtiene el texto del campo de contraseña y lo recorta de espacios.
-      final result = await _apiService.login(username,
+      final result = await ApiService().login(username,
           password); // Llama al método de login del servicio API y espera el resultado.
 
       if (mounted) {
@@ -111,8 +108,8 @@ class _LoginHandlerState extends State<LoginHandler> {
           // Permite el desplazamiento vertical si el contenido excede la altura de la pantalla.
           padding: const EdgeInsets.all(
               16.0), // Añade un padding uniforme alrededor del formulario.
-
-          child: LoginForm( // Formulario de inicio de sesión.
+          
+          child: LoginForm( // Construye el formulario de login.
             // Incluye el widget LoginForm para el ingreso de credenciales.
             formKey:
                 _formKey, // Pasa la clave del formulario para validar y acceder a sus métodos.

@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `estudioContable`.`Cliente` (
   `Cli_FechNas` DATE NOT NULL COMMENT 'Fecha de nacimiento del cliete',
   `Cli_Saldo` FLOAT NOT NULL DEFAULT 0 COMMENT 'Saldo actual del cliente, considerando todos los pagos realizados y los impuestos pendientes.',
   PRIMARY KEY (`Cli_ID`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
 
 
 -- -----------------------------------------------------

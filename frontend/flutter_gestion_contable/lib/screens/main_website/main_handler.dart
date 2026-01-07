@@ -46,7 +46,6 @@ class _MainHandlerState extends State<MainHandler> {
     'Salir': false, // Botón 'Salir' no seleccionado por defecto.
   };
 
-  final ApiService _apiService = ApiService();   // Instancia de la clase ApiService.
 
   /// Método para cambiar el contenido y el título de la pantalla.
   /// * Recibe un widget [newContent], un título [title] y un ítem de menú [menuItem].
@@ -69,7 +68,7 @@ class _MainHandlerState extends State<MainHandler> {
   /// * Llama al método `logout` de la clase `ApiService`.
   /// * Navega a la pantalla de login y elimina el historial de navegación. 
   void _logout() async {
-    await _apiService.logout(); // Llama al método logout de la clase ApiService.
+    await ApiService().logout(); // Llama al método logout de la clase ApiService.
     
     if (mounted) { // Verifica si el widget está montado.
       Navigator.of(context).pushAndRemoveUntil( // Navega a la pantalla de login y elimina el historial de navegación.
@@ -151,7 +150,7 @@ class _MainHandlerState extends State<MainHandler> {
                       _buildMenuButton('Clientes', Icons.people, onPressed: () { // Botón para acceder a la lista de clientes.
                         _changeContent( // Cambia el contenido de la pantalla.
                           ChangeNotifierProvider( // Provider para ClientsHandler.
-                            create: (context) => ClientsHandler(_apiService), // Crea una instancia de ClientsHandler.
+                            create: (context) => ClientsHandler(), // Crea una instancia de ClientsHandler.
                             child: const ClientsScreen(), // Pantalla para mostrar la lista de clientes.
                           ),
                           'Clientes', // Título para la lista de clientes.

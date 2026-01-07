@@ -5,14 +5,13 @@ import 'package:flutter/material.dart'; // Para ChangeNotifier
 import 'package:flutter_gestion_contable/services/api_service.dart';
 
 class ClientsHandler with ChangeNotifier {
-  final ApiService _apiService;
-
+ 
   List<Map<String, dynamic>> _clients = []; // Lista original de clientes
   List<Map<String, dynamic>> _filteredClients = []; // Lista de clientes después de aplicar filtros
   Map<String, bool> _selectedClients = {}; // Mapa para el estado de selección de cada cliente (ID -> bool)
   bool _isAllSelected = false; // Estado para el checkbox "Seleccionar todos"
 
-  ClientsHandler(this._apiService);
+  ClientsHandler();
 
   // Getters para acceder al estado desde la UI
   List<Map<String, dynamic>> get clients => _clients; // Podrías exponer solo _filteredClients si prefieres
@@ -36,7 +35,7 @@ class ClientsHandler with ChangeNotifier {
   Future<void> fetchClients() async {
     try {
       debugPrint('ClientsHandler: Iniciando fetchClients...');
-      final List<dynamic> data = await _apiService.getClientes(); 
+      final List<dynamic> data = await ApiService().getClientes();
       _clients = data.cast<Map<String, dynamic>>(); // Castea la lista dinámica a List<Map<String, dynamic>>
       _filteredClients = List.from(_clients); // Reinicia filteredClients con todos los clientes
       _selectedClients.clear(); // Limpia selecciones anteriores
@@ -63,7 +62,7 @@ class ClientsHandler with ChangeNotifier {
     try {
       debugPrint('ClientsHandler: Intentando actualizar cliente ID: $clientId con datos: $updatedData');
       // Llama al método put genérico del ApiService
-      await _apiService.put('clientes/$clientId', updatedData); 
+      await ApiService().put('clientes/$clientId', updatedData);
       
       // Actualiza el cliente en las listas locales
       final index = _clients.indexWhere((client) => client['Cli_ID']?.toString() == clientId);
@@ -97,8 +96,8 @@ class ClientsHandler with ChangeNotifier {
     debugPrint('ClientsHandler: Intentando eliminar clientes con IDs: $selectedIds');
     try {
       for (String id in selectedIds) {
-        debugPrint('ClientsHandler: Llamando a _apiService.delete para ID: $id');
-        await _apiService.delete('clientes/$id'); // Llama al método DELETE del ApiService
+        debugPrint('ClientsHandler: Llamando a ApiService().delete para ID: $id');
+        await ApiService().delete('clientes/$id'); // Llama al método DELETE del ApiService
       }
 
       // Después de la eliminación exitosa en el backend, actualiza las listas locales
