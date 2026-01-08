@@ -108,7 +108,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                   child: ElevatedButton(
                     onPressed: () {},
                     style: ButtonStyle(
-                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                      padding: WidgetStateProperty.all(EdgeInsets.zero),
                     ),
                     child: Icon(
                       Icons.search,
@@ -178,7 +178,7 @@ Widget _buildDataTable() {
             columnSpacing: 20.0,
             dataRowHeight: 24.0,
             headingRowHeight: 24.0,
-            headingRowColor: MaterialStateProperty.all(AppColors.primary),
+            headingRowColor: WidgetStateProperty.all(AppColors.primary),
             columns: [
               DataColumn(
                 label: Checkbox(
@@ -240,7 +240,7 @@ Widget _buildDataTable() {
 
 
 Widget _buildPaymentsTable() {
-  return Container(
+  return SizedBox(
     width: double.infinity,
     child: SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -314,10 +314,10 @@ Widget _buildPaymentsTable() {
       children: [
         ElevatedButton(
           onPressed: () {},
-          child: Text('Agregar'),
           style: ElevatedButton.styleFrom(
             minimumSize: Size(30, 30), // Tamaño mínimo del botón
           ),
+          child: Text('Agregar'),
         ),
         SizedBox(width: 10),
         // Reemplazamos ExpansionTile por ElevatedButton

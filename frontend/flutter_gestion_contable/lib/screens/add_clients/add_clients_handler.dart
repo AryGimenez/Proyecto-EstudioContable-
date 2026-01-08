@@ -182,7 +182,7 @@ Widget buildTaxTable(BuildContext context, {
           columnSpacing: 12,
           headingRowHeight: 45,
           dataRowMinHeight: 30,
-          headingRowColor: MaterialStateProperty.all(AppColors.primary),
+          headingRowColor: WidgetStateProperty.all(AppColors.primary),
           columns: [
             _buildHeaderColumn("Nombre"),
             _buildHeaderColumn("Frecuencia"),

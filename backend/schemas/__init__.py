@@ -2,7 +2,7 @@
 
 # Archivo encargado de importar todos los esquemas para facilitar su acceso desde otras partes de la aplicación.
 
-from . import cliente # Importa el esquema de cliente
+from . import cliente_schem # Importa el esquema de cliente
 from . import user # Importa el esquema de usuario
 from . import impuesto # Importa el esquema de impuesto
 from . import pago # Importa el esquema de pago

@@ -38,7 +38,7 @@ class MainHandler extends StatefulWidget {
 class _MainHandlerState extends State<MainHandler> {
   Widget _currentChild = const Center(child: Text('Bienvenido a la aplicación')); // Widget por defecto.
   String _currentTitle = 'Bienvenido'; // Título por defecto.
-  Map<String, bool> _selectedMenuItem = { // Mapa para almacenar la selección de los botones.
+  final Map<String, bool> _selectedMenuItem = { // Mapa para almacenar la selección de los botones.
     'Clientes': false, // Botón 'Clientes' no seleccionado por defecto.
     'Agregar Cliente': false, // Botón 'Agregar Cliente' no seleccionado por defecto.
     'Pagos': false, // Botón 'Pagos' no seleccionado por defecto.

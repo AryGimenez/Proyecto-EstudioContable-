@@ -104,7 +104,7 @@ class _DepositsScreenState extends State<DepositsScreen> {
                   child: ElevatedButton( // Botón de búsqueda
                     onPressed: () {}, // Acción al presionar el botón (vacía por ahora)
                     style: ButtonStyle( // Estilo del botón
-                      padding: MaterialStateProperty.all(EdgeInsets.zero), // Sin padding interno
+                      padding: WidgetStateProperty.all(EdgeInsets.zero), // Sin padding interno
                     ),  // Fin ButtonStyle
                     child: Icon(Icons.search, size: 24, color: Colors.white), // Icono de búsqueda dentro del botón
                   ), // Fin ElevatedButton
@@ -280,7 +280,7 @@ class _DepositsScreenState extends State<DepositsScreen> {
         columnSpacing: 20.0,
         dataRowHeight: 24.0,
         headingRowHeight: 24.0,
-        headingRowColor: MaterialStateProperty.all(AppColors.primary),
+        headingRowColor: WidgetStateProperty.all(AppColors.primary),
         columns: [
           // Columna para la casilla de verificación de seleccionar/deseleccionar todas las filas
           DataColumn(

@@ -5,13 +5,13 @@ from sqlalchemy.exc import IntegrityError
 from typing import List, Optional
 from decimal import Decimal # Mantener si se usa Decimal en otros repositorios para consistencia
 
-from ..models.cliente import Cliente # Importa el modelo de la DB
-from ..schemas.cliente import ClienteCreate, ClienteUpdate # Importa los esquemas de Pydantic
+from ..models.cliente_model import ClienteModel # Importa el modelo de la DB
+from ..schemas.cliente_schem import ClienteCreate, ClienteUpdate # Importa los esquemas de Pydantic
 
 class ClienteRepository:
     """
     Clase de repositorio que maneja las operaciones CRUD (Crear, Leer, Actualizar, Eliminar)
-    para el modelo Cliente. Actúa como la capa de acceso a datos para la tabla de clientes.
+    para el modelo ClienteModel. Actúa como la capa de acceso a datos para la tabla de clientes.
     """
     def __init__(self, db: Session):
         """
@@ -26,7 +26,7 @@ class ClienteRepository:
 # MÉTODOS DE LECTURA (GET)
 # ----------------------------------------------------------------------
 
-    def get_by_id(self, cliente_id: int) -> Optional[Cliente]:
+    def get_by_id(self, cliente_id: int) -> Optional[ClienteModel]:
         """
         Obtiene un cliente por su ID.
         
@@ -34,24 +34,25 @@ class ClienteRepository:
             cliente_id (int): ID del cliente a buscar.
             
         Returns:
-            Optional[Cliente]: La instancia del modelo Cliente si se encuentra, o None.
+            Optional[ClienteModel]: La instancia del modelo ClienteModel si se encuentra, o None.
         """
-        return self.db.query(Cliente).filter(Cliente.Cli_ID == cliente_id).first()
+        return self.db.query(ClienteModel).filter(ClienteModel.Cli_ID == cliente_id).first()
 
-    def get_all(self) -> List[Cliente]:
+    
+    def get_all(self) -> List[ClienteModel]:
         """
         Obtiene una lista de todos los clientes en la base de datos.
         
         Returns:
-            List[Cliente]: Una lista de instancias del modelo Cliente.
+            List[ClienteModel]: Una lista de instancias del modelo ClienteModel.
         """
-        return self.db.query(Cliente).all()
+        return self.db.query(ClienteModel).all()
 
 
 # ----------------------------------------------------------------------
 # MÉTODO DE CREACIÓN (CREATE)
 # ----------------------------------------------------------------------
-    def create(self, cliente_data: ClienteCreate) -> Cliente:
+    def create(self, cliente_data: ClienteCreate) -> ClienteModel:
         """
         Crea un nuevo registro de cliente en la base de datos.
         
@@ -59,14 +60,14 @@ class ClienteRepository:
             cliente_data (ClienteCreate): Esquema Pydantic con los datos del nuevo cliente.
             
         Returns:
-            Cliente: La instancia del modelo Cliente recién creada y refrescada.
+            ClienteModel: La instancia del modelo ClienteModel recién creada y refrescada.
         
         Raises:
             IntegrityError: Si falla alguna restricción de unicidad o NOT NULL.
         """
         
         # Convierte el esquema Pydantic (cliente_data) a una instancia del modelo SQLAlchemy (db_cliente)
-        db_cliente = Cliente(**cliente_data.dict()) 
+        db_cliente = ClienteModel(**cliente_data.dict()) 
         
         try:
             self.db.add(db_cliente) 
@@ -83,7 +84,7 @@ class ClienteRepository:
 # MÉTODO DE ACTUALIZACIÓN (UPDATE)
 # ---------------------------------------------------------------------- 
 
-    def update(self, cliente_id: int, cliente_data: ClienteUpdate) -> Optional[Cliente]:
+    def update(self, cliente_id: int, cliente_data: ClienteUpdate) -> Optional[ClienteModel]:
         """
         Actualiza los campos de un cliente existente.
         
@@ -92,7 +93,7 @@ class ClienteRepository:
             cliente_data (ClienteUpdate): Esquema Pydantic con los campos a modificar.
             
         Returns:
-            Optional[Cliente]: La instancia actualizada del modelo Cliente si se encuentra, o None.
+            Optional[ClienteModel]: La instancia actualizada del modelo ClienteModel si se encuentra, o None.
         """
         db_cliente = self.get_by_id(cliente_id)
         if db_cliente:
@@ -111,19 +112,19 @@ class ClienteRepository:
 # ----------------------------------------------------------------------
 # MÉTODO DE ELIMINACIÓN (DELETE)
 # ----------------------------------------------------------------------
-    def delete(self, cliente_id: int) -> Optional[Cliente]:
+    def delete(self, cliente_id: int) -> Optional[ClienteModel]:
         """
         Elimina un cliente por su ID.
         
         Nota: La eliminación del cliente puede desencadenar eliminaciones en cascada 
-        (ej. impuestos y pagos asociados) si el modelo Cliente está configurado con 
+        (ej. impuestos y pagos asociados) si el modelo ClienteModel está configurado con 
         `cascade="all, delete-orphan"` en sus relaciones.
         
         Args:
             cliente_id (int): ID del cliente a eliminar.
             
         Returns:
-            Optional[Cliente]: La instancia del cliente eliminado si existía, o None.
+            Optional[ClienteModel]: La instancia del cliente eliminado si existía, o None.
         """
         db_cliente = self.get_by_id(cliente_id)
         if db_cliente:

@@ -1,4 +1,4 @@
-# backend/models/cliente.py
+# backend/models/cliente_model.py
 
 from sqlalchemy import Column, Integer, String, Float, Date, Numeric # Importa los tipos de columna de SQLAlchemy
 from sqlalchemy.orm import relationship, Mapped, mapped_column # Importa sintaxis ORM moderna (Mapped) y relaciones
@@ -7,7 +7,7 @@ from datetime import date # Importa el tipo date de Python
 
 from backend.database import Base # Asegura Importacion de Base de datos, para la posible creacion de la Tabla
 
-class Cliente(Base): # Clase que define el modelo ORM para la tabla de Clientes
+class ClienteModel(Base): # Clase que define el modelo ORM para la tabla de Clientes
     
     __tablename__ = "Cliente" # El nombre de la tabla, que sera creada al abrir el uvicorn
 
@@ -17,7 +17,7 @@ class Cliente(Base): # Clase que define el modelo ORM para la tabla de Clientes
     Cli_Dir: Mapped[str] = mapped_column(String(255)) # Dirección física o postal del cliente
     Cli_Email: Mapped[str] = mapped_column(String(255)) # Correo electrónico del cliente
     Cli_Whatsapp: Mapped[str] = mapped_column(String(20)) # Número de WhatsApp para alertas
-    Cli_Contacto: Mapped[str] = mapped_column(String(255)) # Nombre de contacto secundario (si aplica)
+    Cli_DatoContacto: Mapped[str] = mapped_column(String(255)) # Nombre de contacto secundario (si aplica)
     Cli_FechaNac: Mapped[date] = mapped_column(Date) # Fecha de nacimiento del cliente (tipo Date de SQL)
     
     # Precision para el saldo

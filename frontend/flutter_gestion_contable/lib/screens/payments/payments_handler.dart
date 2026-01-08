@@ -1,7 +1,6 @@
 // frontend/flutter_gestion_contable/lib/screens/payments/payments_handler.dart
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gestion_contable/services/api_service.dart';
 
 /// Clase que maneja el estado, la lógica de la UI y las interacciones
 /// para la pantalla de Pagos.

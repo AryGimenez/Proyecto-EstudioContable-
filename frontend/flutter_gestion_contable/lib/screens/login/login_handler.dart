@@ -14,7 +14,7 @@ import 'package:flutter_gestion_contable/screens/password_reset/password_reset_h
 /// 3. La comunicación con la [ApiService] para la autenticación.
 /// 4. La navegación a la pantalla principal o de reseteo de contraseña.
 class LoginHandler extends StatefulWidget {
-  const LoginHandler({Key? key}) : super(key: key); // Constructor del widget.
+  const LoginHandler({super.key}); // Constructor del widget.
 
   @override
   State<LoginHandler> createState() =>

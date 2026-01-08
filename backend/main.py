@@ -10,7 +10,7 @@ from datetime import date # Para manejar fechas, si es necesario
 
 # Importaciones de routers
 from backend.router import (
-    clientes,
+    cliente_route,
     impuestos,
     pagos,
     depositos,
@@ -37,7 +37,7 @@ from .services.scheduler_service import verificar_vencimientos_diarios # Tu lóg
 
 # Importar todos los modelos para que Base.metadata.create_all los vea
 # Esto es una buena práctica para asegurar que SQLAlchemy registre todos los modelos
-from .models import cliente, deposito, impuesto, nombre_impuesto, pago, user, notificacion, cheque # Asegúrate de tener todos tus modelos aquí
+from .models import cliente_model, deposito, impuesto, nombre_impuesto, pago, user, notificacion, cheque # Asegúrate de tener todos tus modelos aquí
 
 # Crea las tablas si no existen (debe estar después de las importaciones de modelos)
 # Base.metadata.create_all(bind=engine) # <--- Linea encargada de la creacion de la base de datos (existe otra llamada alembic, pero la encontre un poco compleja voy a estudiarla un poco mas para ver)
@@ -61,7 +61,7 @@ app.add_middleware(
 
 # Incluye los enrutadores
 app.include_router(users_router.router)
-app.include_router(clientes.router)
+app.include_router(cliente_route.router)
 app.include_router(impuestos.router)
 app.include_router(pagos.router)
 app.include_router(depositos.router)

@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gestion_contable/services/api_service.dart';
 import 'package:flutter_gestion_contable/screens/password_reset/password_reset_form.dart'; 
-import ''
+
 /// Widget con estado (Stateful) que actúa como el **Handler** (Manejador) de la pantalla
 /// de restablecimiento de contraseña.
 ///
@@ -20,7 +20,7 @@ class PasswordResetHandler extends StatefulWidget {
   // <!> Esto no se si es nesesiario pero por lo que entendi 
   // <!> por lo que enteidi es para reutilisar el componentes 
   // <!> Tengo que profunndisar
-  const PasswordResetHandler({Key? key}) : super(key: key); 
+  const PasswordResetHandler({super.key}); 
 
   // Define la clase de estado que contiene toda la lógica de negocio y variables
   // mutables (controladores, paso actual, etc.) de la pantalla de reseteo.
@@ -46,10 +46,7 @@ class _PasswordResetHandlerState extends State<PasswordResetHandler> {
   // Controladores para obtener el texto de los campos del formulario.
   final _emailController = TextEditingController(); // Controldaor email
   final _codeController = TextEditingController(); // Controlador Codigo de verificacion
-       TextEditingController(); // Controldaor email
-  final _codeController = TextEditingController(); // Controlador Codigo de verificacion
-  final _newPasswordControfinal _newPasswordContro
-  ller = TextEditingController(); // Controlador Nueva contraseña
+  final _newPasswordController = TextEditingController(); // Controlador Nueva contraseña
   final _confirmNewPasswordController = TextEditingController(); // Controlador Confirmar contraseña
   
 

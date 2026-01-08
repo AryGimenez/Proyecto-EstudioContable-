@@ -1,26 +1,25 @@
 // frontend/flutter_gestion_contable/lib/main.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gestion_contable/services/api_service.dart';
 // Importa flutter_localizations para el soporte de idiomas (MaterialLocalizations)
 import 'package:flutter_localizations/flutter_localizations.dart'; 
 
 // Asegúrate de que estas rutas sean correctas para tu proyecto:
 import 'package:flutter_gestion_contable/screens/login/login_handler.dart';
 import 'package:flutter_gestion_contable/screens/main_website/main_handler.dart';
-import 'package:flutter_gestion_contable/services/api_service-1.dart';
 import 'package:flutter_gestion_contable/core/theme/app_theme.dart';
 // <!> No se para que es ni idea 
-import 'package:provider/provider.dart'; // Si estás usando Provider en tu aplicación, mantenlo.
+// Si estás usando Provider en tu aplicación, mantenlo.
 
 
 // La función principal que arranca la aplicación de Flutter.
 void main() async {
   // Asegura que los bindings de Flutter estén inicializados antes de cualquier operación asíncrona.
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Crea una instancia del ApiService para verificar si hay un token de autenticación.
-  final apiService = ApiService();
-  final token = await apiService.getToken(); // Obtiene el token almacenado (si existe).
+
+
+  final token = await ApiService().getToken(); // Obtiene el token almacenado (si existe).
 
   // Inicia la aplicación, pasando un valor booleano que indica si hay un token.
   runApp(MyApp(hasToken: token != null));

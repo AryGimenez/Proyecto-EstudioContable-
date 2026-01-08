@@ -1,5 +1,9 @@
 // lib/services/modules/clients_module.dart
+import 'package:flutter_gestion_contable/models/cliente_modle.dart';
+
 import '../base_api.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 /// Módulo especializado en la gestión de clientes.
 /// 
@@ -10,17 +14,27 @@ import '../base_api.dart';
 /// (clientes, facturas, productos) en archivos distintos sin perder la 
 /// conexión con la base de red.
 mixin ClientsModule on BaseApi {
-  Future<List<dynamic>> getClientes() async {
-    return await get('clientes');
-  }
 
-  /// Registra un nuevo cliente en el sistema.
+
+
+  /// Obtiene la lista de clientes desde el servidor.
   /// 
-  /// [clientData]: Un mapa con la información (ej: {'nombre': 'Ana', 'RUT': '1234'}).
-  /// 
-  /// Envía los datos mediante una petición POST. 
-  /// Retorna un [Map] con el cliente creado (incluyendo el ID generado por el servidor).
-  Future<Map<String, dynamic>> createClient(Map<String, dynamic> clientData) async {
-    return await post('clientes', clientData); // Aquí 'post' toma el mapa, lo hace JSON y lo envía al backend.
+  /// Retorna una lista de [ClienteModel] con la información de todos los clientes.
+  Future<List<ClienteModel>> getClients() async {
+  try {
+    final response = await http.get(Uri.parse('$baseUrl/clientes'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+      
+      // La construcción la hacemos AQUÍ
+      return data.map((json) => ClienteModel.fromJson(json)).toList();
+    } else {
+      throw Exception('Error al cargar clientes');
+    }
+  } catch (e) {
+    print('Error en ApiService: $e');
+    return []; // Devolvemos lista vacía en caso de error
   }
+}
 }

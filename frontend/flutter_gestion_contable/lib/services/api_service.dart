@@ -1,6 +1,5 @@
 // frontend/flutter_gestion_contable/lib/services/api_service.dart
 
-import 'package:flutter/material.dart';
 
 import 'base_api.dart';
 import 'modules/auth_module.dart';

@@ -513,7 +513,7 @@ Future<void> _fetchNombreImpuestos() async{
               child: SizedBox(
                 width: double.infinity,
                 child: DataTable(
-                  headingRowColor: MaterialStateProperty.resolveWith<Color?>((states) => AppColors.primary),
+                  headingRowColor: WidgetStateProperty.resolveWith<Color?>((states) => AppColors.primary),
                   columns: const [
                     DataColumn(label: Text('Nombre', style: TextStyle(color: Colors.white))),
                     DataColumn(label: Text('Frecuencia', style: TextStyle(color: Colors.white))),

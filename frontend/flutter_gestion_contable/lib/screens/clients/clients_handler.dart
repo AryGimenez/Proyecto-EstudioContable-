@@ -3,111 +3,121 @@
 import 'package:flutter/foundation.dart'; // Para debugPrint
 import 'package:flutter/material.dart'; // Para ChangeNotifier
 import 'package:flutter_gestion_contable/services/api_service.dart';
+import 'package:flutter_gestion_contable/models/cliente_modle.dart'; // Importa el modelo
 
 class ClientsHandler with ChangeNotifier {
- 
-  List<Map<String, dynamic>> _clients = []; // Lista original de clientes
-  List<Map<String, dynamic>> _filteredClients = []; // Lista de clientes después de aplicar filtros
-  Map<String, bool> _selectedClients = {}; // Mapa para el estado de selección de cada cliente (ID -> bool)
+  List<ClienteModel> _clients = []; // Lista original de objetos ClienteModel
+  List<ClienteModel> _filteredClients =
+      []; // Lista filtrada de objetos ClienteModel
+  final Map<int, bool> _selectedClients = {}; // Mapa ID (int) -> bool
   bool _isAllSelected = false; // Estado para el checkbox "Seleccionar todos"
 
   ClientsHandler();
 
   // Getters para acceder al estado desde la UI
-  List<Map<String, dynamic>> get clients => _clients; // Podrías exponer solo _filteredClients si prefieres
-  List<Map<String, dynamic>> get filteredClients => _filteredClients;
+  List<ClienteModel> get clients => _clients;
+  List<ClienteModel> get filteredClients => _filteredClients;
   bool get isAllSelected => _isAllSelected;
-  int get selectedClientsCount => _selectedClients.values.where((selected) => selected).length;
-  
+  int get selectedClientsCount =>
+      _selectedClients.values.where((selected) => selected).length;
+
   // Devuelve el cliente seleccionado si solo hay uno
-  Map<String, dynamic>? get selectedClient {
+  ClienteModel? get selectedClient {
     if (selectedClientsCount != 1) {
       return null;
     }
-    final selectedId = _selectedClients.keys.firstWhere((id) => _selectedClients[id]!);
+    final selectedId =
+        _selectedClients.keys.firstWhere((id) => _selectedClients[id]!);
     return _clients.firstWhere(
-      (client) => client['Cli_ID']?.toString() == selectedId,
-      orElse: () => throw Exception('Cliente seleccionado no encontrado en la lista original.'),
+      (client) => client.id == selectedId,
+      orElse: () => throw Exception(
+          'Cliente seleccionado no encontrado en la lista original.'),
     );
   }
 
-  
+  // Fetch clients from server
   Future<void> fetchClients() async {
     try {
       debugPrint('ClientsHandler: Iniciando fetchClients...');
-      final List<dynamic> data = await ApiService().getClientes();
-      _clients = data.cast<Map<String, dynamic>>(); // Castea la lista dinámica a List<Map<String, dynamic>>
-      _filteredClients = List.from(_clients); // Reinicia filteredClients con todos los clientes
+      // Usamos el método getClients que ya devuelve List<ClienteModel>
+      final List<ClienteModel> data = await ApiService().getClients();
+      _clients = data;
+      _filteredClients = List.from(_clients); // Reinicia filteredClients
       _selectedClients.clear(); // Limpia selecciones anteriores
-      _isAllSelected = false; // Restablece el estado de "seleccionar todos"
+      _isAllSelected = false;
 
       // Inicializa el mapa de selección para todos los clientes cargados
       for (var client in _clients) {
-        final clientId = client['Cli_ID']?.toString();
-        if (clientId != null) {
-          _selectedClients[clientId] = false;
-        }
+        _selectedClients[client.id] = false;
       }
-      debugPrint('ClientsHandler: Clientes cargados y seleccionables inicializados. Total: ${_clients.length}');
-      notifyListeners(); // Notifica a los widgets que el estado ha cambiado
+      debugPrint(
+          'ClientsHandler: Clientes cargados y seleccionables inicializados. Total: ${_clients.length}');
+      notifyListeners();
     } catch (e) {
       debugPrint('ClientsHandler: Error al obtener clientes: $e');
       rethrow; // Relanza la excepción para que la UI pueda manejarla
     }
   }
 
-
   // Actualiza un cliente existente
-  Future<void> updateClient(String clientId, Map<String, dynamic> updatedData) async {
+  Future<void> updateClient(
+      String clientId, Map<String, dynamic> updatedData) async {
     try {
-      debugPrint('ClientsHandler: Intentando actualizar cliente ID: $clientId con datos: $updatedData');
+      debugPrint(
+          'ClientsHandler: Intentando actualizar cliente ID: $clientId con datos: $updatedData');
       // Llama al método put genérico del ApiService
       await ApiService().put('clientes/$clientId', updatedData);
-      
-      // Actualiza el cliente en las listas locales
-      final index = _clients.indexWhere((client) => client['Cli_ID']?.toString() == clientId);
-      if (index != -1) {
-        _clients[index].addAll(updatedData); // Actualiza solo los campos proporcionados
-        final filteredIndex = _filteredClients.indexWhere((client) => client['Cli_ID']?.toString() == clientId);
-        if (filteredIndex != -1) {
-          _filteredClients[filteredIndex].addAll(updatedData);
-        }
-      }
-      debugPrint('ClientsHandler: Cliente ID $clientId actualizado localmente y notificado.');
+
+      // NOTA: Lo ideal sería que el PUT devolviera el cliente actualizado y lo parseáramos.
+      // O volver a hacer fetchClients().
+      // Por ahora, recargaremos todo para simplificar y asegurar consistencia con el modelo.
+      await fetchClients();
+
+      debugPrint(
+          'ClientsHandler: Cliente ID $clientId actualizado y lista recargada.');
       notifyListeners();
     } catch (e) {
-      debugPrint('ClientsHandler: Error al actualizar cliente ID $clientId: $e');
+      debugPrint(
+          'ClientsHandler: Error al actualizar cliente ID $clientId: $e');
       rethrow;
     }
   }
 
   // **MÉTODO DE ELIMINACIÓN DE CLIENTES SELECCIONADOS**
   Future<void> deleteSelectedClients() async {
-    List<String> selectedIds = _selectedClients.entries
+    List<int> selectedIds = _selectedClients.entries
         .where((entry) => entry.value) // Filtra solo los IDs marcados como true
         .map((entry) => entry.key) // Obtiene solo los IDs
         .toList();
-
+    // Si no hay IDs seleccionados, no hacemos nada
     if (selectedIds.isEmpty) {
-      debugPrint('ClientsHandler: No hay clientes seleccionados para eliminar.');
-      return; // No hace nada si no hay nada seleccionado
+      debugPrint(
+          'ClientsHandler: No hay clientes seleccionados para eliminar.');
+      return;
     }
 
-    debugPrint('ClientsHandler: Intentando eliminar clientes con IDs: $selectedIds');
+    debugPrint(
+        'ClientsHandler: Intentando eliminar clientes con IDs: $selectedIds');
     try {
-      for (String id in selectedIds) {
-        debugPrint('ClientsHandler: Llamando a ApiService().delete para ID: $id');
-        await ApiService().delete('clientes/$id'); // Llama al método DELETE del ApiService
+      for (int id in selectedIds) {
+        debugPrint(
+            'ClientsHandler: Llamando a ApiService().delete para ID: $id');
+
+        // <!> Esto tendria que cambiarlo para qeu funcione
+        // tendria que agregar un elminar cliete en app_service
+        await ApiService().delete('clientes/$id');
       }
 
-      // Después de la eliminación exitosa en el backend, actualiza las listas locales
-      _clients.removeWhere((client) => selectedIds.contains(client['Cli_ID']?.toString() ?? ''));
-      _filteredClients.removeWhere((client) => selectedIds.contains(client['Cli_ID']?.toString() ?? ''));
-      
+      // <!> Esto tendria que cambiarlo para qeu funcione
+      // Actualiza las listas locales eliminando los modelos
+      _clients.removeWhere((client) => selectedIds.contains(client.id));
+      _filteredClients.removeWhere((client) => selectedIds.contains(client.id));
+
       // Limpia la selección y restablece el estado de "seleccionar todos"
       _selectedClients.clear();
       _isAllSelected = false;
-      debugPrint('ClientsHandler: Clientes eliminados localmente y notificados. IDs: $selectedIds');
+      debugPrint(
+          'ClientsHandler: Clientes eliminados localmente y notificados. IDs: $selectedIds');
       notifyListeners(); // Notifica a los widgets que la lista ha cambiado
     } catch (e) {
       debugPrint('ClientsHandler: Error al eliminar clientes: $e');
@@ -116,16 +126,16 @@ class ClientsHandler with ChangeNotifier {
   }
 
   // Verifica si una fila está seleccionada
-  bool isRowSelected(String clientId) {
+  bool isRowSelected(int clientId) {
     return _selectedClients[clientId] ?? false;
   }
 
   // Alterna el estado de selección de una fila
-  void toggleRowSelection(String clientId, bool value) {
+  void toggleRowSelection(int clientId, bool value) {
     _selectedClients[clientId] = value;
     // Actualiza _isAllSelected si todos los clientes filtrados están seleccionados
-    _isAllSelected = _filteredClients.every((client) =>
-        _selectedClients[client['Cli_ID']?.toString() ?? ''] == true);
+    _isAllSelected =
+        _filteredClients.every((client) => _selectedClients[client.id] == true);
     notifyListeners();
   }
 
@@ -136,42 +146,71 @@ class ClientsHandler with ChangeNotifier {
     if (value) {
       // Si se selecciona todo, marca todos los clientes filtrados
       for (var client in _filteredClients) {
-        _selectedClients[client['Cli_ID']?.toString() ?? ''] = true;
+        _selectedClients[client.id] = true;
       }
     }
-    debugPrint('ClientsHandler: SelectAll establecido a $value. Clientes seleccionados: ${selectedClientsCount}');
+    debugPrint(
+        'ClientsHandler: SelectAll establecido a $value. Clientes seleccionados: $selectedClientsCount');
     notifyListeners();
   }
 
-Future<void> addClient(Map<String, dynamic> newClientData) async {
+  Future<void> addClient(Map<String, dynamic> newClientData) async {
     // Si la pantalla de agregar clientes hace el POST directamente,
     // este método solo necesitaría recargar la lista.
     await fetchClients(); // Recarga la lista para que el nuevo cliente aparezca
   }
 
-
-
   // Filtra la lista de clientes
+  // <!> Hay que cambiar esto para que no pida los nombres
+  // de el blakend
   void filterClients(String query, String filterBy) {
     if (query.isEmpty) {
-      _filteredClients = List.from(_clients); // Si la consulta está vacía, muestra todos
+      _filteredClients = List.from(_clients);
     } else {
-      _filteredClients = _clients
-          .where((client) =>
-              (client[filterBy]?.toString().toLowerCase().contains(query.toLowerCase()) ?? false))
-          .toList();
+      _filteredClients = _clients.where((client) {
+        String? valueToCheck;
+        // Mapeamos las llaves a propiedades del modelo
+        switch (filterBy) {
+          case 'id':
+            valueToCheck = client.id.toString();
+            break;
+          case 'nombre':
+            valueToCheck = client.nombre;
+            break;
+          case 'email':
+            valueToCheck = client.email;
+            break;
+          case 'fechaNac':
+            valueToCheck = client.fechaNacimiento.toString();
+            break;
+          case 'whatsapp':
+            valueToCheck = client.whatsapp;
+            break;
+          case 'saldo':
+            valueToCheck = client.saldo.toString();
+            break;
+          case 'contacto':
+            valueToCheck = client.datoContacto;
+            break;
+          case 'direccion':
+            valueToCheck = client.direccion;
+            break;
+          default:
+            valueToCheck = client.nombre;
+        }
+        return valueToCheck?.toLowerCase().contains(query.toLowerCase()) ??
+            false;
+      }).toList();
     }
     // Después de filtrar, resetea las selecciones para los clientes no visibles
-    _selectedClients.clear(); 
+    _selectedClients.clear();
     _isAllSelected = false;
     // Inicializa _selectedClients para los clientes filtrados actuales
     for (var client in _filteredClients) {
-        final clientId = client['Cli_ID']?.toString();
-        if (clientId != null) {
-          _selectedClients[clientId] = false;
-        }
+      _selectedClients[client.id] = false;
     }
-    debugPrint('ClientsHandler: Clientes filtrados. Total: ${_filteredClients.length}. Selecciones reseteadas.');
+    debugPrint(
+        'ClientsHandler: Clientes filtrados. Total: ${_filteredClients.length}. Selecciones reseteadas.');
     notifyListeners();
   }
 }

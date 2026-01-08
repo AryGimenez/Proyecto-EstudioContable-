@@ -6,6 +6,8 @@ import 'package:flutter_gestion_contable/core/theme/app_colors.dart';
 // <!> Falta documentar 
 
 class NotificationModal extends StatelessWidget {
+  const NotificationModal({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Dialog(

@@ -1,11 +1,11 @@
 // frontend/flutter_gestion_contable/lib/screens/clients/clients_screen.dart
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gestion_contable/core/theme/app_colors.dart';
-import 'package:flutter_gestion_contable/services/api_service-1.dart'; // ¡Mantenemos esta importación!
 import 'clients_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gestion_contable/models/cliente_modle.dart'; // Import model
+import 'package:flutter_gestion_contable/screens/clients/clients_table.dart';
 
 /// Clase principal del widget para la pantalla de gestión de clientes.
 ///
@@ -14,12 +14,12 @@ import 'package:provider/provider.dart';
 /// 1. La barra de búsqueda y filtros ([SearchBar]).
 /// 2. La tabla de datos de clientes ([ClientsTable]).
 /// 3. Los botones de acción (Agregar, Modificar, Eliminar) ([ActionButtons]).
-/// 
+///
 /// `ClientsScreen` accede a [ClientsHandler] a través de [Provider] para:
 /// - Iniciar la carga de datos ([fetchClients]) en el [initState].
 /// - Acceder al estado de la lista de clientes.
 /// - Llamar a métodos de acción (filtrar, agregar, editar, eliminar) a través de sus callbacks.
-/// 
+///
 /// La gestión del estado de la tabla (selección de filas, datos filtrados) es
 /// delegada completamente al [ClientsHandler], lo que mantiene esta clase
 /// enfocada en la presentación y la interacción del usuario (UI).
@@ -34,12 +34,12 @@ class ClientsScreen extends StatefulWidget {
 //  /// * Muestra la barra de búsqueda y filtros, la tabla de clientes y los botones de acción.
 class _ClientsScreenState extends State<ClientsScreen> {
   // Mantenemos la instancia de ApiService aquí
-  
- 
+
   late Future<void> _clientsFuture; // Futuro para la carga inicial de clientes.
 
   String selectedFilter = 'Nombre'; // Filtro seleccionado para la búsqueda.
-  final TextEditingController _searchController = TextEditingController(); // Controlador para el campo de búsqueda.
+  final TextEditingController _searchController =
+      TextEditingController(); // Controlador para el campo de búsqueda.
 
   /// Método para inicializar el estado del widget.
   /// * Inicializa el futuro para la carga inicial de clientes.
@@ -48,18 +48,26 @@ class _ClientsScreenState extends State<ClientsScreen> {
   @override
   void initState() {
     super.initState(); // Inicializa el estado del widget.
-    final handler = Provider.of<ClientsHandler>(context, listen: false); // Accede a la instancia del handler que el provider te da.
-    _clientsFuture = handler.fetchClients(); // Llama al método [fetchClients] para cargar los datos de clientes.
+    final handler = Provider.of<ClientsHandler>(context,
+        listen:
+            false); // Accede a la instancia del handler que el provider te da.
+    // <!> Borrar
+    _clientsFuture = handler
+        .fetchClients(); // Llama al método [fetchClients] para cargar los datos de clientes.
   }
 
   /// Método para manejar la búsqueda de clientes.
   /// * Accede a la instancia del handler que el provider te da.
   /// * Llama al método [filterClients] para filtrar los clientes.
-  void _onSearch() { 
-    final handler = Provider.of<ClientsHandler>(context, listen: false); // Accede a la instancia del handler que el provider te da.
+  void _onSearch() {
+    final handler = Provider.of<ClientsHandler>(context,
+        listen:
+            false); // Accede a la instancia del handler que el provider te da.
     setState(() {
-      String filterKey = _getFilterKey(selectedFilter); // Obtiene la llave del filtro seleccionado.
-      handler.filterClients(_searchController.text, filterKey); // Llama al método [filterClients] para filtrar los clientes.
+      String filterKey = _getFilterKey(
+          selectedFilter); // Obtiene la llave del filtro seleccionado.
+      handler.filterClients(_searchController.text,
+          filterKey); // Llama al método [filterClients] para filtrar los clientes.
     });
   }
 
@@ -67,27 +75,44 @@ class _ClientsScreenState extends State<ClientsScreen> {
   /// * Accede a la instancia del handler que el provider te da.
   /// * Llama al método [filterClients] para filtrar los clientes.
   void _onFilterChange(String? value) {
-    final handler = Provider.of<ClientsHandler>(context, listen: false); // Accede a la instancia del handler que el provider te da.
-    setState(() { // Actualiza el estado del widget.
-      selectedFilter = value ?? 'Nombre';// Actualiza el filtro seleccionado.
-      _onSearch(); // Llama al método [_onSearch] para filtrar los clientes.  
+    // <!> Esto creo qeu no ace nada solo actualiza el estado Revisar
+    final handler = Provider.of<ClientsHandler>(context,
+        listen:
+            false); // Accede a la instancia del handler que el provider te da.
+    setState(() {
+      // Actualiza el estado del widget.
+      selectedFilter = value ?? 'Nombre'; // Actualiza el filtro seleccionado.
+      _onSearch(); // Llama al método [_onSearch] para filtrar los clientes.
     });
   }
 
+  //<!> Borrar
   /// Método para obtener la llave del filtro seleccionado.
   /// * Recibe el filtro seleccionado.
   /// * Devuelve la llave del filtro.
+  // <!> Esto lo quiero cambiar para que mande un objeto tipo filtro o algo por el estilo
+  // y no tener que haer referencia a las columnas inventar algo
+
   String _getFilterKey(String filter) {
     switch (filter) {
-      case 'ID': return 'Cli_ID'; // Llave para el filtro por ID.
-      case 'Nombre': return 'Cli_Nom'; // Llave para el filtro por nombre.
-      case 'Email': return 'Cli_Email'; // Llave para el filtro por email.
-      case 'Nacimiento': return 'Cli_FechaNac'; // Llave para el filtro por nacimiento.
-      case 'WhatsApp': return 'Cli_Whatsapp'; // Llave para el filtro por WhatsApp.
-      case 'Saldo': return 'Cli_Saldo'; // Llave para el filtro por saldo.
-      case 'Contacto': return 'Cli_Contacto'; // Llave para el filtro por contacto.
-      case 'Dirección': return 'Cli_Dir'; // Llave para el filtro por dirección.
-      default: return 'Cli_Nom'; // Llave por defecto para el filtro por nombre.
+      case 'ID':
+        return 'id'; // Llave para el filtro por ID.
+      case 'Nombre':
+        return 'nombre'; // Llave para el filtro por nombre.
+      case 'Email':
+        return 'email'; // Llave para el filtro por email.
+      case 'Nacimiento':
+        return 'fechaNac'; // Llave para el filtro por nacimiento.
+      case 'WhatsApp':
+        return 'whatsapp'; // Llave para el filtro por WhatsApp.
+      case 'Saldo':
+        return 'saldo'; // Llave para el filtro por saldo.
+      case 'Contacto':
+        return 'contacto'; // Llave para el filtro por contacto.
+      case 'Dirección':
+        return 'direccion'; // Llave para el filtro por dirección.
+      default:
+        return 'nombre'; // Llave por defecto para el filtro por nombre.
     }
   }
 
@@ -96,16 +121,22 @@ class _ClientsScreenState extends State<ClientsScreen> {
   /// * Muestra un formulario con los datos del cliente.
   /// * Permite editar los datos del cliente.
   /// * Llama al método [updateClient] para actualizar los datos del cliente.
-  void _showEditDialog(Map<String, dynamic> client) {
+  // <!> Me gustaria saber si aca manda un formulario nuevo o que hace
+  void _showEditDialog(ClienteModel client) {
     final handler = Provider.of<ClientsHandler>(context, listen: false);
-    final TextEditingController nameController = TextEditingController(text: client['Cli_Nom']);
-    final TextEditingController emailController = TextEditingController(text: client['Cli_Email']);
-    final TextEditingController dateController = TextEditingController(text: client['Cli_FechaNac']);
-    final TextEditingController whatsappController = TextEditingController(text: client['Cli_Whatsapp']);
-    final TextEditingController contactController = TextEditingController(text: client['Cli_Contacto']);
-    final TextEditingController addressController = TextEditingController(text: client['Cli_Dir']);
+    final TextEditingController nameController =
+        TextEditingController(text: client.nombre);
+    final TextEditingController emailController =
+        TextEditingController(text: client.email ?? '');
+    final TextEditingController dateController =
+        TextEditingController(text: client.fechaNacimiento.toString());
+    final TextEditingController whatsappController =
+        TextEditingController(text: client.whatsapp);
+    final TextEditingController contactController =
+        TextEditingController(text: client.datoContacto ?? '');
+    final TextEditingController addressController =
+        TextEditingController(text: client.direccion ?? '');
 
-    
     showDialog(
       context: context,
       builder: (context) {
@@ -114,13 +145,26 @@ class _ClientsScreenState extends State<ClientsScreen> {
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              // Nombre de la columna de la tabla
               children: [
-                TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Nombre')),
-                TextField(controller: emailController, decoration: const InputDecoration(labelText: 'Email')),
-                TextField(controller: dateController, decoration: const InputDecoration(labelText: 'Nacimiento' )),
-                TextField(controller: whatsappController, decoration: const InputDecoration(labelText: 'WhatsApp')),
-                TextField(controller: contactController, decoration: const InputDecoration(labelText: 'Contacto')),
-                TextField(controller: addressController, decoration: const InputDecoration(labelText: 'Dirección')),
+                TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(labelText: 'Nombre')),
+                TextField(
+                    controller: emailController,
+                    decoration: const InputDecoration(labelText: 'Email')),
+                TextField(
+                    controller: dateController,
+                    decoration: const InputDecoration(labelText: 'Nacimiento')),
+                TextField(
+                    controller: whatsappController,
+                    decoration: const InputDecoration(labelText: 'WhatsApp')),
+                TextField(
+                    controller: contactController,
+                    decoration: const InputDecoration(labelText: 'Contacto')),
+                TextField(
+                    controller: addressController,
+                    decoration: const InputDecoration(labelText: 'Dirección')),
               ],
             ),
           ),
@@ -136,12 +180,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
                   "Cli_Email": emailController.text,
                   "Cli_FechaNac": dateController.text,
                   "Cli_Whatsapp": whatsappController.text,
-                  "Cli_Contacto": contactController.text,
+                  "Cli_DatoContacto": contactController.text,
                   "Cli_Dir": addressController.text,
                 };
-                
+
                 try {
-                  await handler.updateClient(client['Cli_ID'].toString(), updatedData);
+                  await handler.updateClient(client.id.toString(), updatedData);
                   Navigator.of(context).pop();
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -157,14 +201,16 @@ class _ClientsScreenState extends State<ClientsScreen> {
     );
   }
 
-    // 👇 Esta es la función para el diálogo de confirmación de eliminación
+  // 👇 Esta es la función para el diálogo de confirmación de eliminación
   void _showDeleteConfirmationDialog() {
     final handler = Provider.of<ClientsHandler>(context, listen: false);
     final int count = handler.selectedClientsCount;
 
     if (count == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, selecciona al menos un cliente para eliminar.')),
+        const SnackBar(
+            content: Text(
+                'Por favor, selecciona al menos un cliente para eliminar.')),
       );
       return;
     }
@@ -183,24 +229,31 @@ class _ClientsScreenState extends State<ClientsScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
-                Navigator.of(context).pop(); // Cierra el diálogo antes de eliminar
+                Navigator.of(context)
+                    .pop(); // Cierra el diálogo antes de eliminar
                 try {
-                  debugPrint('ClientsScreen: Iniciando eliminación a través del handler.');
-                  await handler.deleteSelectedClients(); // Llama al handler para eliminar
+                  debugPrint(
+                      'ClientsScreen: Iniciando eliminación a través del handler.');
+                  await handler
+                      .deleteSelectedClients(); // Llama al handler para eliminar
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Cliente(s) eliminado(s) correctamente.')),
+                    const SnackBar(
+                        content:
+                            Text('Cliente(s) eliminado(s) correctamente.')),
                   );
                 } catch (e) {
                   debugPrint('ClientsScreen: Error capturado al eliminar: $e');
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error al eliminar: ${e.toString()}')),
+                    SnackBar(
+                        content: Text('Error al eliminar: ${e.toString()}')),
                   );
                 }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red, // Color de botón de peligro
               ),
-              child: const Text('Eliminar', style: TextStyle(color: Colors.white)),
+              child:
+                  const Text('Eliminar', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -250,7 +303,8 @@ class _ClientsScreenState extends State<ClientsScreen> {
             const SizedBox(height: 40),
             Consumer<ClientsHandler>(
               builder: (context, handler, child) {
-                final bool isModifyButtonEnabled = handler.selectedClientsCount == 1;
+                final bool isModifyButtonEnabled =
+                    handler.selectedClientsCount == 1;
                 return ActionButtons(
                   onDelete: _showDeleteConfirmationDialog,
                   onModify: () {
@@ -258,7 +312,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
                       _showEditDialog(handler.selectedClient!);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Por favor, selecciona un solo cliente para modificar.')),
+                        const SnackBar(
+                            content: Text(
+                                'Por favor, selecciona un solo cliente para modificar.')),
                       );
                     }
                   },
@@ -281,6 +337,7 @@ class SearchBar extends StatelessWidget {
   final Function(String?) onFilterChange;
 
   const SearchBar({
+    super.key,
     required this.controller,
     required this.selectedFilter,
     required this.onSearch,
@@ -362,158 +419,8 @@ class SearchBar extends StatelessWidget {
   }
 }
 
-class ClientsTable extends StatelessWidget {
-  final ClientsHandler handler;
-  final Function(String, bool) onRowSelected;
-  final Function(bool) onSelectAll;
-
-  const ClientsTable({
-    required this.handler,
-    required this.onRowSelected,
-    required this.onSelectAll,
-  });
-
-  double _calculateColumnWidth(List<Map<String, dynamic>> clients, String columnKey, TextStyle style) {
-    double maxWidth = 0;
-    final TextPainter textPainter = TextPainter(
-      text: TextSpan(text: columnKey, style: style),
-      maxLines: 1,
-      textDirection: TextDirection.ltr,
-    )..layout();
-    maxWidth = textPainter.width;
-
-    for (var client in clients) {
-      final String text = client[columnKey]?.toString() ?? '';
-      final TextPainter dataPainter = TextPainter(
-        text: TextSpan(text: text, style: style),
-        maxLines: 1,
-        textDirection: TextDirection.ltr,
-      )..layout();
-      if (dataPainter.width > maxWidth) {
-        maxWidth = dataPainter.width;
-      }
-    }
-    return maxWidth + 30;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    const TextStyle headerStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
-    const TextStyle cellStyle = TextStyle(color: Colors.black);
-
-    final List<Map<String, dynamic>> clientsData = handler.filteredClients;
-
-    final double idColumnWidth = _calculateColumnWidth(clientsData, 'Cli_ID', cellStyle);
-    final double nombreColumnWidth = _calculateColumnWidth(clientsData, 'Cli_Nom', cellStyle);
-    final double emailColumnWidth = _calculateColumnWidth(clientsData, 'Cli_Email', cellStyle);
-    final double nacimientoColumnWidth = _calculateColumnWidth(clientsData, 'Cli_FechaNac', cellStyle);
-    final double whatsappColumnWidth = _calculateColumnWidth(clientsData, 'Cli_Whatsapp', cellStyle);
-    final double contactoColumnWidth = _calculateColumnWidth(clientsData, 'Cli_Contacto', cellStyle);
-    final double direccionColumnWidth = _calculateColumnWidth(clientsData, 'Cli_Dir', cellStyle);
-    final double saldoColumnWidth = _calculateColumnWidth(clientsData, 'Cli_Saldo', cellStyle);
-
-    const double checkboxHeaderColumnWidth = 50; 
-    const double editIconColumnWidth = 60; 
-
-    final double minTableWidth = checkboxHeaderColumnWidth + 
-        idColumnWidth +
-        nombreColumnWidth +
-        emailColumnWidth +
-        nacimientoColumnWidth +
-        whatsappColumnWidth +
-        saldoColumnWidth +
-        contactoColumnWidth +
-        direccionColumnWidth +
-        editIconColumnWidth;
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double tableWidth = constraints.maxWidth > minTableWidth
-            ? constraints.maxWidth
-            : minTableWidth;
-
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: tableWidth),
-            child: DataTable(
-              columnSpacing: 10.0,
-              dataRowHeight: 40.0,
-              headingRowHeight: 40.0,
-              headingRowColor: MaterialStateProperty.all(AppColors.primary),
-              showCheckboxColumn: true,
-              columns: [
-                const DataColumn(label: SizedBox.shrink()),
-                DataColumn(label: SizedBox(width: idColumnWidth, child: const Text('ID', style: headerStyle))),
-                DataColumn(label: SizedBox(width: nombreColumnWidth, child: const Text('Nombre', style: headerStyle))),
-                DataColumn(label: SizedBox(width: emailColumnWidth, child: const Text('Email', style: headerStyle))),
-                DataColumn(label: SizedBox(width: nacimientoColumnWidth, child: const Text('Nacimiento', style: headerStyle))),
-                DataColumn(label: SizedBox(width: whatsappColumnWidth, child: const Text('WhatsApp', style: headerStyle))),
-                DataColumn(label: SizedBox(width: direccionColumnWidth, child: const Text('Dirección', style: headerStyle))),
-                DataColumn(label: SizedBox(width: contactoColumnWidth, child: const Text('Contacto', style: headerStyle))),
-                DataColumn(label: SizedBox(width: saldoColumnWidth, child: const Text('Saldo', style: headerStyle))),
-                const DataColumn(label: SizedBox.shrink()), 
-              ],
-              rows: handler.filteredClients.isNotEmpty
-                  ? List.generate(
-                      handler.filteredClients.length,
-                      (index) {
-                        final client = handler.filteredClients[index];
-                        final clientId = client['Cli_ID'].toString();
-                        final isSelected = handler.isRowSelected(clientId);
-
-                        return DataRow(
-                          selected: isSelected,
-                          onSelectChanged: (value) {
-                            onRowSelected(clientId, value ?? false);
-                          },
-                          cells: [
-                            DataCell(const SizedBox(width: checkboxHeaderColumnWidth - 10)), 
-                            DataCell(SizedBox(width: idColumnWidth, child: Text(client['Cli_ID']?.toString() ?? '', style: cellStyle))),
-                            DataCell(SizedBox(width: nombreColumnWidth, child: Text(client['Cli_Nom'] ?? '', style: cellStyle))),
-                            DataCell(SizedBox(width: emailColumnWidth, child: Text(client['Cli_Email'] ?? '', style: cellStyle))),
-                            DataCell(SizedBox(width: nacimientoColumnWidth, child: Text(client['Cli_FechaNac']?.toString().split(' ')[0] ?? '', style: cellStyle))),
-                            DataCell(SizedBox(width: whatsappColumnWidth, child: Text(client['Cli_Whatsapp'] ?? '', style: cellStyle))),        
-                            DataCell(SizedBox(width: direccionColumnWidth, child: Text(client['Cli_Dir'] ?? '', style: cellStyle))),
-                            DataCell(SizedBox(width: contactoColumnWidth, child: Text(client['Cli_Contacto'] ?? '', style: cellStyle))),
-                            DataCell(SizedBox(
-                              width: saldoColumnWidth, 
-                              child: Text(
-                                '\$${client['Cli_Saldo']?.toStringAsFixed(2) ?? '0.00'}', 
-                                style: TextStyle(
-                                  color: (client['Cli_Saldo'] ?? 0) < 0 
-                                    ? Colors.red 
-                                    : Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            )),
-                            const DataCell(SizedBox.shrink()),
-                          ],
-                        );
-                      },
-                    )
-                  : [
-                      const DataRow(cells: [
-                        DataCell(Text('No se encontraron clientes', style: TextStyle(fontStyle: FontStyle.italic))),
-                        DataCell(Text('')),
-                        DataCell(Text('')),
-                        DataCell(Text('')),
-                        DataCell(Text('')),
-                        DataCell(Text('')),
-                        DataCell(Text('')),
-                        DataCell(Text('')),
-                        DataCell(Text('')),
-                        DataCell(Text('')),
-                      ]),
-                    ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
+///
+///
 
 class ActionButtons extends StatelessWidget {
   final VoidCallback onDelete;
@@ -541,7 +448,8 @@ class ActionButtons extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 12),
             ),
             icon: const Icon(Icons.delete, color: Colors.white),
-            label: const Text('Eliminar', style: TextStyle(color: Colors.white)),
+            label:
+                const Text('Eliminar', style: TextStyle(color: Colors.white)),
           ),
         ),
         SizedBox(
@@ -553,7 +461,8 @@ class ActionButtons extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 12),
             ),
             icon: const Icon(Icons.edit, color: Colors.white),
-            label: const Text('Modificar', style: TextStyle(color: Colors.white)),
+            label:
+                const Text('Modificar', style: TextStyle(color: Colors.white)),
           ),
         ),
       ],
