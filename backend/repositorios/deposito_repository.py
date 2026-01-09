@@ -8,7 +8,7 @@ from decimal import Decimal
 
 # Importaciones de modelos y esquemas
 from ..models.deposito import Deposito
-from ..models.cliente import Cliente
+from ..models.cliente_model import ClienteModel
 from ..schemas.deposito import DepositoCreate, DepositoUpdate 
 # Asumo que estos esquemas manejan Decimal/float
 

@@ -7,7 +7,7 @@ from sqlalchemy import text, func # Funciones de SQLAlchemy (como func.date)
 
 # --- Importaciones de Modelos (ORM) ---
 from ..models.impuesto import Impuesto # Modelo para acceder a los datos de impuestos
-from ..models.cliente import Cliente # Modelo para acceder a los datos de clientes (contacto)
+from ..models.cliente_model import ClienteModel # Modelo para acceder a los datos de clientes (contacto)
 from ..models.nombre_impuesto import NombreImpuesto # Modelo para obtener el nombre del impuesto (NomIm_Txt)
 from ..models.notificacion import Notificacion # Modelo para registrar las alertas enviadas
 
@@ -43,7 +43,7 @@ def verificar_vencimientos_diarios(): # Función principal ejecutada por el sche
         
         # -------------------------
         for impuesto in impuestos_a_alertar: # Itera sobre cada impuesto encontrado
-            cliente = db.query(Cliente).filter(Cliente.Cli_ID == impuesto.Cli_ID).first() # Busca el cliente asociado al impuesto
+            cliente = db.query(ClienteModel).filter(ClienteModel.Cli_ID == impuesto.Cli_ID).first() # Busca el cliente asociado al impuesto
             
             # 3. Normalización de la Fecha de Vencimiento
             if cliente: # Asegura que solo procesa si el cliente existe

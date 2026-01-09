@@ -7,7 +7,7 @@ from typing import List, Optional
 from decimal import Decimal # Usar Decimal para manejo de dinero
 
 from ..models.pago import Pago
-from ..models.cliente import Cliente
+from ..models.cliente_model import ClienteModel
 from ..models.impuesto import Impuesto
 from ..schemas.pago import PagoCreate, PagoUpdate
 

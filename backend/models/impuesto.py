@@ -6,7 +6,7 @@ from decimal import Decimal # Tipo para manejo preciso de valores monetarios
 
 from ..database import Base # Importa la clase base declarativa de SQLAlchemy
 from .nombre_impuesto import NombreImpuesto # Importa el modelo NombreImpuesto (para la relación)
-from .cliente import Cliente # Importa el modelo Cliente (para la relación)
+from .cliente_model import ClienteModel # Importa el modelo Cliente (para la relación)
 from .pago import Pago # Importa el modelo Pago (para la relación)
 
 
@@ -34,8 +34,8 @@ class Impuesto(Base): # Clase que define el modelo ORM para el registro de impue
 
     # --- Relaciones con Cliente ---
     Cli_ID: Mapped[int] = mapped_column(Integer, ForeignKey("Cliente.Cli_ID")) # Clave foránea que enlaza con la tabla Cliente
-    cliente: Mapped["Cliente"] = relationship( # Relación muchos-a-uno: muchos impuestos pertenecen a un cliente
-        "Cliente",
+    cliente: Mapped["ClienteModel"] = relationship( # Relación muchos-a-uno: muchos impuestos pertenecen a un cliente
+        "ClienteModel",
         back_populates="impuestos" # Define el campo de relación inversa en el modelo Cliente
     )
 

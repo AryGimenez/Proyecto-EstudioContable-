@@ -6,7 +6,7 @@ from typing import Optional
 from datetime import datetime, date
 
 from ..database import Base
-from .cliente import Cliente # Necesitamos relacionar notificaciones con clientes
+from .cliente_model import ClienteModel # Necesitamos relacionar notificaciones con clientes
 
 class Notificacion(Base):
     __tablename__ = "Notificacion"
@@ -20,7 +20,7 @@ class Notificacion(Base):
 
     # Opcional: Relacionar con el cliente si la notificación es específica para él
     Cli_ID: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("Cliente.Cli_ID"), nullable=True)
-    cliente: Mapped[Optional["Cliente"]] = relationship("Cliente", back_populates="notificaciones")
+    cliente: Mapped[Optional["ClienteModel"]] = relationship("ClienteModel", back_populates="notificaciones")
 
     # Opcional: Relacionar con el impuesto, pago o deposito si la notificación es de uno de esos tipos
     Imp_ID: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("Impuesto.Imp_ID"), nullable=True)

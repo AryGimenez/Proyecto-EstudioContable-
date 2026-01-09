@@ -7,7 +7,7 @@ from datetime import date # Importa el tipo date de Python
 from typing import List # Tipo para anotaciones de relaciones uno-a-muchos
 
 from ..database import Base # Importa la clase base declarativa de SQLAlchemy
-from .cliente import Cliente # Importa el modelo Cliente para la relación
+from .cliente_model import ClienteModel # Importa el modelo Cliente para la relación
 
 class Deposito(Base): # Clase que define el modelo ORM para la tabla de depósitos
     __tablename__ = "Depositos" # Nombre exacto de la tabla en la base de datos
@@ -21,7 +21,7 @@ class Deposito(Base): # Clase que define el modelo ORM para la tabla de depósit
 
     # --- Clave Foránea a Cliente y Relación ---
     Cli_ID: Mapped[int] = mapped_column(Integer, ForeignKey("Cliente.Cli_ID")) # Clave foránea que enlaza con la tabla Cliente
-    cliente: Mapped["Cliente"] = relationship (back_populates="depositos") # Relación muchos-a-uno: muchos depósitos a un cliente
+    cliente: Mapped["ClienteModel"] = relationship (back_populates="depositos") # Relación muchos-a-uno: muchos depósitos a un cliente
     
     # --- Relación con Notificaciones ---
     notificaciones: Mapped[List["Notificacion"]] = relationship("Notificacion", back_populates="deposito", cascade="all, delete-orphan") # Relación uno-a-muchos, permitiendo borrar notificaciones en cascada

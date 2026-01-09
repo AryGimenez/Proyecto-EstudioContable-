@@ -18,7 +18,7 @@ class ClienteModel(Base): # Clase que define el modelo ORM para la tabla de Clie
     Cli_Email: Mapped[str] = mapped_column(String(255)) # Correo electrónico del cliente
     Cli_Whatsapp: Mapped[str] = mapped_column(String(20)) # Número de WhatsApp para alertas
     Cli_DatoContacto: Mapped[str] = mapped_column(String(255)) # Nombre de contacto secundario (si aplica)
-    Cli_FechaNac: Mapped[date] = mapped_column(Date) # Fecha de nacimiento del cliente (tipo Date de SQL)
+    Cli_FechNas: Mapped[date] = mapped_column(Date) # Fecha de nacimiento del cliente (tipo Date de SQL)
     
     # Precision para el saldo
     Cli_Saldo: Mapped[float] = mapped_column(Numeric(precision=10, scale=2), default=0.0) # Saldo actual del cliente, usa Numeric con 2 decimales, por defecto 0.0

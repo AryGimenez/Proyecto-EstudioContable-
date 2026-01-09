@@ -178,7 +178,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 final updatedData = {
                   "Cli_Nom": nameController.text,
                   "Cli_Email": emailController.text,
-                  "Cli_FechaNac": dateController.text,
+                  "Cli_FechNas": dateController.text,
                   "Cli_Whatsapp": whatsappController.text,
                   "Cli_DatoContacto": contactController.text,
                   "Cli_Dir": addressController.text,

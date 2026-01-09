@@ -26,8 +26,8 @@ class Pago(Base):
     Imp_ID: Mapped[int] = mapped_column(Integer, ForeignKey("Impuesto.Imp_ID"), nullable=True)
     
     # --- Relacion Foraneas ---
-    cliente: Mapped["Cliente"] = relationship(
-        "Cliente",
+    cliente: Mapped["ClienteModel"] = relationship(
+        "ClienteModel",
         back_populates="pagos"
     )
 

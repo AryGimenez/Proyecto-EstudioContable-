@@ -9,7 +9,7 @@ from decimal import Decimal
 # Importar modelos y esquemas
 from ..models.cheque import Cheque 
 from ..schemas.cheques import ChequeCreate, ChequeUpdate
-from ..models.cliente import Cliente
+from ..models.cliente_model import ClienteModel
 from ..models.nombre_impuesto import NombreImpuesto
 
 class ChequeRepository:

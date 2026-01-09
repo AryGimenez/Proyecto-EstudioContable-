@@ -7,7 +7,7 @@ from typing import List, Optional
 from decimal import Decimal
 
 from ..models.impuesto import Impuesto
-from ..models.cliente import Cliente
+from ..models.cliente_model import ClienteModel
 from ..schemas.impuesto import ImpuestoCreate, ImpuestoUpdate
 from ..models.nombre_impuesto import NombreImpuesto
 
@@ -50,12 +50,12 @@ class ImpuestoRepository:
         
         # CORRECCIÓN: Usar la sintaxis moderna para consistencia y seguridad, aunque .query funciona.
         cliente = self.db.execute(
-            select(Cliente) 
-            .filter(Cliente.Cli_ID == cli_id)
+            select(ClienteModel) 
+            .filter(ClienteModel.Cli_ID == cli_id)
         ).scalars().first()
 
         if not cliente:
-            raise ValueError(f"Cliente con ID {cli_id} no encontrado para ajustar saldo")
+            raise ValueError(f"ClienteModel con ID {cli_id} no encontrado para ajustar saldo")
         
         # Se suma la diferencia (que puede ser positiva o negativa)
         cliente.Cli_Saldo += total_amount_difference
@@ -99,21 +99,21 @@ class ImpuestoRepository:
         Crea un nuevo impuesto, calcula honorarios y RESTA el total adeudado al saldo del cliente.
 
         Flujo Transaccional:
-        1. Valida el Cliente y NombreImpuesto.
+        1. Valida el ClienteModel y NombreImpuesto.
         2. Calcula Imp_Honorario y Total Adeudado.
         3. Resta el Total Adeudado al Cli_Saldo (aumenta la deuda).
         4. Inserta el registro de impuesto.
 
         Raises:
-            ValueError: Si el Cliente o NombreImpuesto no existe.
+            ValueError: Si el ClienteModel o NombreImpuesto no existe.
         """
-        # Validar Cliente
+        # Validar ClienteModel
         cliente = self.db.execute(
-            select(Cliente).filter(Cliente.Cli_ID == impuesto_data.Cli_ID)
+            select(ClienteModel).filter(ClienteModel.Cli_ID == impuesto_data.Cli_ID)
         ).scalars().first()
         
         if not cliente:
-            raise ValueError(f"Cliente con ID {impuesto_data.Cli_ID} no encontrado.")
+            raise ValueError(f"ClienteModel con ID {impuesto_data.Cli_ID} no encontrado.")
             
         # Validar NombreImpuesto (se asume que si el NomIm_ID no es None, debe existir)
         if impuesto_data.NomIm_ID is not None:
@@ -198,7 +198,7 @@ class ImpuestoRepository:
             # 4. Lógica de Ajuste del Saldo
 
             if old_cli_id == new_cli_id:
-                # 4a. MISMO Cliente: Ajuste diferencial
+                # 4a. MISMO ClienteModel: Ajuste diferencial
                 # Diferencia: (Viejo Total - Nuevo Total). 
                 # Si Viejo > Nuevo, la diferencia es positiva -> SUMA al saldo (menos deuda).
                 balance_difference = old_total_adeudado - new_total_adeudado

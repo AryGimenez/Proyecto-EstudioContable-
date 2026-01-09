@@ -7,7 +7,7 @@ from datetime import date # Importa el tipo date de Python
 from ..database import Base # Importa la clase base declarativa de SQLAlchemy
 
 # Importaciones de modelos necesarios
-from .cliente import Cliente # Importa el modelo Cliente para la relación
+from .cliente_model import ClienteModel # Importa el modelo Cliente para la relación
 from .nombre_impuesto import NombreImpuesto # Importa el modelo NombreImpuesto para la relación
 
 # --- Modelo Principal (Cheque) ---
@@ -32,7 +32,7 @@ class Cheque(Base): # Clase que define el modelo ORM para la tabla de cheques
 
     # 🔑 RELACIONES ORM: Ahora usan las clases importadas
     # SQLAlchemy relaciona automáticamente la clase con la tabla correcta a través del nombre.
-    cliente = relationship("Cliente", back_populates="cheques") # Relación muchos-a-uno, permite acceder al objeto Cliente
+    cliente = relationship("ClienteModel", back_populates="cheques") # Relación muchos-a-uno, permite acceder al objeto Cliente
     nombre_impuesto = relationship("NombreImpuesto") # Relación muchos-a-uno, permite acceder al objeto NombreImpuesto
 
     @property # Decorador que convierte el método en un atributo de lectura
