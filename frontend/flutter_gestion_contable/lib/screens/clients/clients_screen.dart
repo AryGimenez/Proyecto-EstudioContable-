@@ -95,8 +95,6 @@ class _ClientsScreenState extends State<ClientsScreen> {
 
   String _getFilterKey(String filter) {
     switch (filter) {
-      case 'ID':
-        return 'id'; // Llave para el filtro por ID.
       case 'Nombre':
         return 'nombre'; // Llave para el filtro por nombre.
       case 'Email':
@@ -390,8 +388,7 @@ class SearchBar extends StatelessWidget {
             child: PopupMenuButton<String>(
               onSelected: onFilterChange,
               itemBuilder: (BuildContext context) {
-                return [
-                  'ID',
+                return [ // <!> cero que esto es el menu de filtros
                   'Nombre',
                   'Email',
                   'Nacimiento',

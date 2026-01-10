@@ -171,9 +171,6 @@ class ClientsHandler with ChangeNotifier {
         String? valueToCheck;
         // Mapeamos las llaves a propiedades del modelo
         switch (filterBy) {
-          case 'id':
-            valueToCheck = client.id.toString();
-            break;
           case 'nombre':
             valueToCheck = client.nombre;
             break;
